@@ -81,14 +81,7 @@ Examples:
 Daisy IS_A dog
 ```
 
-is world knowledge, while:
-
-```text
-Daisy.social = 0.8
-Daisy.experience = 0.9
-```
-
-is organism-relative knowledge.
+is world knowledge, while organism-relative values describe what Daisy means to Synrheon.
 
 The two may influence the same future activation calculation but one must not overwrite or silently become the other.
 
@@ -109,11 +102,16 @@ Injected developer scaffolding must never be relabeled as self-learned merely be
 
 If neural training later absorbs a pattern, the explicit source/evidence representation remains outside model weights.
 
-## D014 — Self-Learned Representation Remains Explicit Outside Neural Weights
+## D014 — Injected Self State and Self-Learned State Are Permanent Separate Representations
 
-Synrheon may later train neural components from experience, but the authoritative record of organism-learned relevance remains explicit and inspectable.
+For each concept, Synrheon keeps two organism-relative vectors:
 
-The initial self relation vector contains:
+```text
+injected_self_vector
+self_learned_vector
+```
+
+Both use the same initial dimensions:
 
 ```text
 ownership
@@ -129,13 +127,23 @@ preference
 uncertainty
 ```
 
-The initial online update is:
+Injected self scaffolding updates only `injected_self_vector`.
+
+Experience-based learning updates only `self_learned_vector`.
+
+The learning operation must never rewrite the injected vector merely to simplify storage or training.
+
+The initial online learned-vector update is:
 
 ```text
-s_new = s_old + (learning_rate × trust) × (observation - s_old)
+learned_new = learned_old + (learning_rate × trust) × (observation - learned_old)
 ```
 
-Each learned update preserves supporting experience-event IDs.
+Each learned update preserves supporting experience-event IDs and its own learned confidence.
+
+Later sparse activation may combine the two vectors, but their provenance remains separable and inspectable.
+
+If neural training later absorbs regularities from either representation, the explicit injected and learned vectors remain authoritative provenance-bearing state outside model weights.
 
 ## D015 — Experience Thread Is Ordered but Is Not Yet Durable Memory
 
