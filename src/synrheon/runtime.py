@@ -1,13 +1,7 @@
 """Thin Synrheon runtime / integration owner.
 
-Stage 0B responsibilities:
-- own one live organism session
-- receive distinct external and internal stimuli
-- sequence one-step / continue / pause control
-- expose observable state and trace
-
-The runtime does not interpret language or own memory, retrieval, learning,
-abstraction, or problem-solving cognition.
+Runtime sequences owners and routes commands. It does not own semantic interpretation,
+memory, learning, retrieval, abstraction, or problem-solving cognition.
 """
 
 from __future__ import annotations
@@ -15,11 +9,12 @@ from __future__ import annotations
 from threading import Event, RLock, Thread
 from time import sleep
 
-from synrheon.core import OrganismState, StimulusKind, StimulusRecord, TraceEvent
+from synrheon.core import Concept, OrganismState, StimulusKind, StimulusRecord, TraceEvent, WorldRelation
+from synrheon.time import utc_now
 
 
 class SynrheonRuntime:
-    """Sequence the Stage 0B organism without pretending to implement cognition."""
+    """Sequence the live organism while keeping cognition in its owners."""
 
     def __init__(self, cycle_interval_seconds: float = 0.75) -> None:
         self._state = OrganismState()
@@ -30,14 +25,12 @@ class SynrheonRuntime:
         self._worker.start()
 
     def start(self) -> dict[str, object]:
-        """Start a fresh session in paused mode."""
         with self._lock:
             self._state.begin_session()
             self._trace("session_started", "Synrheon session started in paused mode.")
             return self._state.snapshot()
 
     def pause(self) -> dict[str, object]:
-        """Pause future automatic cycles while preserving current state."""
         with self._lock:
             self._require_started()
             self._state.status = "paused"
@@ -45,7 +38,6 @@ class SynrheonRuntime:
             return self._state.snapshot()
 
     def continue_thinking(self) -> dict[str, object]:
-        """Allow the harness to advance repeated observable cycles."""
         with self._lock:
             self._require_started()
             self._state.status = "running"
@@ -53,7 +45,6 @@ class SynrheonRuntime:
             return self._state.snapshot()
 
     def think_one_step(self) -> dict[str, object]:
-        """Advance exactly one observable cycle without inventing cognition."""
         with self._lock:
             self._require_started()
             if self._state.status == "running":
@@ -62,20 +53,72 @@ class SynrheonRuntime:
             return self._state.snapshot()
 
     def send_external_stimulus(self, text: str) -> dict[str, object]:
-        """Record a user-facing chat stimulus as external input."""
         return self._record_stimulus("external", text)
 
     def inject_internal_thought(self, text: str) -> dict[str, object]:
-        """Record an explicitly injected internal stimulus on a distinct channel."""
         return self._record_stimulus("internal", text)
 
+    def define_concept(self, concept_id: str, label: str) -> dict[str, object]:
+        """Route explicit developer knowledge injection to the substrate owner."""
+        with self._lock:
+            self._require_started()
+            concept = Concept(concept_id=concept_id.strip(), label=label.strip())
+            self._state.substrate.add_concept(concept)
+            self._trace("concept_injected", f"Injected concept {concept.concept_id}: {concept.label}.")
+            return self._state.snapshot()
+
+    def define_world_relation(
+        self,
+        source_concept_id: str,
+        relation: str,
+        target_concept_id: str,
+        confidence: float = 1.0,
+    ) -> dict[str, object]:
+        """Route explicit world knowledge without treating it as self-learned."""
+        with self._lock:
+            self._require_started()
+            world_relation = WorldRelation(
+                source_concept_id=source_concept_id.strip(),
+                relation=relation.strip(),
+                target_concept_id=target_concept_id.strip(),
+                origin="injected",
+                confidence=confidence,
+            )
+            self._state.substrate.add_world_relation(world_relation)
+            self._trace(
+                "world_relation_injected",
+                f"{world_relation.source_concept_id} {world_relation.relation} "
+                f"{world_relation.target_concept_id}.",
+            )
+            return self._state.snapshot()
+
+    def define_self_relation(
+        self,
+        concept_id: str,
+        dimension: str,
+        value: float,
+        confidence: float = 1.0,
+    ) -> dict[str, object]:
+        """Route injected organism-relative scaffolding to a separate self vector."""
+        with self._lock:
+            self._require_started()
+            relation = self._state.substrate.set_injected_self_relation(
+                concept_id=concept_id.strip(),
+                dimension=dimension.strip(),
+                value=value,
+                confidence=confidence,
+            )
+            self._trace(
+                "self_relation_injected",
+                f"{relation.concept_id} self.{dimension} = {value:.3f}.",
+            )
+            return self._state.snapshot()
+
     def snapshot(self) -> dict[str, object]:
-        """Return the current detached observable state."""
         with self._lock:
             return self._state.snapshot()
 
     def close(self) -> None:
-        """Stop the background harness thread."""
         self._stop_event.set()
         self._worker.join(timeout=1.5)
 
@@ -86,27 +129,53 @@ class SynrheonRuntime:
 
         with self._lock:
             self._require_started()
+            coordinate = self._state.computational_time.next_coordinate()
+            origin = "observed" if kind == "external" else "injected"
+            experience_event = self._state.experience.append(
+                kind=kind,
+                origin=origin,
+                text=cleaned,
+                coordinate=coordinate,
+            )
+
             sequence = self._state.next_event_sequence()
-            self._state.stimuli.append(StimulusRecord(sequence=sequence, kind=kind, text=cleaned))
+            self._state.stimuli.append(
+                StimulusRecord(
+                    sequence=sequence,
+                    kind=kind,
+                    text=cleaned,
+                    created_at=coordinate.occurred_at,
+                    experience_event_id=experience_event.event_id,
+                )
+            )
             label = "chat_stimulus_received" if kind == "external" else "thought_injected"
             detail = (
-                "External chat stimulus reached the runtime."
+                f"External chat stimulus became observed experience #{coordinate.sequence}."
                 if kind == "external"
-                else "Internal thought injection reached the runtime."
+                else f"Internal injection became injected experience #{coordinate.sequence}."
             )
-            self._state.trace.append(TraceEvent(sequence=sequence, event=label, detail=detail))
+            self._state.trace.append(
+                TraceEvent(
+                    sequence=sequence,
+                    event=label,
+                    detail=detail,
+                    created_at=coordinate.occurred_at,
+                )
+            )
             return self._state.snapshot()
 
     def _advance_cycle(self, source: str) -> None:
         self._state.cycle += 1
         self._trace(
             "cycle_advanced",
-            f"Observable Stage 0B cycle {self._state.cycle} advanced by {source} control.",
+            f"Observable cycle {self._state.cycle} advanced by {source} control.",
         )
 
     def _trace(self, event: str, detail: str) -> None:
         sequence = self._state.next_event_sequence()
-        self._state.trace.append(TraceEvent(sequence=sequence, event=event, detail=detail))
+        self._state.trace.append(
+            TraceEvent(sequence=sequence, event=event, detail=detail, created_at=utc_now())
+        )
 
     def _require_started(self) -> None:
         if self._state.status == "off" or self._state.session_id is None:
@@ -121,7 +190,7 @@ class SynrheonRuntime:
 
 
 def main() -> None:
-    """Start the Stage 0B development application."""
+    """Start the connected development application."""
     from synrheon.interfaces import run_development_server
 
     runtime = SynrheonRuntime()
