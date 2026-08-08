@@ -1,7 +1,7 @@
 """Core cognitive substrate and observable organism state.
 
 Stage 1 separates generic world knowledge, open-ended organism-relative relations,
-and current activation so later sparse activation can weight them differently.
+current activation, and observable cognitive transition evidence.
 """
 
 from __future__ import annotations
@@ -17,6 +17,8 @@ RunStatus = Literal["off", "paused", "running"]
 StimulusKind = Literal["external", "internal"]
 RelationOrigin = Literal["injected", "observed", "inferred", "learned"]
 OrganismRelationOrigin = Literal["injected", "learned"]
+CognitiveFrameStatus = Literal["activated", "unmatched"]
+ActivationContributionKind = Literal["seed", "retained", "world", "organism"]
 
 
 @dataclass(slots=True)
@@ -114,10 +116,51 @@ class SelfRelation:
 
 
 @dataclass(slots=True)
+class ActivationContribution:
+    """Observable evidence for one activation contribution, not hidden reasoning."""
+
+    round_index: int
+    kind: ActivationContributionKind
+    target_concept_id: str
+    amount: float
+    source_concept_id: str | None = None
+    relation: str | None = None
+    origin: str | None = None
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
+class CognitiveFrame:
+    """One inspectable cognitive activation result produced from one experience."""
+
+    experience_event_id: str
+    stimulus_text: str
+    status: CognitiveFrameStatus
+    matched_concept_ids: list[str]
+    active_concepts: dict[str, float]
+    contributions: list[ActivationContribution] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "experience_event_id": self.experience_event_id,
+            "stimulus_text": self.stimulus_text,
+            "status": self.status,
+            "matched_concept_ids": list(self.matched_concept_ids),
+            "active_concepts": dict(self.active_concepts),
+            "contributions": [item.to_dict() for item in self.contributions],
+        }
+
+
+@dataclass(slots=True)
 class ActivationState:
     """Current concept activation, kept separate from stored knowledge."""
 
     values: dict[str, float] = field(default_factory=dict)
+
+    def replace(self, values: dict[str, float]) -> None:
+        self.values = dict(values)
 
     def top_k(self, count: int) -> list[tuple[str, float]]:
         if count < 1:
@@ -253,6 +296,7 @@ class OrganismState:
     event_sequence: int = 0
     stimuli: list[StimulusRecord] = field(default_factory=list)
     trace: list[TraceEvent] = field(default_factory=list)
+    cognitive_frames: list[CognitiveFrame] = field(default_factory=list)
     computational_time: ComputationalTime = field(default_factory=ComputationalTime)
     experience: ExperienceThread = field(default_factory=ExperienceThread)
     substrate: CognitiveSubstrate = field(default_factory=CognitiveSubstrate)
@@ -264,6 +308,7 @@ class OrganismState:
         self.event_sequence = 0
         self.stimuli.clear()
         self.trace.clear()
+        self.cognitive_frames.clear()
         self.computational_time.begin_episode(self.session_id)
         self.experience.begin_episode(self.session_id)
         self.substrate.activation.values.clear()
@@ -280,6 +325,7 @@ class OrganismState:
             "event_sequence": self.event_sequence,
             "stimuli": [stimulus.to_dict() for stimulus in self.stimuli],
             "trace": [event.to_dict() for event in self.trace],
+            "cognitive_frames": [frame.to_dict() for frame in self.cognitive_frames],
             "time": self.computational_time.snapshot(),
             "experience_thread": self.experience.snapshot(),
             "cognitive_substrate": self.substrate.snapshot(),
