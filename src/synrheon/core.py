@@ -119,21 +119,27 @@ class SelfRelationVector:
 
 @dataclass(slots=True)
 class SelfRelation:
-    """How one concept relates to Synrheon, separate from generic world truth."""
+    """Separate injected and self-learned organism-relative representations."""
 
     concept_id: str
-    vector: SelfRelationVector = field(default_factory=SelfRelationVector)
-    origin: RelationOrigin = "injected"
-    confidence: float = 0.0
-    evidence_event_ids: list[str] = field(default_factory=list)
+    injected_vector: SelfRelationVector = field(default_factory=SelfRelationVector)
+    learned_vector: SelfRelationVector = field(default_factory=SelfRelationVector)
+    injected_confidence: float = 0.0
+    learned_confidence: float = 0.0
+    learned_evidence_event_ids: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, object]:
         return {
             "concept_id": self.concept_id,
-            "vector": self.vector.to_dict(),
-            "origin": self.origin,
-            "confidence": self.confidence,
-            "evidence_event_ids": list(self.evidence_event_ids),
+            "injected": {
+                "vector": self.injected_vector.to_dict(),
+                "confidence": self.injected_confidence,
+            },
+            "learned": {
+                "vector": self.learned_vector.to_dict(),
+                "confidence": self.learned_confidence,
+                "evidence_event_ids": list(self.learned_evidence_event_ids),
+            },
         }
 
 
@@ -184,17 +190,18 @@ class CognitiveSubstrate:
         value: float,
         confidence: float,
     ) -> SelfRelation:
-        """Inject organism-relative scaffolding without calling it learned."""
+        """Update only injected self state; learned self state remains untouched."""
 
         self._require_concept(concept_id)
         _validate_unit_interval(confidence, "Confidence")
         current = self.self_relations.get(concept_id, SelfRelation(concept_id=concept_id))
         relation = SelfRelation(
             concept_id=concept_id,
-            vector=current.vector.with_dimension(dimension, value),
-            origin="injected",
-            confidence=confidence,
-            evidence_event_ids=list(current.evidence_event_ids),
+            injected_vector=current.injected_vector.with_dimension(dimension, value),
+            learned_vector=current.learned_vector,
+            injected_confidence=confidence,
+            learned_confidence=current.learned_confidence,
+            learned_evidence_event_ids=list(current.learned_evidence_event_ids),
         )
         self.self_relations[concept_id] = relation
         return relation
@@ -208,11 +215,13 @@ class CognitiveSubstrate:
         learning_rate: float,
         evidence_event_id: str,
     ) -> SelfRelation:
-        """Update a distinct self vector using confidence-weighted online learning.
+        """Update only the distinct self-learned vector from trusted evidence.
 
-        s_new = s_old + (learning_rate * trust) * (observation - s_old)
+        learned_new =
+            learned_old
+            + (learning_rate * trust) * (observation - learned_old)
 
-        The explicit vector and evidence lineage remain outside neural weights.
+        Injected self state is never rewritten by this operation.
         """
 
         self._require_concept(concept_id)
@@ -223,23 +232,27 @@ class CognitiveSubstrate:
 
         current = self.self_relations.get(concept_id, SelfRelation(concept_id=concept_id))
         effective_rate = learning_rate * trust
-        old_values = current.vector.to_dict()
+        old_values = current.learned_vector.to_dict()
         observed_values = observation.to_dict()
         updated_values = {
             name: old_values[name] + effective_rate * (observed_values[name] - old_values[name])
             for name in SELF_RELATION_DIMENSIONS
         }
-        confidence = current.confidence + effective_rate * (1.0 - current.confidence)
-        evidence_ids = list(current.evidence_event_ids)
+        learned_confidence = (
+            current.learned_confidence
+            + effective_rate * (1.0 - current.learned_confidence)
+        )
+        evidence_ids = list(current.learned_evidence_event_ids)
         if evidence_event_id not in evidence_ids:
             evidence_ids.append(evidence_event_id)
 
         learned = SelfRelation(
             concept_id=concept_id,
-            vector=SelfRelationVector(**updated_values),
-            origin="learned",
-            confidence=confidence,
-            evidence_event_ids=evidence_ids,
+            injected_vector=current.injected_vector,
+            learned_vector=SelfRelationVector(**updated_values),
+            injected_confidence=current.injected_confidence,
+            learned_confidence=learned_confidence,
+            learned_evidence_event_ids=evidence_ids,
         )
         self.self_relations[concept_id] = learned
         return learned
