@@ -1,24 +1,12 @@
 # Synrheon Signal Flow
 
-This document explains how information moves through Synrheon.
+This document separates **CURRENT REAL FLOW** from **PLANNED / INTENDED FLOW**.
 
-It must always separate:
+# 1. Current Real Flow — Stage 0B
 
-```text
-CURRENT REAL FLOW
-from
-INTENDED / PLANNED FLOW
-```
+Synrheon now has a connected development-organism path in code.
 
-A diagram here is not proof that the code already behaves that way. When runtime wiring changes, this document should change with it.
-
----
-
-# 1. Current Real Flow — Stage 0B Scaffold
-
-Synrheon does **not** yet have a live cognitive signal loop.
-
-Current Python execution:
+Startup:
 
 ```text
 PowerShell
@@ -28,238 +16,156 @@ python -m synrheon
         ↓
 src/synrheon/__main__.py
         ↓
-imports main() from runtime.py
-        ↓
 runtime.main()
         ↓
-prints scaffold message
+SynrheonRuntime created
         ↓
-process ends
-```
-
-That is the actual implemented organism path right now.
-
-There is no persistent cognitive state yet, no thought loop, no memory/retrieval/learning path, and no UI-to-runtime connection.
-
----
-
-# 2. Current UI Flow
-
-Current `ui/index.html` is a static development scaffold.
-
-```text
-Browser opens ui/index.html
+interfaces.run_development_server(runtime)
         ↓
-shows development page
+local HTTP server
         ↓
-Start             disabled
-Think One Step    disabled
-Continue          disabled
-Pause             disabled
-Stimulus           disabled
+browser opens http://127.0.0.1:8765
+```
+
+Browser command path:
+
+```text
+Browser control / input
         ↓
-Current State says "Not connected."
-Trace says "No cognitive trace yet."
+HTTP endpoint in interfaces.py
+        ↓
+SynrheonRuntime method
+        ↓
+OrganismState changes
+        ↓
+JSON state snapshot + trace
+        ↓
+interfaces.py
+        ↓
+Browser renders returned state
 ```
 
-No signal currently leaves the UI. No Synrheon owner receives a UI command.
+JavaScript does not own the organism state.
 
-This is **Built as a visual scaffold**, not Integrated into the organism.
+# 2. Current State Ownership
 
----
+`core.py` currently owns the minimal Stage 0B `OrganismState`.
 
-# 3. Developer Control Flow
-
-The PowerShell control script is development infrastructure, not cognition.
+It contains:
 
 ```text
-YOU
- ↓
-scripts/synrheon.ps1
- ↓
-command selector
- ├─ setup
- ├─ run
- ├─ verify
- ├─ status
- └─ context
+session_id
+status: off / paused / running
+cycle
+event_sequence
+external/internal stimulus records
+trace events
 ```
 
-## setup
+This is in-memory session state only. It is not durable memory and does not survive process restart.
+
+# 3. Current Chat Flow
 
 ```text
-you
+Chat tab
  ↓
-synrheon.ps1 setup
+POST /api/stimulus
  ↓
-find/create .venv
+interfaces.py validates transport
  ↓
-upgrade pip
+runtime.send_external_stimulus()
  ↓
-install Synrheon + dev tools
+StimulusRecord(kind="external")
+ ↓
+OrganismState
+ ↓
+snapshot
+ ↓
+Chat tab
 ```
 
-## run
+No semantic interpretation or reply generation occurs yet.
+
+# 4. Current Internal Thought Flow
 
 ```text
-you
+Internal Thought tab
  ↓
-synrheon.ps1 run
+user explicitly injects thought
  ↓
-python -m synrheon
+POST /api/thought
  ↓
-__main__.py
+interfaces.py validates transport
  ↓
-runtime.main()
+runtime.inject_internal_thought()
+ ↓
+StimulusRecord(kind="internal")
+ ↓
+OrganismState + trace
+ ↓
+snapshot
+ ↓
+Internal Thought tab
 ```
 
-## verify
+An injected thought is not presented as self-generated Synrheon cognition.
 
-```text
-you
- ↓
-synrheon.ps1 verify
- ├─ pytest
- ├─ compileall
- ├─ git diff --check
- └─ git status
-```
+The Internal Thought view also shows runtime trace events. Future structured cognitive activity can use the same observation surface.
 
-This protects engineering integrity. It is not the cognitive verification path.
-
-## status
-
-```text
-you
- ↓
-synrheon.ps1 status
- ↓
-reads Git + CURRENT_STAGE
- ↓
-prints project status
-```
-
-## context
-
-```text
-you
- ↓
-synrheon.ps1 context
- ↓
-scripts/context.ps1
- ↓
-collects Git + project-truth state
- ↓
-prints / copies / saves snapshot
- ↓
-new AI chat
-```
-
----
-
-# 4. Stage 0B Target Flow
-
-The first real organism flow should become:
-
-```text
-YOU
- ↓
-Development UI
- ↓
-command/stimulus boundary
- ↓
-THIN RUNTIME
- ↓
-current Synrheon state
- ↓
-one allowed operation
- ↓
-new Synrheon state
- ↓
-trace + state snapshot
- ↓
-runtime
- ↓
-Development UI
- ↓
-YOU inspect what actually happened
-```
-
-The exact browser-to-Python transport is not yet chosen.
-
-Whatever transport is chosen, ownership must stay:
-
-```text
-UI
-controls + displays
-
-runtime
-sequences + routes
-
-cognitive owner
-actually changes cognitive state
-```
-
----
-
-# 5. Target Stage 0B Control Signals
+# 5. Current Control Flow
 
 ## Start
 
 ```text
 UI Start
  ↓
-runtime starts organism session
+POST /api/start
  ↓
-initial state exists
+runtime.start()
  ↓
-state/trace returned to UI
+fresh OrganismState session
+status = paused
+cycle = 0
+ ↓
+session_started trace
+ ↓
+snapshot → UI
 ```
-
-## Send Stimulus
-
-```text
-UI stimulus
- ↓
-external input boundary
- ↓
-runtime receives handoff
- ↓
-appropriate owner(s) receive stimulus
- ↓
-state changes
- ↓
-trace returned
-```
-
-At Stage 0B, the cognitive transformation can still be minimal. The important thing is that the path is real and observable.
 
 ## Think One Step
 
 ```text
 UI Think One Step
  ↓
-runtime performs exactly one cognitive cycle
+POST /api/step
  ↓
-owner state changes once
+runtime.think_one_step()
  ↓
-runtime stops
+cycle += 1 exactly once
  ↓
-UI shows before/after state + trace
+cycle_advanced trace
+ ↓
+snapshot → UI
 ```
+
+This is an observable harness cycle, not real cognition yet.
 
 ## Continue
 
 ```text
 UI Continue
  ↓
-runtime repeatedly advances cognitive cycles
+POST /api/continue
  ↓
-state evolves
+status = running
  ↓
-trace accumulates
+background runtime worker
  ↓
-UI remains observable
+repeated observable cycle advancement
+ ↓
+browser polls /api/state
+ ↓
+updated cycle + trace visible
 ```
 
 ## Pause
@@ -267,37 +173,51 @@ UI remains observable
 ```text
 UI Pause
  ↓
-runtime stops future cycles
+POST /api/pause
+ ↓
+status = paused
+ ↓
+background worker stops advancing cycles
  ↓
 current state remains inspectable
 ```
 
----
+# 6. Current Ownership Boundary
 
-# 6. Future Cognitive Signal Flow — Conceptual
+```text
+UI
+controls + displays
 
-This is intended architecture, **not current implementation**. Sparse activation means not every owner participates in every cycle.
+interfaces.py
+HTTP/browser transport
+
+runtime.py
+session sequencing + control routing
+
+core.py
+minimal Synrheon-owned observable state
+```
+
+There is still no implemented memory, retrieval, semantic understanding, learning, abstraction, or autonomous cognition.
+
+# 7. Planned Cognitive Flow
+
+This remains intended architecture, not current implementation.
 
 ```text
 EXTERNAL STIMULUS
         ↓
 interfaces.py
-outside-world boundary
         ↓
 runtime.py
-sequence / route
         ↓
 time.py
-assign when + sequence
         ↓
 experience.py
-record what happened
         ↓
 core.py
-update representational/activation state
         ↓
 cognition.py
-choose useful next cognitive operation
         ↓
    ┌────┴─────────────────────┐
    ↓                          ↓
@@ -319,27 +239,23 @@ scratchpad.py                 ↓
         experience.py
               ↓
          learning.py
-              ↓
- future route/weight/usefulness change
 ```
 
-Longer-timescale flow:
+Longer timescales:
 
 ```text
 accumulated experience
         ↓
 consolidation.py
         ↓
-patterns / compressed structures
+patterns / compression
         ↓
 abstraction.py
-        ↓
-higher-order concepts
         ↓
 future cognition / retrieval / prediction
 ```
 
-Autonomous continuation:
+Autonomous continuation later becomes:
 
 ```text
 unresolved internal state
@@ -349,48 +265,14 @@ continue?
         ↓ yes
 runtime.py
         ↓
-next cognitive cycle
+next real cognitive cycle
         ↓
 cognition.py
 ```
 
----
+Stage 0B Continue must not be confused with this future autonomous decision.
 
-# 7. Ownership Flow in Plain English
-
-`interfaces.py` — What came from outside, and what goes back outside?
-
-`runtime.py` — Which owner acts now, and in what order?
-
-`time.py` — When did this happen, and where is it in sequence?
-
-`experience.py` — What happened?
-
-`core.py` — What internal things, relationships, and activation currently exist?
-
-`memory.py` — What has been retained?
-
-`retrieval.py` — What retained information is relevant now?
-
-`scratchpad.py` — What should remain immediately available in working thought?
-
-`cognition.py` — What cognitive transformation should happen next?
-
-`problem_solving.py` — What problem are we working on, what have we tried, and what variable should change next?
-
-`learning.py` — What should future cognition do differently because of this outcome?
-
-`consolidation.py` — What recurring experience should be replayed, compressed, or strengthened over time?
-
-`abstraction.py` — What useful higher-level concept or structure can be formed from repeated evidence?
-
-`autonomy.py` — Should cognition continue without another external prompt?
-
----
-
-# 8. Memory / Retrieval Flow
-
-Planned flow:
+# 8. Planned Retrieval Flow
 
 ```text
 current cue / problem
@@ -398,33 +280,18 @@ current cue / problem
 retrieval.py
 Level 1 coarse orientation
         ↓
-small relevant region
-        ↓
-Level 2 situation / episode / concept cluster
-        ↓
-smaller relevant region
+Level 2 relevant situation / episode / concept region
         ↓
 Level 3 detailed evidence / relationships
         ↓
-memory.py provides retained material
+memory.py retained material
         ↓
-scratchpad receives useful active packages
+scratchpad active packages
         ↓
-cognition uses them
+cognition.py
 ```
 
-Important:
-
-```text
-retrieval chooses what to reactivate
-memory owns what is retained
-```
-
----
-
-# 9. Problem-Solving Feedback Flow
-
-Planned flow:
+# 9. Planned Learning Flow
 
 ```text
 problem
@@ -441,113 +308,39 @@ outcome
  ↓
 prediction error
  ↓
-failure/success attribution
+causal attribution
  ↓
 learning.py
  ↓
-change usefulness / future selection
- ↓
-problem_solving.py
-changes most likely causal variable
- ↓
-new plan
+future usefulness / selection changes
 ```
 
-The goal is not:
+Failed reasoning must not automatically mark all participating memories false.
+
+# 10. Planned LLM / External Intelligence Flow
 
 ```text
-trial failed → throw everything away
-```
-
-It is:
-
-```text
-trial failed
-↓
-identify most likely wrong variable
-↓
-change that variable first
-↓
-preserve useful parts of prior reasoning
-```
-
----
-
-# 10. Learning / Consolidation Timescales
-
-Planned high-level flow:
-
-```text
-FAST
-single thought / seconds
-activation + working state
-        ↓
-SHORT
-minutes / active problem
-temporary route usefulness
-        ↓
-MEDIUM
-hours / days
-episode organization + repeated success/failure
-        ↓
-SLOW
-days / weeks
-consolidation + pattern discovery
-        ↓
-STRATEGIC
-longer term
-deeper model / representation training
-```
-
-Not every thought should rewrite the deepest model.
-
----
-
-# 11. LLM / External Intelligence Flow
-
-Planned boundary:
-
-```text
-Synrheon needs outside reasoning/language help
+Synrheon needs outside help
         ↓
 interfaces.py
         ↓
-LLM / external tool
+LLM / tool
         ↓
 candidate interpretation / information / hypothesis
         ↓
 interfaces.py
         ↓
-Synrheon evaluates and stores it under its own rules
+Synrheon evaluates and retains it under Synrheon-owned rules
 ```
 
-The LLM should not become Synrheon's persistent memory, identity owner, truth database, or only reasoning process.
+External intelligence may participate without becoming the sole persistent cognition owner.
 
----
+# 11. Trace Boundary
 
-# 12. Observable Trace Flow
+The Stage 0B trace currently records observable harness events such as session start, inputs, pause/continue, and cycle advancement.
 
-As the UI grows, each meaningful cognitive cycle should expose enough to understand:
+Later trace should expose enough structured state to understand owner handoffs and behavior without moving cognition into the UI.
 
-```text
-what triggered the step
-what owner acted
-what information it received
-what information it returned
-what state changed
-what memory/retrieval path was used
-what uncertainty existed
-what action/result occurred
-what feedback came back
-what learning changed
-```
+# 12. Maintenance Rule
 
-The trace should help answer "Why did Synrheon do that?" without placing the reasoning itself inside the UI.
-
----
-
-# 13. Maintenance Rule
-
-Update this file whenever a live call path changes, a new owner enters runtime, UI command types change, state/trace handoffs change, memory/retrieval wiring changes, learning feedback begins flowing, autonomous continuation is wired, or an LLM/tool becomes part of the real path.
-
-For every change, keep **CURRENT REAL FLOW** separate from **PLANNED FLOW**.
+Update CURRENT REAL FLOW whenever the live call path changes. Keep future architecture under PLANNED / INTENDED FLOW until the real runtime reaches it.

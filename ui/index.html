@@ -3,36 +3,249 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Synrheon Development Organism</title>
+  <title>Synrheon</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0f1115;
+      --panel: #151922;
+      --panel-2: #1b202a;
+      --line: #2a3140;
+      --text: #eef2f7;
+      --muted: #9aa5b5;
+      --accent: #8fd3c8;
+      --shadow: 0 16px 50px rgba(0,0,0,.28);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+    button, textarea { font: inherit; }
+    button { color: inherit; }
+    .app { min-height: 100vh; display: grid; grid-template-columns: 240px minmax(0, 1fr) 300px; }
+    .sidebar, .inspector { background: #11151c; border-color: var(--line); border-style: solid; }
+    .sidebar { border-width: 0 1px 0 0; padding: 22px 16px; display: flex; flex-direction: column; gap: 18px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 750; letter-spacing: .2px; }
+    .mark { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(145deg, #263443, #1c2932); border: 1px solid #344351; color: var(--accent); }
+    .status-card { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+    .status-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #5c6470; box-shadow: 0 0 0 4px rgba(255,255,255,.03); }
+    .status-dot.running { background: var(--accent); }
+    .status-dot.paused { background: #e1b56f; }
+    .tiny { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .controls { display: grid; gap: 8px; }
+    .btn { border: 1px solid var(--line); background: var(--panel-2); border-radius: 11px; padding: 10px 12px; cursor: pointer; transition: .15s ease; }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); border-color: #3a4556; }
+    .btn.primary { background: var(--accent); color: #0f1717; border-color: transparent; font-weight: 700; }
+    .btn:disabled { opacity: .42; cursor: not-allowed; }
+    .sidebar-spacer { flex: 1; }
+    .main { min-width: 0; display: flex; flex-direction: column; }
+    .topbar { min-height: 66px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: rgba(15,17,21,.88); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 5; }
+    .tabs { display: flex; gap: 6px; background: #11151c; padding: 4px; border-radius: 12px; border: 1px solid var(--line); }
+    .tab { border: 0; background: transparent; padding: 8px 12px; border-radius: 9px; cursor: pointer; color: var(--muted); }
+    .tab.active { background: var(--panel-2); color: var(--text); }
+    .stage { color: var(--muted); font-size: 13px; }
+    .view { display: none; flex: 1; min-height: 0; }
+    .view.active { display: flex; flex-direction: column; }
+    .feed { width: min(820px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 140px; display: flex; flex-direction: column; gap: 16px; }
+    .empty { margin: auto; max-width: 560px; text-align: center; color: var(--muted); padding: 60px 20px; }
+    .empty h2 { color: var(--text); margin-bottom: 8px; font-size: 22px; }
+    .message { max-width: 78%; padding: 13px 15px; border-radius: 16px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .message.user { align-self: flex-end; background: #26313c; }
+    .message.internal { align-self: stretch; max-width: none; background: var(--panel); border: 1px solid var(--line); }
+    .event { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+    .event-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 5px; }
+    .event-name { font-weight: 650; }
+    .composer-wrap { position: fixed; left: 240px; right: 300px; bottom: 0; padding: 18px 24px 24px; background: linear-gradient(180deg, rgba(15,17,21,0), rgba(15,17,21,.96) 30%); z-index: 4; }
+    .composer { max-width: 820px; margin: 0 auto; background: var(--panel-2); border: 1px solid #364052; border-radius: 18px; padding: 10px; box-shadow: var(--shadow); }
+    textarea { width: 100%; min-height: 56px; max-height: 180px; resize: vertical; background: transparent; border: 0; outline: 0; color: var(--text); padding: 8px 10px; }
+    .composer-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 4px 2px; }
+    .send { border-radius: 10px; padding: 8px 13px; }
+    .inspector { border-width: 0 0 0 1px; padding: 22px 16px; overflow: auto; }
+    .inspector h3 { margin: 0 0 14px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .metric { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(42,49,64,.65); }
+    .metric span:first-child { color: var(--muted); }
+    .state-json { margin-top: 16px; padding: 12px; border-radius: 12px; background: #0c0f14; border: 1px solid var(--line); overflow: auto; font-size: 11px; line-height: 1.5; color: #b7c1ce; max-height: 52vh; }
+    .error { position: fixed; top: 78px; left: 50%; transform: translateX(-50%); background: #3a2023; border: 1px solid #6d343a; color: #ffd8dc; padding: 10px 14px; border-radius: 10px; z-index: 20; display: none; }
+    @media (max-width: 1050px) { .app { grid-template-columns: 210px minmax(0,1fr); } .inspector { display: none; } .composer-wrap { left: 210px; right: 0; } }
+    @media (max-width: 720px) { .app { grid-template-columns: 1fr; } .sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: 12px; } .controls { grid-template-columns: repeat(4, 1fr); } .status-card, .sidebar-spacer, .sidebar .tiny { display: none; } .composer-wrap { left: 0; right: 0; padding: 12px; } .topbar { padding: 0 12px; } .stage { display: none; } }
+  </style>
 </head>
 <body>
-  <main>
-    <h1>Synrheon Development Organism</h1>
-    <p>Stage 0B scaffold. Live controls and state inspection are not implemented yet.</p>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="mark">S</div><div>Synrheon</div></div>
+      <div class="status-card">
+        <div class="status-row"><strong id="statusText">Offline</strong><span id="statusDot" class="status-dot"></span></div>
+        <div id="sessionText" class="tiny" style="margin-top:8px;">No live session</div>
+      </div>
+      <div class="controls">
+        <button id="startBtn" class="btn primary">Start Synrheon</button>
+        <button id="stepBtn" class="btn" disabled>Think One Step</button>
+        <button id="continueBtn" class="btn" disabled>Continue</button>
+        <button id="pauseBtn" class="btn" disabled>Pause</button>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="tiny">Stage 0B · Observable Organism Harness<br>UI controls and observes. Cognition will remain in Synrheon owners.</div>
+    </aside>
 
-    <section>
-      <h2>Controls</h2>
-      <button disabled>Start</button>
-      <button disabled>Think One Step</button>
-      <button disabled>Continue</button>
-      <button disabled>Pause</button>
-    </section>
+    <main class="main">
+      <header class="topbar">
+        <div class="tabs">
+          <button class="tab active" data-view="chat">Chat</button>
+          <button class="tab" data-view="thought">Internal Thought</button>
+        </div>
+        <div class="stage">Connected development organism</div>
+      </header>
 
-    <section>
-      <h2>Stimulus</h2>
-      <textarea disabled placeholder="Send stimulus to Synrheon"></textarea>
-      <button disabled>Send</button>
-    </section>
+      <section id="chatView" class="view active"><div id="chatFeed" class="feed"></div></section>
+      <section id="thoughtView" class="view"><div id="thoughtFeed" class="feed"></div></section>
 
-    <section>
-      <h2>Current State</h2>
-      <pre>Not connected.</pre>
-    </section>
+      <div class="composer-wrap">
+        <div class="composer">
+          <textarea id="composerInput" placeholder="Start Synrheon to send a message..." disabled></textarea>
+          <div class="composer-actions">
+            <span id="composerHint" class="tiny">External stimulus → runtime</span>
+            <button id="sendBtn" class="btn primary send" disabled>Send</button>
+          </div>
+        </div>
+      </div>
+    </main>
 
-    <section>
-      <h2>Trace</h2>
-      <pre>No cognitive trace yet.</pre>
-    </section>
-  </main>
+    <aside class="inspector">
+      <h3>Organism State</h3>
+      <div class="metric"><span>Status</span><strong id="metricStatus">off</strong></div>
+      <div class="metric"><span>Cycle</span><strong id="metricCycle">0</strong></div>
+      <div class="metric"><span>Events</span><strong id="metricEvents">0</strong></div>
+      <div class="metric"><span>Inputs</span><strong id="metricInputs">0</strong></div>
+      <pre id="stateJson" class="state-json">{}</pre>
+    </aside>
+  </div>
+
+  <div id="errorToast" class="error"></div>
+
+  <script>
+    let currentView = "chat";
+    let state = {session_id:null,status:"off",cycle:0,event_sequence:0,stimuli:[],trace:[]};
+    const $ = (id) => document.getElementById(id);
+
+    async function api(path, options = {}) {
+      const response = await fetch(path, {headers: {"Content-Type": "application/json"}, ...options});
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Synrheon request failed.");
+      if (data.state) { state = data.state; render(); }
+      return data;
+    }
+
+    async function refreshState() {
+      try { await api("/api/state"); } catch (error) { showError("Backend connection lost."); }
+    }
+
+    async function command(path, body = {}) {
+      try { await api(path, {method:"POST", body: JSON.stringify(body)}); } catch (error) { showError(error.message); }
+    }
+
+    function showError(message) {
+      const toast = $("errorToast");
+      toast.textContent = message;
+      toast.style.display = "block";
+      clearTimeout(showError.timer);
+      showError.timer = setTimeout(() => toast.style.display = "none", 3000);
+    }
+
+    function render() {
+      const statusLabel = state.status === "off" ? "Offline" : state.status === "running" ? "Running" : "Paused";
+      $("statusText").textContent = statusLabel;
+      $("statusDot").className = `status-dot ${state.status}`;
+      $("sessionText").textContent = state.session_id ? `Session ${state.session_id.slice(0,8)}` : "No live session";
+      $("metricStatus").textContent = state.status;
+      $("metricCycle").textContent = state.cycle;
+      $("metricEvents").textContent = state.event_sequence;
+      $("metricInputs").textContent = state.stimuli.length;
+      $("stateJson").textContent = JSON.stringify(state, null, 2);
+
+      const started = state.status !== "off";
+      $("startBtn").textContent = started ? "Restart Session" : "Start Synrheon";
+      $("stepBtn").disabled = state.status !== "paused";
+      $("continueBtn").disabled = state.status !== "paused";
+      $("pauseBtn").disabled = state.status !== "running";
+      $("composerInput").disabled = !started;
+      $("sendBtn").disabled = !started;
+      $("composerInput").placeholder = !started ? "Start Synrheon to send a message..." : currentView === "chat" ? "Message Synrheon..." : "Inject an internal thought...";
+      $("composerHint").textContent = currentView === "chat" ? "External stimulus → runtime" : "Injected thought → internal stimulus channel";
+      renderChat();
+      renderThought();
+    }
+
+    function renderChat() {
+      const feed = $("chatFeed");
+      const external = state.stimuli.filter(item => item.kind === "external");
+      if (!external.length) {
+        feed.innerHTML = `<div class="empty"><h2>Synrheon Chat</h2><div>External conversation will appear here. Stage 0B records real user stimuli, but no language-response cognition is implemented yet.</div></div>`;
+        return;
+      }
+      feed.innerHTML = external.map(item => `<div class="message user">${escapeHtml(item.text)}</div>`).join("");
+    }
+
+    function renderThought() {
+      const feed = $("thoughtFeed");
+      const internal = state.stimuli.filter(item => item.kind === "internal");
+      const items = [
+        ...internal.map(item => ({sequence:item.sequence, kind:"injection", text:item.text, created_at:item.created_at})),
+        ...state.trace.map(item => ({sequence:item.sequence, kind:"trace", event:item.event, text:item.detail, created_at:item.created_at}))
+      ].sort((a,b) => a.sequence - b.sequence);
+
+      if (!items.length) {
+        feed.innerHTML = `<div class="empty"><h2>Internal Thought</h2><div>This view is wired for runtime trace and explicit thought injection. Future cognitive owners can publish structured internal activity here without moving cognition into the UI.</div></div>`;
+        return;
+      }
+
+      feed.innerHTML = items.map(item => {
+        if (item.kind === "injection") return `<div class="message internal"><div class="tiny">Injected thought · #${item.sequence}</div>${escapeHtml(item.text)}</div>`;
+        return `<div class="event"><div class="event-head"><span class="event-name">${escapeHtml(item.event)}</span><span class="tiny">#${item.sequence}</span></div><div>${escapeHtml(item.text)}</div></div>`;
+      }).join("");
+    }
+
+    function escapeHtml(value) {
+      const div = document.createElement("div");
+      div.textContent = value ?? "";
+      return div.innerHTML;
+    }
+
+    async function sendComposer() {
+      const input = $("composerInput");
+      const text = input.value.trim();
+      if (!text) return;
+      const path = currentView === "chat" ? "/api/stimulus" : "/api/thought";
+      await command(path, {text});
+      input.value = "";
+      input.focus();
+    }
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        currentView = tab.dataset.view;
+        document.querySelectorAll(".tab").forEach(item => item.classList.toggle("active", item === tab));
+        $("chatView").classList.toggle("active", currentView === "chat");
+        $("thoughtView").classList.toggle("active", currentView === "thought");
+        render();
+      });
+    });
+
+    $("startBtn").addEventListener("click", () => {
+      if (state.status !== "off" && !confirm("Start a fresh Synrheon session? Current Stage 0B session state will be cleared.")) return;
+      command("/api/start");
+    });
+    $("stepBtn").addEventListener("click", () => command("/api/step"));
+    $("continueBtn").addEventListener("click", () => command("/api/continue"));
+    $("pauseBtn").addEventListener("click", () => command("/api/pause"));
+    $("sendBtn").addEventListener("click", sendComposer);
+    $("composerInput").addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); sendComposer(); }
+    });
+
+    render();
+    refreshState();
+    setInterval(refreshState, 600);
+  </script>
 </body>
 </html>
