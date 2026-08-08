@@ -14,21 +14,19 @@ The first Stage 1 increment now targets four separable substrate layers:
 
 ```text
 Layer 1 — Concept Identity
-What is this?
-
 Layer 2 — World Relations
-How can things relate in general?
-
 Layer 3 — Current Activation / Situation
-What is active now?
-
 Layer 4 — Organism Relation
-What does this mean to Synrheon?
 ```
 
-The organism-relative layer is intentionally distinct from generic world knowledge.
+Layer 4 is not one blended personal score. Each concept has two permanently separate organism-relative vectors:
 
-Initial self-relation dimensions:
+```text
+injected_self_vector
+self_learned_vector
+```
+
+Both use these initial dimensions:
 
 ```text
 ownership
@@ -44,20 +42,11 @@ preference
 uncertainty
 ```
 
-Every world/self relation preserves provenance such as:
-
-```text
-injected
-observed
-inferred
-learned
-```
-
-Injected information must never silently become "learned."
+Injected self scaffolding may seed the first vector. Only experience-based learning may update the second. Later activation can combine both without losing their provenance.
 
 ## Sequencing Foundation Pulled Forward
 
-Because computational time is foundational and the current design needs a memory thread, the current Stage 1 work also introduces a narrow Stage 2 foundation:
+Because computational time is foundational and the design needs a memory thread, this Stage 1 increment also introduces a narrow Stage 2 foundation:
 
 ```text
 meaningful event
@@ -71,15 +60,14 @@ previous / next event links
 current-episode experience thread
 ```
 
-This does **not** mean Stage 2 is complete.
-
-The current thread is in-memory only and does not survive process restart.
+This does **not** mean Stage 2 is complete. The current thread is in-memory only and does not survive process restart.
 
 ## Implemented in the Current Candidate
 
 - `Concept`, `WorldRelation`, `SelfRelation`, `SelfRelationVector`, and `ActivationState`
-- explicit separation of world knowledge, self-relative knowledge, and activation
-- confidence-weighted self-vector update equation with evidence lineage
+- separate generic world state, injected self state, self-learned state, and current activation
+- confidence-weighted update of the **learned** self vector only
+- learned evidence-event lineage and learned confidence
 - Knowledge UI for explicit concept/world/self injection
 - computational episode time and monotonic experience sequence
 - ordered `ExperienceThread` with previous/next links
@@ -89,9 +77,7 @@ The current thread is in-memory only and does not survive process restart.
 
 ## What Is Still Missing
 
-Stage 1 is not complete.
-
-There is still no implemented:
+Stage 1 is not complete. There is still no implemented:
 
 - automatic language-to-concept interpretation
 - recurrent spreading activation
@@ -106,18 +92,20 @@ There is still no implemented:
 
 ## Immediate Next Cognitive Boundary
 
-After this candidate is live-verified, the next Stage 1 mechanism should be the sparse activation update that combines:
+After this candidate is live-verified, the next Stage 1 mechanism should be sparse activation that combines:
 
 ```text
 world relation support
 +
 current context
 +
-organism-relative relevance
+injected self relevance
++
+self-learned relevance
 -
 competition
 -
 decay
 ```
 
-and exposes the winning active concepts through the verified Internal Thought surface.
+and exposes the winning active concepts through Internal Thought.
