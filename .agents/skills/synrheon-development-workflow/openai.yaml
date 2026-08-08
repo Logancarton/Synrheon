@@ -1,0 +1,7 @@
+interface:
+  display_name: "Synrheon Development Workflow"
+  short_description: "UI-first live-organism cognitive development"
+  default_prompt: "Use $synrheon-development-workflow to review Synrheon broad-to-narrow, prove behavior through the running UI/runtime organism, implement in the correct owner, and synchronize project truth."
+
+policy:
+  allow_implicit_invocation: true

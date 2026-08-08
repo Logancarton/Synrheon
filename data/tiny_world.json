@@ -1,0 +1,34 @@
+{
+  "purpose": "Future deterministic Stage 1/2 experiment fixture",
+  "concepts": [
+    "Logan",
+    "Daisy",
+    "person",
+    "dog",
+    "walk",
+    "leash",
+    "door"
+  ],
+  "relationships": [
+    [
+      "Logan",
+      "IS_A",
+      "person"
+    ],
+    [
+      "Daisy",
+      "IS_A",
+      "dog"
+    ],
+    [
+      "Logan",
+      "OWNS",
+      "Daisy"
+    ],
+    [
+      "Daisy",
+      "LIKES",
+      "walk"
+    ]
+  ]
+}
