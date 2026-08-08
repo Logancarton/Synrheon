@@ -6,60 +6,73 @@
 
 ## Current Goal
 
-Create the first running Synrheon development organism before implementing deeper cognitive stages.
+Finish verification of the first connected Synrheon development organism before Stage 1 cognition begins.
 
-The organism should provide a thin runtime and a development UI capable of:
+The repository now contains the intended Stage 0B product shell:
 
 ```text
+Chat
+Internal Thought
 Start
-Send Stimulus
 Think One Step
 Continue
 Pause
-Inspect Current State
-Inspect Trace
+Current State
+Trace
 ```
 
-The first version does not need sophisticated cognition.
-
-Its purpose is to establish the live observation and testing path that every later cognitive mechanism will use.
-
-## Why This Comes First
-
-Automated pass/fail tests can prove that code paths behave as asserted while still failing to demonstrate that Synrheon functions coherently as one organism.
-
-The live runtime/UI therefore becomes the primary laboratory.
-
-Later cognitive stages should be tested by:
+The implemented path is:
 
 ```text
-real stimulus
-    ↓
-live runtime
-    ↓
-actual owner state change
-    ↓
-observable UI / trace
-    ↓
-real outcome
+browser
+ ↓
+HTTP boundary
+ ↓
+thin runtime
+ ↓
+Synrheon-owned session state
+ ↓
+state change + trace
+ ↓
+browser
 ```
 
-Automated tests preserve contracts after the real behavior is understood.
+Chat input and injected internal thought use distinct runtime channels.
 
-## Architecture Boundary
+## What Stage 0B Does Not Claim
 
-This stage is **Infrastructure**.
+Stage 0B is **Infrastructure**.
 
-It should not be described as cognitive improvement.
+It does not implement:
 
-The UI observes and controls Synrheon.
+- semantic understanding
+- language response generation
+- durable memory
+- retrieval
+- learning
+- abstraction
+- problem solving
+- autonomous cognition
 
-The runtime sequences owners.
+`Continue` only advances the observable harness cycle until future cognitive owners exist.
 
-Neither should become the primary owner of cognition.
+## Remaining Exit Condition
 
-## Exit Condition
+Before Stage 0B becomes `Verified`, run the application through the supported local entrypoint and inspect it in the browser:
 
-Stage 0B is complete when a developer can start Synrheon, apply a stimulus, advance cognition one step at a time or continuously, pause it, and inspect the organism's current state and trace through the supported development surface.
+```powershell
+.\scripts\synrheon.ps1 run
+```
 
-Verification must include actually running the organism, not only tests.
+Verify that:
+
+- the browser opens the Synrheon development application
+- Start creates a real session
+- Chat sends an external stimulus
+- Internal Thought injects a distinct internal stimulus
+- Think One Step increments exactly once
+- Continue advances cycles
+- Pause stops further cycle advancement
+- state and trace visibly match those actions
+
+Automated regression tests protect the path but do not replace this live-browser observation.
