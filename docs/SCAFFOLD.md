@@ -87,7 +87,7 @@ For a new human or coding-agent session:
 ```text
 README.md
     ↓
-docs/PROJECT_GUIDE.md      ← plain-English owner's manual
+docs/PROJECT_GUIDE.md
     ↓
 AGENTS.md
     ↓
@@ -117,7 +117,7 @@ relevant tests / live organism
 # Root Ownership
 
 ## `README.md`
-Project purpose, cognitive vision, and long-term hypothesis.
+Project purpose, cognitive vision, and current implementation boundary.
 
 ## `AGENTS.md`
 Short AI entry point that directs agents to the steward/workflow/project truth.
@@ -133,7 +133,7 @@ Generated/local files Git should not save.
 # Agent Ownership
 
 ## `agent/ARCHITECTURE_STEWARD.md`
-How the primary development agent should think: broad-to-narrow, correct ownership, UI-first/live-organism proof, honest status.
+How the primary development agent should think: broad-to-narrow, correct ownership, live-organism proof, honest status.
 
 ## `.agents/skills/synrheon-development-workflow/SKILL.md`
 Single canonical execution workflow for material Synrheon work.
@@ -149,17 +149,13 @@ Thin Claude Code adapter pointing back to the canonical skill.
 # Documentation Ownership
 
 ## `docs/PROJECT_GUIDE.md`
-**Question:** What does every important file/piece mean in ordinary language?
-
-Human-readable owner's manual. Update when file responsibility or meaningful internal structure changes.
+Plain-English owner's manual. Update when file responsibility or meaningful internal structure changes.
 
 ## `docs/SIGNAL_FLOW.md`
-**Question:** How does information actually move through Synrheon?
-
-Owns current real flow plus clearly labeled planned flow. Update whenever runtime/UI/owner-to-owner wiring changes.
+Current real information flow plus clearly labeled planned flow. Update whenever runtime/UI/owner-to-owner wiring changes.
 
 ## `docs/ARCHITECTURE_PLAN.md`
-**Question:** What should eventually exist and in what dependency order?
+Future architecture and cognitive dependency order.
 
 Current broad order:
 
@@ -193,25 +189,15 @@ Continuous Autonomous Cognition
 External Intelligence + Tools
 ```
 
+A narrow later-stage mechanism may be pulled forward when the current stage fundamentally depends on it; implementation status must still describe that partial truth accurately.
+
 ## `docs/IMPLEMENTATION_STATUS.md`
-**Question:** What actually exists and works?
-
-Status vocabulary:
-
-```text
-Not Started
-Designed
-Built
-Integrated
-Verified
-```
+What is Not Started, Designed, Built, Integrated, or Verified.
 
 `Verified` requires real organism behavior/state/trace evidence, not tests alone.
 
 ## `docs/CURRENT_STAGE.md`
-**Question:** What are we working on now?
-
-Current: **Stage 0B — Observable Organism Harness**.
+Current: **Stage 1 — Cognitive Substrate + First Sparse Activation**.
 
 ## `docs/DECISIONS.md`
 Durable architecture choices already made.
@@ -233,46 +219,82 @@ This structural map and ownership key.
 # Actual Organism Ownership
 
 ## `src/synrheon/runtime.py`
-Thin sequencing/integration layer. May route and sequence; must not become primary cognition owner.
+Thin sequencing/integration layer. May route and sequence owners; must not become the primary cognition owner.
+
+Current textual stimulus handoff:
+
+```text
+record time / experience / stimulus
+        ↓
+invoke cognition.activate_from_text()
+        ↓
+store returned CognitiveFrame
+        ↓
+return state
+```
+
+Runtime does not perform sparse-activation mathematics.
 
 ## `src/synrheon/core.py`
-Lowest substrate: concepts, connections, activation, cognitive state.
+Lowest substrate representations:
+- concepts
+- world relations
+- open-ended organism relations
+- current activation
+- observable activation contributions / cognitive frames
+- top-level organism state
+
+## `src/synrheon/cognition.py`
+Current-state → next-state cognitive transformation owner.
+
+Current first live mechanism:
+
+```text
+known lexical cue
+↓
+directed world-relation spread
+↓
+open organism-relation salience
+↓
+decay + inhibition
+↓
+bounded Top-K active region
+```
+
+This is real cognitive state change. The lexical bridge is not semantic language understanding.
 
 ## `src/synrheon/time.py`
 Computational time/sequence owner.
 
 ## `src/synrheon/experience.py`
-Autobiographical events and evidence lineage.
+Autobiographical events, ordering, and evidence lineage.
 
 ## `src/synrheon/memory.py`
-Durable retained knowledge/experience. Keep existence, strength, and current activation separate.
+Future durable retained knowledge/experience. Keep existence, strength, and current activation separate.
 
 ## `src/synrheon/retrieval.py`
-Level 1 → Level 2 → Level 3 relevance/reconstruction owner.
+Future Level 1 → Level 2 → Level 3 relevance/reconstruction owner.
 
 ## `src/synrheon/scratchpad.py`
-Limited RAM-like working context.
-
-## `src/synrheon/cognition.py`
-Current-state → next-state cognitive transformation owner.
+Future limited RAM-like working context.
 
 ## `src/synrheon/problem_solving.py`
-Problem/model/plan/prediction/trial/outcome/failure-attribution/revised-plan/solution/lesson owner.
+Future problem/model/plan/prediction/trial/outcome/failure-attribution/revised-plan/solution/lesson owner.
 
 ## `src/synrheon/learning.py`
-Prediction error, route usefulness, credit assignment, future adaptation.
+Future broader prediction error, route usefulness, credit assignment, and adaptation. The narrow arbitrary organism-relation update currently remains with its substrate representation.
 
 ## `src/synrheon/consolidation.py`
-Replay, repeated-pattern detection, strategic compression, evidence lineage.
+Future replay, repeated-pattern detection, strategic compression, evidence lineage.
 
 ## `src/synrheon/abstraction.py`
-Useful higher-order representation formation.
+Future useful higher-order representation formation.
 
 ## `src/synrheon/autonomy.py`
-Whether/why cognition continues without new external input.
+Future decision whether/why cognition continues without new external input.
 
 ## `src/synrheon/interfaces.py`
-Boundary to user/LLMs/tools/vision/audio/web/code. External systems contribute; they do not own persistent cognition.
+Boundary to user/LLMs/tools/vision/audio/web/code. Validates transport and calls runtime; does not own cognition.
 
 ## `src/synrheon/__main__.py`
 Application/developer entry point; delegates to runtime.
@@ -286,19 +308,20 @@ Package identity/version. Keep small.
 
 `ui/` is Synrheon's development microscope/control surface.
 
-Initial Stage 0B targets:
+Current live surfaces:
 
 ```text
-Start
-Send Stimulus
-Think One Step
-Continue
-Pause
-Inspect Current State
-Inspect Trace
+Start / Step / Continue / Pause
+Chat stimulus
+Internal Thought injection
+Knowledge injection
+Cognitive activation cards
+Experience thread
+Activation contribution paths
+Current state / trace
 ```
 
-The UI must not own cognition.
+The UI must not own cognition. It displays the `CognitiveFrame` returned from Python rather than calculating winners itself.
 
 ---
 
@@ -307,6 +330,15 @@ The UI must not own cognition.
 `tests/` protects discovered behavior/contracts.
 
 Prefer meaningful owner behavior, cross-owner integration, runtime reachability, and live-organism evidence over large numbers of trivial tests.
+
+Current sparse-activation regression must prove at least:
+- two unrelated concept networks use the same mechanism
+- open-ended organism relations are not enumerated
+- unrelated concepts are suppressed
+- Top-K bounds activation
+- unknown cues fail safely
+- stored knowledge is not mutated by thinking
+- Chat reaches cognition through runtime/API
 
 ---
 
@@ -329,14 +361,16 @@ Main developer command:
 .\scripts\synrheon.ps1 context
 ```
 
+`verify` runs pytest, compileall, `git diff --check`, and Git status. Live cognitive verification still requires observing the organism.
+
 ## `scripts/context.ps1`
-Generates a repository/context snapshot for a new AI thread; supports printing, `-Copy`, and `-OutFile`.
+Generates a repository/context snapshot for a new AI thread.
 
 ## `scripts/run.ps1`
-Tiny wrapper for `synrheon.ps1 run`.
+Run shortcut.
 
 ## `scripts/verify.ps1`
-Tiny wrapper for `synrheon.ps1 verify`.
+Verification shortcut.
 
 ---
 
@@ -347,7 +381,7 @@ WHY THE PROJECT EXISTS
 README.md
 
 HOW THE AI SHOULD THINK
-a gent/ARCHITECTURE_STEWARD.md
+agent/ARCHITECTURE_STEWARD.md
 
 HOW WORK SHOULD BE EXECUTED
 .agents/skills/synrheon-development-workflow/SKILL.md
@@ -382,20 +416,17 @@ docs/PROMPT_TEMPLATES.md
 WHERE EVERYTHING IS
 docs/SCAFFOLD.md
 
-WHAT ACTUALLY THINKS
-src/synrheon/*.py
+WHAT OWNS CURRENT ACTIVATION TRANSFORMATION
+src/synrheon/cognition.py
+
+WHAT OWNS BASIC COGNITIVE STATE
+src/synrheon/core.py
 
 WHAT SEQUENCES THE ORGANISM
 src/synrheon/runtime.py
 
 WHAT LETS YOU WATCH / CONTROL IT
 ui/
-
-WHAT COMMAND YOU USE LOCALLY
-scripts/synrheon.ps1
-
-WHAT CREATES A NEW-CHAT REPOSITORY SNAPSHOT
-scripts/context.ps1
 ```
 
 ---

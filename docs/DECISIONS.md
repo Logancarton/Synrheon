@@ -154,3 +154,33 @@ Meaningful current-process events receive:
 This creates an autobiographical thread for live cognition.
 
 It does not become durable memory until a later memory owner persists and retrieves it across process restart.
+
+## D016 — Sparse Activation Uses General Mechanics, Not Stimulus Rules
+
+The first live activation mechanism belongs in `cognition.py` and operates over data already owned by the substrate.
+
+Its generic sequence is:
+
+```text
+textual experience
+        ↓
+known-concept lexical cues
+        ↓
+directed world-relation spread
+        ↓
+organism-relative salience for already-reached concepts
+        ↓
+decay + competition
+        ↓
+bounded Top-K active region
+```
+
+No production branch may name a domain example such as Daisy, violin, dog, walk, or any particular organism-relation type.
+
+The initial lexical cue matcher is explicitly a bootstrap interface between text and already-known concept identities. It is not claimed as semantic language understanding and should later be replaced or augmented by a learned language/perception mechanism without moving activation ownership out of `cognition.py`.
+
+Organism relation names remain uninterpreted by this first activation mechanism. Their stored `strength × confidence` contributes generic personal salience only after a concept has already been reached by the current stimulus/world spread. This prevents highly self-relevant but unrelated concepts from globally activating.
+
+World-relation fan-out is normalized before spreading so high-degree source concepts do not gain unlimited total influence merely because they have many outgoing edges.
+
+Current activation is transient state. The activation mechanism must not rewrite world knowledge, injected organism relations, learned organism relations, or experience provenance.

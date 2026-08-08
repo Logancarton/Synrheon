@@ -1,6 +1,6 @@
 # Synrheon Development UI
 
-The UI is Synrheon's development microscope and control surface. Stage 0B remains the verified frontend/backend/runtime foundation; Stage 1 adds observable substrate state without moving cognition into JavaScript.
+The UI is Synrheon's development microscope and control surface. Stage 0B remains the verified frontend/backend/runtime foundation; the current Stage 1 candidate now exposes real sparse cognitive activation without moving cognition into JavaScript.
 
 Current views:
 
@@ -12,33 +12,37 @@ Knowledge
 
 ## Chat
 
-Chat sends external user stimuli through the real Python boundary. Each accepted Chat stimulus also becomes an autobiographical `ExperienceEvent` with `origin = observed`, an episode-relative sequence number, and before/after linkage.
+Chat sends external user stimuli through the real Python boundary. Each accepted stimulus becomes an autobiographical `ExperienceEvent(origin="observed")` and is then routed by runtime into `cognition.py`.
 
-No fake conversational reply is generated.
+Chat now displays a **Cognitive activation** card after each message:
+- matched known concept cue(s)
+- bounded sparse active winners and activation values
+- an explicit unmatched state when no known concept cue exists
+
+No fake conversational reply is generated. The visible result is the organism's actual activation state.
 
 ## Internal Thought
 
-Internal Thought sends explicit injections through `/api/thought`. Those events become `origin = injected`, not self-generated thought.
+Internal Thought sends explicit injections through `/api/thought`. Those events remain `origin = injected`, not self-generated thought.
 
-The view displays the ordered current-episode experience thread together with runtime trace, including experience sequence, provenance, previous/next links, and elapsed episode time.
+The view displays:
+- ordered current-episode experience thread
+- cognitive activation frames
+- recent world/organism activation contributions
+- runtime trace
 
-This is an observable memory thread, not durable memory across process restart.
+This is inspectable state-transition evidence, not hidden chain-of-thought and not durable memory across process restart.
 
 ## Knowledge
 
 The Knowledge tab provides explicit developer scaffolding for:
-
 - concepts
 - world relations
 - injected organism relations
 
 World knowledge, injected organism state, self-learned organism state, and current activation are separate backend representations.
 
-The Self Relation form uses a free-text **Relation type** field. The UI does not provide a fixed dropdown or an allowed ontology. A relation such as `protective_of` can be injected without changing production code.
-
-The form writes only the injected organism-relation collection. There is intentionally no control that lets a developer directly label data as self-learned. Learned organism relations can only be changed by the learning mechanism when trusted experience evidence exists.
-
-The substrate JSON displays injected and learned relation collections separately so their provenance remains inspectable.
+The Self Relation form uses a free-text **Relation type** field. The UI does not impose a fixed ontology. It writes only injected organism relations; there is no control that directly manufactures self-learned state.
 
 ## Controls
 
@@ -49,14 +53,14 @@ Continue
 Pause
 ```
 
-All controls call Python. JavaScript does not own organism state transitions.
+All controls call Python. `Think One Step` and `Continue` still advance the harness cycle only; they do not yet produce stimulus-free autonomous cognition.
 
 ## Inspector
 
-The right-side inspector shows status, cycle, trace-event count, experience count, concept count, and the complete backend state snapshot.
+The inspector shows status, cycle, trace-event count, experience count, concept count, **active concept count**, and the complete backend state snapshot.
 
 ## Boundary Rule
 
 The UI controls, injects explicit scaffolding, and observes.
 
-It must not own semantic interpretation, relation discovery, sparse activation, retrieval, durable memory, learning, abstraction, or problem solving.
+It must not own lexical/semantic interpretation, sparse activation, relation discovery, retrieval, durable memory, learning, abstraction, problem solving, or response generation.
