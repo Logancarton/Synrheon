@@ -59,17 +59,68 @@ Interpretation: Stage 0B successfully provides the observable development organi
 
 Status: **Verified**
 
-## E001 — Cognitive Substrate
+## E001 — World / Self / Activation Separation
 
-Can Synrheon represent a tiny world of concepts and relationships and transform activation/state without stimulus-specific logic?
+Hypothesis: Synrheon can represent generic world knowledge, organism-relative knowledge, and current activation as separate state so later sparse activation can use self relevance without rewriting world truth.
 
-Status: Active next experiment; not yet pre-registered or run.
+Pre-registered setup:
 
-## E002 — Sequence Reconstruction
+```text
+Concepts:
+Daisy
+dog
 
-Can Synrheon identify what occurred immediately before or after another event?
+Injected world relation:
+Daisy IS_A dog
 
-Status: Future
+Injected self relation:
+Daisy.social = 0.8
+
+Current activation:
+Daisy = 1.0
+```
+
+Baseline: before this change `core.py` has only Stage 0B session/stimulus/trace state. There is no concept substrate, world/self distinction, explicit self vector, or activation state.
+
+Expected result:
+- `Daisy IS_A dog` remains world knowledge with `origin = injected`
+- `Daisy.social` remains a separate self relation with `origin = injected`
+- activation is stored separately from both
+- later self-learning may update a self vector from evidence without mutating the injected world relation
+- malformed references fail without mutating unrelated state
+
+Failure means world/self provenance is merged, activation overwrites stored knowledge, or self-learning rewrites generic world truth.
+
+Status: Pre-registered; implementation pending.
+
+## E002 — Ordered Experience Thread
+
+Hypothesis: every meaningful external or explicitly injected internal event can receive an episode coordinate and explicit before/after links without pretending that current-episode experience is durable memory.
+
+Pre-registered live stimulus:
+
+```text
+Start
+Chat: "Daisy came to the door"
+Internal Thought injection: "Consider whether Daisy expects a walk"
+```
+
+Baseline: Stage 0B records stimuli and trace events, but there is no separate autobiographical event thread, episode sequence, elapsed time, or previous/next event linkage.
+
+Expected result:
+- Chat event is recorded as `origin = observed`
+- Internal Thought injection is recorded as `origin = injected`
+- experience sequence is exactly `1 → 2`
+- event 1 points forward to event 2
+- event 2 points back to event 1
+- both stimulus records link to their experience event IDs
+- the Internal Thought/UI state exposes the thread
+- restarting a session begins a new episode thread
+- no claim of durable cross-process memory is made
+
+Failure means provenance collapses, ordering is ambiguous, links disagree, or the thread is created only in JavaScript/tests.
+
+Status: Pre-registered; implementation pending.
 
 ## E003 — Temporal Retrieval
 
