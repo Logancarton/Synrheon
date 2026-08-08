@@ -94,13 +94,13 @@ def test_substrate_keeps_world_self_and_activation_separate() -> None:
 
     snapshot = substrate.snapshot()
     assert snapshot["world_relations"][0]["origin"] == "injected"
-    assert snapshot["self_relations"][0]["origin"] == "injected"
-    assert snapshot["self_relations"][0]["vector"]["social"] == 0.8
+    assert snapshot["self_relations"][0]["injected"]["vector"]["social"] == 0.8
+    assert snapshot["self_relations"][0]["learned"]["vector"]["social"] == 0.0
     assert snapshot["activation"] == {"daisy": 1.0}
     assert snapshot["concepts"][0]["world_vector"] == []
 
 
-def test_self_learning_updates_explicit_vector_without_rewriting_world_knowledge() -> None:
+def test_self_learning_updates_explicit_vector_without_rewriting_injected_or_world_knowledge() -> None:
     substrate = CognitiveSubstrate()
     substrate.add_concept(Concept("daisy", "Daisy"))
     substrate.add_concept(Concept("dog", "dog"))
@@ -110,7 +110,14 @@ def test_self_learning_updates_explicit_vector_without_rewriting_world_knowledge
     substrate.add_world_relation(
         WorldRelation("daisy", "IS_A", "dog", origin="injected", confidence=1.0)
     )
+    substrate.set_injected_self_relation(
+        concept_id="daisy",
+        dimension="social",
+        value=0.8,
+        confidence=0.9,
+    )
     before_world = substrate.snapshot()["world_relations"]
+    before_injected = substrate.snapshot()["self_relations"][0]["injected"]
 
     learned = substrate.learn_self_relation(
         concept_id="daisy",
@@ -120,13 +127,14 @@ def test_self_learning_updates_explicit_vector_without_rewriting_world_knowledge
         evidence_event_id="experience-1",
     )
 
-    assert learned.origin == "learned"
-    assert learned.vector.experience == pytest.approx(0.4)
-    assert learned.vector.social == pytest.approx(0.32)
-    assert learned.vector.prediction == pytest.approx(0.24)
-    assert learned.confidence == pytest.approx(0.4)
-    assert learned.evidence_event_ids == ["experience-1"]
+    assert learned.injected_vector.social == 0.8
+    assert learned.learned_vector.experience == pytest.approx(0.4)
+    assert learned.learned_vector.social == pytest.approx(0.32)
+    assert learned.learned_vector.prediction == pytest.approx(0.24)
+    assert learned.learned_confidence == pytest.approx(0.4)
+    assert learned.learned_evidence_event_ids == ["experience-1"]
     assert substrate.snapshot()["world_relations"] == before_world
+    assert substrate.snapshot()["self_relations"][0]["injected"] == before_injected
 
 
 def test_runtime_controls_require_start_and_reject_empty_input() -> None:
@@ -187,7 +195,7 @@ def test_http_boundary_reaches_runtime_thread_and_substrate() -> None:
         stepped = post("/api/step")
 
         assert related["state"]["cognitive_substrate"]["world_relations"][0]["origin"] == "injected"
-        assert self_related["state"]["cognitive_substrate"]["self_relations"][0]["vector"]["social"] == 0.9
+        assert self_related["state"]["cognitive_substrate"]["self_relations"][0]["injected"]["vector"]["social"] == 0.9
         assert chatted["state"]["experience_thread"]["events"][-1]["origin"] == "observed"
         assert thought["state"]["experience_thread"]["events"][-1]["origin"] == "injected"
         assert stepped["state"]["cycle"] == 1
