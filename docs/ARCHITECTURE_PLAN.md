@@ -2,66 +2,7 @@
 
 ## Development Principle
 
-Synrheon is developed bottom-up.
-
-There are two different orders that must not be confused:
-
-1. **Development foundation** — the observation/runtime harness needed to test real behavior.
-2. **Cognitive dependency order** — the cognitive substrate and later mechanisms that build on it.
-
-The development UI/runtime foundation comes first so later cognitive stages can be evaluated through a running organism rather than inferred from pass/fail tests.
-
-## Development Foundation
-
-```text
-architecture stewardship
-        ↓
-observable runtime + development UI
-        ↓
-running test organism
-        ↓
-cognitive substrate
-        ↓
-deeper cognition
-```
-
-### Stage 0A — Architecture Stewardship
-
-Protect architectural coherence while Synrheon is being designed and built.
-
-### Stage 0B — Observable Organism Harness
-
-Create the minimum running Synrheon organism before sophisticated cognition.
-
-Required foundation:
-
-```text
-thin runtime
-+
-development UI
-+
-Start
-+
-Send Stimulus
-+
-Think One Step
-+
-Continue
-+
-Pause
-+
-Inspect State
-+
-Inspect Trace
-```
-
-The UI may initially show minimal or empty cognitive panels.
-
-The purpose is not to create intelligence at this stage.
-
-The purpose is to make every later mechanism observable through a real live path.
-
-Automated tests remain useful regression protection but do not replace live runtime/UI evidence.
+Synrheon is developed bottom-up. Stage 0B established the verified running organism; later cognition must be exercised through that live path.
 
 ## Cognitive Dependency Order
 
@@ -89,30 +30,162 @@ Stage 10 Continuous Autonomous Cognition
 Stage 11 External Intelligence + Tools
 ```
 
+A narrow later-stage foundation may be pulled forward when an earlier stage fundamentally depends on it. This does not mark the later stage complete.
+
+## Stage 0B — Observable Organism Harness
+
+Verified development foundation:
+
+```text
+thin runtime
++
+development UI
++
+Start / Stimulus / Step / Continue / Pause
++
+State / Trace observation
+```
+
+The UI controls and observes. Runtime sequences and routes. Neither owns cognition.
+
 ## Stage 1 — Cognitive Substrate
 
-Create the minimum representations required for Synrheon to possess and transform internal state.
+Create the minimum representations required for Synrheon to possess and later transform internal state.
 
-Likely concerns:
-- concepts
-- connections
-- activation
-- cognitive state
-- basic state transitions
+The initial substrate is intentionally layered:
 
-Stage 1 should be exercised through the Stage 0B running organism rather than proven only by unit tests.
+```text
+LAYER 1 — CONCEPT IDENTITY
+What is this?
+
+LAYER 2 — WORLD RELATIONS
+How can things relate in general?
+
+LAYER 3 — CURRENT SITUATION / ACTIVATION
+What is active now?
+
+LAYER 4 — ORGANISM RELATION
+What does this mean to Synrheon?
+```
+
+### Layer 1 — Concept Identity
+
+Concepts receive stable identities separate from display labels and later word/sense forms. Future language systems may map many expressions onto the same concept without making the surface wording the concept itself.
+
+### Layer 2 — World Relations
+
+Typed relationships describe generic world structure, for example:
+
+```text
+Daisy IS_A dog
+leash USED_FOR walk
+dog HAS_PROPERTY fur
+```
+
+World relations preserve source/provenance, confidence, and later evidence lineage.
+
+### Layer 3 — Current Situation / Activation
+
+Current activation is separate from concept existence and stored relationship truth.
+
+Future sparse activation should combine seeded context, weighted support, organism-relative relevance, decay, inhibition/competition, and bounded Top-K survival.
+
+### Layer 4 — Organism Relation
+
+Generic semantic relevance is not enough to produce organism-specific sparse activation.
+
+Each concept may carry two permanently separate organism-relative representations:
+
+```text
+injected_self_vector
+self_learned_vector
+```
+
+Both initially use:
+
+```text
+ownership
+experience
+social
+goal
+history
+knowledge
+trust
+prediction
+consequence
+preference
+uncertainty
+```
+
+The injected vector answers what Synrheon was explicitly told about how something relates to her.
+
+The learned vector answers what Synrheon has accumulated from her own trusted experience.
+
+They may both influence future activation, but they must remain separately inspectable.
+
+### Provenance
+
+Initial provenance categories:
+
+```text
+injected
+observed
+inferred
+learned
+```
+
+Injected information may bootstrap the organism but must never silently become self-learned.
+
+### Explicit Self Learning
+
+Only the learned vector is updated by experience:
+
+```text
+learned_new
+=
+learned_old
++
+(learning_rate × trust)
+×
+(observation - learned_old)
+```
+
+The injected vector remains unchanged. Learned confidence and supporting experience-event IDs remain explicit outside future neural weights.
+
+### Stage 1 Activation Target
+
+The next real cognitive mechanism should compute a bounded activation update conceptually like:
+
+```text
+next activation
+=
+world support
++
+current context
++
+injected self relevance
++
+self-learned relevance
++
+goal / recent relevance
+-
+competition
+-
+decay
+```
+
+followed by sparse selection.
 
 ## Stage 2 — Computational Time + Experience
 
-Give every meaningful external and internal event a position in Synrheon’s existence.
+Give meaningful external and internal events a position in Synrheon's existence.
 
 Initial temporal dimensions:
 
 ```text
 absolute time
 sequence number
-relative time
-elapsed time
+relative / elapsed time
 before / after relationships
 episode membership
 temporal context
@@ -120,28 +193,32 @@ day membership
 recent trajectory
 ```
 
+The first narrow foundation provides current episode ID, monotonic experience sequence, timestamp, elapsed episode time, previous/next event links, and observed vs injected provenance.
+
+The current episode thread is not durable memory.
+
 ## Stage 3 — Memory + Sparse Activation
 
 Separate:
-- existence in memory
-- durable memory strength
-- current activation
 
-Only a small relevant region should normally activate.
+```text
+memory exists
+≠
+memory strength
+≠
+current activation
+```
+
+World relations may provide broad possibilities while situation and organism-relative relevance strongly gate which small region survives.
 
 ## Stage 4 — Level 1 → Level 2 → Level 3 Retrieval
 
-Normal retrieval cascade:
-
 ```text
-LEVEL 1
-coarse orientation
+LEVEL 1 — coarse orientation
       ↓
-LEVEL 2
-relevant situation / episode / concept region
+LEVEL 2 — relevant situation / episode / concept region
       ↓
-LEVEL 3
-detailed relationships / reconstruction
+LEVEL 3 — detailed evidence / relationships / reconstruction
 ```
 
 Sparse activation should operate at each level.
@@ -151,97 +228,45 @@ Sparse activation should operate at each level.
 Initial RAM organization:
 
 ```text
-CURRENT SITUATION
-up to 3 condensed packages
-
-LAST HOUR
-up to 2 condensed packages
-
-LAST DAY
-up to 3 condensed packages
+CURRENT SITUATION — up to 3 condensed packages
+LAST HOUR         — up to 2
+LAST DAY          — up to 3
 ```
 
-The scratchpad should contain compressed active state and pointers into deeper memory, not the entire day.
-
-The live recursive loop should allow one state to become the next.
+The scratchpad contains compressed active state and pointers into deeper memory.
 
 ## Stage 6 — Problems + Trials + Solutions
 
 Preserve:
 
 ```text
-problem
-↓
-current model
-↓
-plan
-↓
-prediction
-↓
-trial
-↓
-outcome
-↓
-failure / success
-↓
-why
-↓
-highest-probability variable to change
-↓
-new plan
-↓
-solution
-↓
-lesson
+problem → model → plan → prediction → trial → outcome
+        → why → likely variable → revised plan → solution → lesson
 ```
 
 Failed attempts remain remembered.
 
 ## Stage 7 — Learning + Cognitive Plasticity
 
-Experience should modify:
-- useful associations
-- retrieval routes
-- cognitive operation selection
-- prediction reliability
-- failed problem-solving routes
-- variable-selection strategy
+Experience should modify useful associations, retrieval routes, cognitive-operation selection, prediction reliability, failed routes, variable-selection strategy, and self-learned relevance without rewriting provenance.
 
 ## Stage 8 — Consolidation + Abstraction
 
-Progressively condense:
-
 ```text
-raw events
-    ↓
-episodes
-    ↓
-patterns
-    ↓
-concepts
-    ↓
-abstractions
+raw events → episodes → patterns → concepts → abstractions
 ```
 
 Higher layers must preserve lineage to lower-level evidence.
 
 ## Stage 9 — Multi-Layer Training
 
-Train different aspects at different timescales.
+Potential targets include activation behavior, retrieval, prediction, route selection, semantic representation, and abstraction.
 
-Potential targets:
-- activation behavior
-- retrieval behavior
-- prediction
-- route selection
-- semantic representation
-- abstraction
-
-Deeper training should be strategic rather than triggered by every thought.
+Neural training may absorb regularities, but explicit injected/self-learned vectors, experience, and provenance remain separately inspectable.
 
 ## Stage 10 — Continuous Autonomous Cognition
 
-Synrheon should eventually be able to produce:
+Synrheon should eventually produce:
 
 ```text
 S(t) → S(t+1)
@@ -249,10 +274,6 @@ S(t) → S(t+1)
 
 even when no new external input arrives.
 
-Unresolved goals, problems, predictions, memories, or uncertainty may drive continuation.
-
 ## Stage 11 — External Intelligence + Tools
 
-LLMs, vision, audio, web access, code execution, robotics, and other tools may expand Synrheon.
-
-They should not replace Synrheon’s persistent cognitive ownership.
+LLMs, vision, audio, web access, code execution, robotics, and other tools may expand Synrheon. They may own bounded neural cognition, but they must not erase Synrheon's explicit autobiographical sequence, provenance, self-relative state, or durable learning lineage.

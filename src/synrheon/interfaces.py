@@ -51,10 +51,29 @@ class DevelopmentRequestHandler(BaseHTTPRequestHandler):
                 state = self.runtime.send_external_stimulus(self._required_text(payload))
             elif self.path == "/api/thought":
                 state = self.runtime.inject_internal_thought(self._required_text(payload))
+            elif self.path == "/api/concept":
+                state = self.runtime.define_concept(
+                    self._required_string(payload, "concept_id"),
+                    self._required_string(payload, "label"),
+                )
+            elif self.path == "/api/world-relation":
+                state = self.runtime.define_world_relation(
+                    self._required_string(payload, "source_concept_id"),
+                    self._required_string(payload, "relation"),
+                    self._required_string(payload, "target_concept_id"),
+                    self._optional_number(payload, "confidence", 1.0),
+                )
+            elif self.path == "/api/self-relation":
+                state = self.runtime.define_self_relation(
+                    self._required_string(payload, "concept_id"),
+                    self._required_string(payload, "dimension"),
+                    self._required_number(payload, "value"),
+                    self._optional_number(payload, "confidence", 1.0),
+                )
             else:
                 self._send_json(HTTPStatus.NOT_FOUND, {"ok": False, "error": "Not found."})
                 return
-        except (ValueError, RuntimeError) as exc:
+        except (KeyError, ValueError, RuntimeError) as exc:
             self._send_json(HTTPStatus.BAD_REQUEST, {"ok": False, "error": str(exc)})
             return
 
@@ -79,10 +98,27 @@ class DevelopmentRequestHandler(BaseHTTPRequestHandler):
 
     @staticmethod
     def _required_text(payload: dict[str, object]) -> str:
-        value = payload.get("text")
-        if not isinstance(value, str):
-            raise ValueError("A text field is required.")
+        return DevelopmentRequestHandler._required_string(payload, "text")
+
+    @staticmethod
+    def _required_string(payload: dict[str, object], field: str) -> str:
+        value = payload.get(field)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"A non-empty {field} field is required.")
         return value
+
+    @staticmethod
+    def _required_number(payload: dict[str, object], field: str) -> float:
+        value = payload.get(field)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"A numeric {field} field is required.")
+        return float(value)
+
+    @staticmethod
+    def _optional_number(payload: dict[str, object], field: str, default: float) -> float:
+        if field not in payload:
+            return default
+        return DevelopmentRequestHandler._required_number(payload, field)
 
     def _send_html(self) -> None:
         if not _UI_FILE.exists():

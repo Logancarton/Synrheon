@@ -1,39 +1,42 @@
 # Synrheon Development UI
 
-The UI is Synrheon's development microscope and control surface.
+The UI is Synrheon's development microscope and control surface. Stage 0B remains the verified frontend/backend/runtime foundation; Stage 1 adds observable substrate state without moving cognition into JavaScript.
 
-Stage 0B now provides a connected modern application with two main views:
+Current views:
 
 ```text
 Chat
 Internal Thought
+Knowledge
 ```
 
 ## Chat
 
-Chat sends external user stimuli through:
+Chat sends external user stimuli through the real Python boundary. Each accepted Chat stimulus also becomes an autobiographical `ExperienceEvent` with `origin = observed`, an episode-relative sequence number, and before/after linkage.
 
-```text
-browser
- ↓
-POST /api/stimulus
- ↓
-interfaces.py
- ↓
-runtime.py
- ↓
-Synrheon-owned state
-```
-
-Stage 0B does not generate fake replies.
+No fake conversational reply is generated.
 
 ## Internal Thought
 
-This tab displays observable runtime trace and explicit thought injections.
+Internal Thought sends explicit injections through `/api/thought`. Those events become `origin = injected`, not self-generated thought.
 
-Injected thoughts travel through a distinct `/api/thought` boundary so they are not confused with user chat.
+The view displays the ordered current-episode experience thread together with runtime trace, including experience sequence, provenance, previous/next links, and elapsed episode time.
 
-Later cognitive owners can publish structured internal state here, including activation, retrieval, scratchpad, predictions, uncertainty, learning, and autonomous thought.
+This is an observable memory thread, not durable memory across process restart.
+
+## Knowledge
+
+The Knowledge tab provides explicit developer scaffolding for:
+
+- concepts
+- world relations
+- injected organism/self relations
+
+World knowledge, injected self state, self-learned state, and current activation are separate backend representations.
+
+The Self Relation form writes only the **injected self vector**. There is intentionally no control that lets a developer directly label data as self-learned. The learned vector can only be changed by the learning mechanism when trusted experience evidence exists.
+
+The current substrate JSON displays both injected and learned self sections so their separation remains inspectable.
 
 ## Controls
 
@@ -44,22 +47,14 @@ Continue
 Pause
 ```
 
-All controls call Python. JavaScript does not own the organism state transition.
+All controls call Python. JavaScript does not own organism state transitions.
 
 ## Inspector
 
-The right-side inspector shows:
-
-- status
-- cycle
-- event count
-- input count
-- complete current state snapshot
-
-The browser polls the backend so continued runtime cycles remain visible.
+The right-side inspector shows status, cycle, trace-event count, experience count, concept count, and the complete backend state snapshot.
 
 ## Boundary Rule
 
-The UI controls and observes.
+The UI controls, injects explicit scaffolding, and observes.
 
-It must not own cognitive interpretation, memory, retrieval, learning, abstraction, or problem solving.
+It must not own semantic interpretation, sparse activation, retrieval, durable memory, learning, abstraction, or problem solving.

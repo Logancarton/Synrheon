@@ -57,7 +57,7 @@ Automated tests are regression support and cannot by themselves grant `Verified`
 
 ## D010 — UI Is an Observation and Control Surface
 
-The development UI may stimulate, step, continue, pause, and inspect Synrheon.
+The development UI may stimulate, step, continue, pause, inject explicit developer scaffolding, and inspect Synrheon.
 
 It must not own cognitive interpretation, retrieval, memory, learning, abstraction, or problem-solving behavior.
 
@@ -70,3 +70,91 @@ https://github.com/Logancarton/Synrheon
 ```
 
 Agents should use this repository without asking the user to provide it again.
+
+## D012 — World Knowledge and Organism Knowledge Stay Separate
+
+Generic world relationships and Synrheon-relative relationships are different state.
+
+Examples:
+
+```text
+Daisy IS_A dog
+```
+
+is world knowledge, while organism-relative values describe what Daisy means to Synrheon.
+
+The two may influence the same future activation calculation but one must not overwrite or silently become the other.
+
+## D013 — Injected, Observed, Inferred, and Learned Provenance Is Preserved
+
+Knowledge and experience must retain how they entered the organism.
+
+Initial provenance categories are:
+
+```text
+injected
+observed
+inferred
+learned
+```
+
+Injected developer scaffolding must never be relabeled as self-learned merely because it is stored or later used.
+
+If neural training later absorbs a pattern, the explicit source/evidence representation remains outside model weights.
+
+## D014 — Injected Self State and Self-Learned State Are Permanent Separate Representations
+
+For each concept, Synrheon keeps two organism-relative vectors:
+
+```text
+injected_self_vector
+self_learned_vector
+```
+
+Both use the same initial dimensions:
+
+```text
+ownership
+experience
+social
+goal
+history
+knowledge
+trust
+prediction
+consequence
+preference
+uncertainty
+```
+
+Injected self scaffolding updates only `injected_self_vector`.
+
+Experience-based learning updates only `self_learned_vector`.
+
+The learning operation must never rewrite the injected vector merely to simplify storage or training.
+
+The initial online learned-vector update is:
+
+```text
+learned_new = learned_old + (learning_rate × trust) × (observation - learned_old)
+```
+
+Each learned update preserves supporting experience-event IDs and its own learned confidence.
+
+Later sparse activation may combine the two vectors, but their provenance remains separable and inspectable.
+
+If neural training later absorbs regularities from either representation, the explicit injected and learned vectors remain authoritative provenance-bearing state outside model weights.
+
+## D015 — Experience Thread Is Ordered but Is Not Yet Durable Memory
+
+Meaningful current-process events receive:
+- episode ID
+- monotonic experience sequence
+- absolute timestamp
+- elapsed episode time
+- previous/next event links
+- observed vs injected provenance
+
+This creates an autobiographical thread for live cognition.
+
+It does not become durable memory until a later memory owner persists and retrieves it across process restart.

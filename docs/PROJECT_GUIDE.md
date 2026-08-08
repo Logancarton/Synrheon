@@ -11,86 +11,63 @@ YOU
  ↓
 Development UI
  ↓
-HTTP / browser boundary
+interfaces.py
  ↓
-Thin runtime
+runtime.py
  ↓
-Synrheon-owned state
+correct Synrheon owner
  ↓
-state change + trace
+state change
  ↓
-runtime
- ↓
-HTTP boundary
+snapshot / trace
  ↓
 UI
- ↓
-YOU
 ```
 
-Stage 0B established and live-verified this organism shell. Stage 1 now begins adding the first real cognitive substrate inside that observable path.
+Current cognitive/data owners:
 
 ```text
-UI          = dashboard / microscope
-interfaces  = outside-world transport boundary
-runtime     = traffic controller / sequencer
-core        = current Synrheon-owned observable state and likely Stage 1 substrate owner
-cognition   = future next-state cognitive transformation
-docs        = project truth
-tests       = regression protection
-scripts     = developer convenience
+core.py        concept/world/self/activation substrate
+time.py        episode time + experience sequence
+experience.py  ordered autobiographical thread
+runtime.py     sequencing/routing only
+interfaces.py  browser/API transport only
+ui/            explicit injection + observation only
 ```
-
-The UI does not think. The HTTP layer does not think. The runtime does not interpret language. Cognitive owners must produce cognitive behavior and expose it through these verified boundaries.
 
 # Current Project Status
 
-Current stage:
-
 ```text
-Stage 1 — Cognitive Substrate
+Stage 0B — Observable Organism Harness    Verified
+Stage 1  — Cognitive Substrate            Active
 ```
 
-Stage 0B — Observable Organism Harness is **Verified**.
+The current Stage 1 candidate adds:
+- concept identities
+- world relations
+- an injected organism-relative vector
+- a separate self-learned organism-relative vector
+- activation state as separate state
+- explicit injected/observed/inferred/learned provenance
+- a confidence-weighted learned-vector update with evidence lineage
+- ordered current-episode experience sequence and before/after links
+- a Knowledge UI for manual scaffolding
 
-The live frontend/backend/runtime path is:
+There is still no spreading activation, retrieval, durable memory, language understanding, or autonomous cognition.
 
-```text
-Browser
- ↓
-interfaces.py HTTP API
- ↓
-SynrheonRuntime
- ↓
-OrganismState
- ↓
-snapshot + trace
- ↓
-Browser
-```
-
-The live UI provides:
-
-- Chat tab for external user stimuli
-- Internal Thought tab for runtime trace and explicit internal-thought injection
-- Start / Restart Session
-- Think One Step
-- Continue
-- Pause
-- current status, session, cycle, event and input counts
-- raw state inspection
-
-The user ran the supported local application and confirmed the real UI workflow worked. That verifies Stage 0B as **Infrastructure**.
-
-Stage 1 is the first planned **Cognitive improvement** stage, but no Stage 1 cognitive mechanism is implemented yet. There is still no language understanding, durable memory, retrieval, learning, abstraction, or autonomous cognition.
-
-# Root Files
+# Root / Workflow Files
 
 ## `README.md`
 Why Synrheon exists and the long-term cognitive hypothesis.
 
 ## `AGENTS.md`
-Front door for coding agents. Points them to the architecture steward, canonical workflow, and project truth.
+Front door for coding agents. Points them to the Architecture Steward, canonical workflow, and project truth.
+
+## `agent/ARCHITECTURE_STEWARD.md`
+Defines broad-to-narrow development, correct ownership, live-organism proof, thin runtime, and honest status.
+
+## `.agents/skills/synrheon-development-workflow/SKILL.md`
+Canonical implementation workflow.
 
 ## `pyproject.toml`
 Python project configuration and development dependencies.
@@ -98,51 +75,27 @@ Python project configuration and development dependencies.
 ## `.gitignore`
 Prevents generated/local files from being committed.
 
-# Agent / Workflow Files
-
-## `agent/ARCHITECTURE_STEWARD.md`
-Defines how development decisions should be made: broad-to-narrow, correct ownership, live-organism proof, thin runtime, honest status.
-
-## `.agents/skills/synrheon-development-workflow/SKILL.md`
-Canonical execution workflow for implementation, live proof, tests, documentation, Git review, commit, and push.
-
-## `.agents/skills/synrheon-development-workflow/openai.yaml`
-OpenAI/Codex discovery metadata for the canonical workflow.
-
-## `.claude/skills/synrheon-development-workflow.md`
-Thin Claude adapter pointing to the same workflow.
-
 # Project-Truth Documents
 
-## `docs/SCAFFOLD.md`
-Where files belong and what each major area owns.
+`docs/SCAFFOLD.md` — where files belong and what each area owns.
 
-## `docs/PROJECT_GUIDE.md`
-This plain-English owner's manual.
+`docs/PROJECT_GUIDE.md` — this plain-English owner's manual.
 
-## `docs/SIGNAL_FLOW.md`
-How information currently moves through Synrheon, with planned flow kept separate.
+`docs/SIGNAL_FLOW.md` — how information currently moves through Synrheon.
 
-## `docs/ARCHITECTURE_PLAN.md`
-What should eventually exist and in what dependency order.
+`docs/ARCHITECTURE_PLAN.md` — intended cognitive dependency order.
 
-## `docs/IMPLEMENTATION_STATUS.md`
-What actually exists: Not Started, Designed, Built, Integrated, or Verified.
+`docs/IMPLEMENTATION_STATUS.md` — what is Not Started, Designed, Built, Integrated, or Verified.
 
-## `docs/CURRENT_STAGE.md`
-What Synrheon is working on now.
+`docs/CURRENT_STAGE.md` — active implementation boundary.
 
-## `docs/DECISIONS.md`
-Durable architectural choices.
+`docs/DECISIONS.md` — durable architecture decisions.
 
-## `docs/EXPERIMENTS.md`
-What was actually tested or observed.
+`docs/EXPERIMENTS.md` — preregistered and observed experiments.
 
-## `docs/RESEARCH.md`
-Ideas, papers, mechanisms, and unresolved questions that are not implementation truth.
+`docs/RESEARCH.md` — research that is not implementation truth.
 
-## `docs/PROMPT_TEMPLATES.md`
-Human-facing prompts for common development tasks.
+`docs/PROMPT_TEMPLATES.md` — human-facing dispatch prompts.
 
 # Actual Python Organism
 
@@ -150,7 +103,7 @@ Human-facing prompts for common development tasks.
 Package identity and version.
 
 ## `src/synrheon/__main__.py`
-Application entry point.
+Application entry point:
 
 ```text
 python -m synrheon
@@ -160,203 +113,253 @@ runtime.main()
 
 ## `src/synrheon/core.py`
 
-**Plain English:** owns the smallest real Synrheon state used by the verified Stage 0B organism.
+**Plain English:** owns the first real cognitive substrate and the top-level live organism state.
 
-### `OrganismState`
-Holds the current in-memory session state:
+### `Concept`
 
-- session ID
-- off / paused / running status
-- cycle count
-- monotonic event sequence
-- received stimuli
-- observable trace
+One stable concept identity with:
+- `concept_id` — stable internal identifier
+- `label` — human-readable name
+- `world_vector` — optional future generic/vector representation
 
-`begin_session()` creates a fresh session. `snapshot()` returns a detached JSON-safe view for the UI.
+Concept identity is separate from word forms and from Synrheon's relationship to the concept.
 
-This state lasts for the running process. It is **not durable memory across restart**.
+### `WorldRelation`
 
-### `StimulusRecord`
-Represents one received input.
+One generic relationship between concepts, for example:
 
-`kind="external"` means user/chat input.
+```text
+daisy IS_A dog
+```
 
-`kind="internal"` means an explicitly injected internal stimulus.
+It stores source concept, relation type, target concept, provenance, confidence, and later evidence lineage.
 
-These channels are intentionally separate so future cognition can treat them differently.
+### `SelfRelationVector`
 
-### `TraceEvent`
-Records what the observable harness actually did. Trace is observation data, not hidden reasoning.
+One vector shape for organism-relative dimensions:
 
-### `utc_now()`
-Provides timestamps for observable events.
+```text
+ownership
+experience
+social
+goal
+history
+knowledge
+trust
+prediction
+consequence
+preference
+uncertainty
+```
 
-Stage 1 is expected to add the minimum substrate required for concepts, connections, activation, cognitive state, and basic state transitions. The exact mechanism must still pass the architecture gate and live experiment before implementation.
+### `SelfRelation`
 
-## `src/synrheon/runtime.py`
+This is intentionally **two separate representations**, not one blended vector:
 
-**Plain English:** thin traffic controller for the live organism.
+```text
+injected_vector
+learned_vector
+```
 
-### `SynrheonRuntime`
-Owns sequencing around one `OrganismState`.
+It also keeps separate:
+
+```text
+injected_confidence
+learned_confidence
+learned_evidence_event_ids
+```
+
+`injected_vector` means what was explicitly supplied about how a concept relates to Synrheon.
+
+`learned_vector` means what Synrheon has accumulated from trusted experience.
+
+Learning never overwrites the injected vector. Later activation may use both, but their origins remain inspectable.
+
+### `ActivationState`
+
+Stores current concept activation separately from concept existence, world truth, injected self state, and learned self state.
+
+It can currently store and rank activation values; recurrent sparse activation is not implemented yet.
+
+### `CognitiveSubstrate`
+
+Owns concepts, world relations, self relations, and activation.
 
 Important methods:
 
-- `start()` — creates a fresh session in paused mode
-- `pause()` — stops future automatic cycles
-- `continue_thinking()` — enables repeated cycles
-- `think_one_step()` — advances exactly one cycle while paused
-- `send_external_stimulus()` — records Chat input on the external channel
-- `inject_internal_thought()` — records an injected thought on the internal channel
-- `snapshot()` — returns current observable state
-- `close()` — stops the background runtime worker
+`add_concept()` — adds a stable concept identity.
 
-The background worker only advances the Stage 0B cycle counter while status is running. It does not manufacture thoughts.
+`add_world_relation()` — adds a world relationship only when both concepts exist.
 
-### `main()`
-Creates the runtime and hands it to the development HTTP server.
+`set_injected_self_relation()` — changes one dimension of `injected_vector` only. It leaves `learned_vector` untouched.
 
-Runtime does not own language understanding, memory, retrieval, learning, abstraction, or problem-solving.
+`learn_self_relation()` — changes `learned_vector` only using:
+
+```text
+learned_new
+=
+learned_old
++
+(learning_rate × trust)
+×
+(observation - learned_old)
+```
+
+It preserves injected self state, world knowledge, learned confidence, and supporting experience-event IDs.
+
+`set_activation()` — stores current activation without changing stored knowledge.
+
+### `StimulusRecord`
+
+Record of an accepted Chat or Internal Thought input. It links directly to its corresponding `experience_event_id`.
+
+### `TraceEvent`
+
+Records observable runtime actions. Trace is not hidden reasoning.
+
+### `OrganismState`
+
+Top-level live state containing session status/cycle, stimuli, trace, computational time, experience thread, and cognitive substrate.
+
+A new session resets the current episode and activation. Injected concepts/world/self scaffolding and any learned self state remain for the life of the current Python process.
+
+Nothing here survives process restart yet.
+
+## `src/synrheon/time.py`
+
+**Plain English:** owns when an experience occurs and where it sits in the current episode.
+
+`TemporalCoordinate` stores monotonic experience sequence, timestamp, episode ID, and elapsed seconds.
+
+`ComputationalTime.begin_episode()` starts a new episode.
+
+`ComputationalTime.next_coordinate()` creates the next temporal coordinate.
+
+## `src/synrheon/experience.py`
+
+**Plain English:** owns the current autobiographical event thread.
+
+`ExperienceEvent` contains event ID, external/internal kind, `observed` or `injected` provenance, exact text, temporal coordinate, previous event ID, and next event ID.
+
+`ExperienceThread.append()` adds the event and keeps forward/backward links consistent.
+
+This is a **memory thread**, but not durable memory across restart.
+
+## `src/synrheon/runtime.py`
+
+**Plain English:** thin traffic controller.
+
+Runtime sequences owners and routes commands; it does not own semantic interpretation, memory, learning, retrieval, abstraction, or problem solving.
+
+`start()` starts a new episode/session.
+
+`send_external_stimulus()` routes Chat into time + experience as `observed`.
+
+`inject_internal_thought()` routes explicit Internal Thought injection into time + experience as `injected`.
+
+`define_concept()` routes explicit concept injection to the substrate.
+
+`define_world_relation()` routes injected world knowledge.
+
+`define_self_relation()` routes injected organism-relative information to `injected_vector`; it cannot write the learned vector.
+
+`think_one_step()`, `continue_thinking()`, and `pause()` preserve the verified harness controls. They still advance harness cycles only, not real recursive cognition.
 
 ## `src/synrheon/interfaces.py`
 
-**Plain English:** connection between the browser and Synrheon.
+**Plain English:** browser/outside-world transport.
 
-### `DevelopmentRequestHandler`
-Translates browser HTTP requests into runtime commands.
-
-Live endpoints:
+Current endpoints:
 
 ```text
 GET  /
 GET  /api/state
 GET  /health
-
 POST /api/start
 POST /api/pause
 POST /api/continue
 POST /api/step
 POST /api/stimulus
 POST /api/thought
+POST /api/concept
+POST /api/world-relation
+POST /api/self-relation
 ```
 
-It validates transport input and returns JSON snapshots. It does not interpret the meaning of a stimulus.
+It validates transport input and calls runtime methods. It does not decide what words mean.
 
-### `create_development_server()`
-Wraps an existing `SynrheonRuntime` in the local HTTP server. Tests use this to exercise the real transport boundary.
+## Other cognitive owners
 
-### `run_development_server()`
-Starts the local development server at `http://127.0.0.1:8765`, opens the browser, and serves until stopped.
+`cognition.py` — future next-state cognitive transformation.
 
-Future LLM, tool, vision, audio, web, or code interfaces may also enter through this outside-world boundary, but persistent cognition remains Synrheon-owned.
+`memory.py` — future durable memory across restart.
 
-## `src/synrheon/time.py`
-Placeholder for computational time and sequence ownership beyond the minimal Stage 0B trace timestamps.
+`retrieval.py` — future Level 1 → Level 2 → Level 3 retrieval.
 
-## `src/synrheon/experience.py`
-Placeholder for autobiographical event and evidence-lineage ownership.
+`scratchpad.py` — future limited active working state.
 
-## `src/synrheon/memory.py`
-Placeholder for durable memory.
+`problem_solving.py` — future problem/model/plan/prediction/trial/outcome/revision.
 
-```text
-memory exists
-≠
-memory strength
-≠
-current activation
-```
+`learning.py` — future broader learning/credit assignment. The narrow self-vector update currently stays with the self representation because it only updates that owner; broader learning should move/cooperate with `learning.py` when it exists.
 
-## `src/synrheon/retrieval.py`
-Placeholder for Level 1 → Level 2 → Level 3 retrieval and sparse relevance selection.
+`consolidation.py` — future replay, pattern detection, compression.
 
-## `src/synrheon/scratchpad.py`
-Placeholder for limited RAM-like working context.
+`abstraction.py` — future higher-order concept formation.
 
-## `src/synrheon/cognition.py`
-Placeholder for real cognitive transformation:
-
-```text
-S(t) → S(t+1)
-```
-
-## `src/synrheon/problem_solving.py`
-Placeholder for problem/model/plan/prediction/trial/outcome/failure-attribution/revision.
-
-## `src/synrheon/learning.py`
-Placeholder for prediction error, route usefulness, credit assignment, and adaptation.
-
-## `src/synrheon/consolidation.py`
-Placeholder for replay, repeated-pattern detection, and strategic compression.
-
-## `src/synrheon/abstraction.py`
-Placeholder for useful higher-order concept/structure formation.
-
-## `src/synrheon/autonomy.py`
-Placeholder for deciding whether unresolved internal state merits another cognitive cycle. Stage 0B Continue is only runtime cycling; it is not autonomous cognition.
+`autonomy.py` — future decision to continue cognition without new external input.
 
 # UI
 
 ## `ui/index.html`
 
-**Plain English:** the verified development product shell and microscope.
+The development microscope has three views.
 
 ### Chat
-Shows external user stimuli sent to `/api/stimulus`.
 
-The current harness does not fabricate Synrheon replies. Future language/output cognition can populate this conversation through the real organism path.
+Accepted external text becomes a `StimulusRecord`, an `ExperienceEvent(origin="observed")`, and part of the ordered experience thread.
 
 ### Internal Thought
-Shows Stage 0B trace plus explicit thoughts injected through `/api/thought`.
 
-Injected thoughts are clearly identified as injections. They are not presented as self-generated Synrheon thought.
+Explicit injected internal text becomes `ExperienceEvent(origin="injected")`.
 
-Future cognitive owners can expose structured internal activity here: active concepts, activation, retrieval paths, scratchpad state, predictions, uncertainty, learning changes, and autonomous thought.
+The view also displays experience number, observed vs injected provenance, previous/next links, elapsed episode time, and runtime trace.
 
-### Organism controls
-Start, Think One Step, Continue, and Pause all call the Python backend. JavaScript does not own the state change.
+### Knowledge
 
-### State inspector
-Shows status, cycle, event count, input count, and the complete returned state snapshot.
+Manual developer scaffolding for:
+- concept
+- world relation
+- injected self relation dimension
 
-The browser polls `/api/state` so continued runtime cycles remain visible.
+The self-relation form changes only the injected self vector. There is intentionally no UI control that pretends to create self-learned state.
+
+### Inspector
+
+Shows status, cycle, trace count, experience count, concept count, and complete backend state. JavaScript never owns the authoritative state.
 
 ## `ui/README.md`
-Documents the UI ownership boundary and current controls.
+Documents UI boundaries and current views.
 
 # Tests
 
-## `tests/conftest.py`
-Shared pytest setup location. No special fixtures yet.
-
 ## `tests/test_scaffold.py`
-Contains the scaffold import check plus a small number of high-value Stage 0B tests.
 
-The tests prove:
+High-value regression tests prove:
+- Stage 0B controls remain functional
+- external/internal channels stay distinct
+- observed/injected experience provenance stays distinct
+- experience sequence is monotonic
+- previous/next links agree
+- stimuli link to experience events
+- world / injected-self / learned-self / activation remain distinct
+- self-learning changes the learned vector without changing injected self state or world knowledge
+- malformed relation references fail safely
+- the HTTP boundary reaches the real runtime/substrate
+- the Knowledge UI is served by the backend
 
-- the package still imports
-- Start creates a real paused session
-- external Chat and internal Thought remain distinct channels
-- Think One Step advances exactly one cycle
-- controls fail safely before Start
-- empty stimuli do not mutate state
-- the HTTP boundary reaches the actual runtime
-- the backend serves the connected UI
-
-These regression tests are now accompanied by successful human live-browser verification of the Stage 0B workflow.
-
-# Data
-
-## `data/README.md`
-Explains future non-code runtime/experiment data ownership.
-
-## `data/tiny_world.json`
-Small deterministic future experiment world. It is not production cognition.
+Tests protect contracts; live UI observation is still required for `Verified`.
 
 # Developer Scripts
-
-## `scripts/synrheon.ps1`
-Main PowerShell developer command.
 
 ```powershell
 .\scripts\synrheon.ps1 setup
@@ -366,52 +369,44 @@ Main PowerShell developer command.
 .\scripts\synrheon.ps1 context
 ```
 
-`run` enters the verified Stage 0B development application through `python -m synrheon`.
-
-## `scripts/context.ps1`
-Creates a repository/context snapshot for a new AI thread.
-
-## `scripts/run.ps1`
-Shortcut for `synrheon.ps1 run`.
-
-## `scripts/verify.ps1`
-Shortcut for `synrheon.ps1 verify`.
-
 # Current Information Flow
 
 ```text
-Browser Chat ---------------------┐
-                                 │
-Browser Inject Thought -----------┤
-                                 ↓
-                           interfaces.py
-                                 ↓
-                           runtime.py
-                                 ↓
-                              core.py
-                       OrganismState changes
-                                 ↓
-                         snapshot + trace
-                                 ↓
-                           interfaces.py
-                                 ↓
-                               Browser
+Chat ----------------------┐
+Internal Thought ----------┤
+Knowledge injection -------┤
+                           ↓
+                     interfaces.py
+                           ↓
+                      runtime.py
+                    /      |      \
+                   ↓       ↓       ↓
+               time.py  core.py  experience.py
+                   \       |       /
+                    \      |      /
+                     OrganismState
+                           ↓
+                    snapshot + trace
+                           ↓
+                         Browser
 ```
 
-This flow is live and verified as infrastructure. Deep cognitive owners still do not exist. As Stage 1 and later owners are implemented, runtime should route signals to them rather than absorbing their responsibilities.
+# Important Truth
+
+Current Synrheon can now distinguish:
+
+```text
+what was injected
+what was observed
+what is generic world knowledge
+what is injected organism-relative knowledge
+what is self-learned organism-relative knowledge
+what is currently active
+what happened first / next
+```
+
+It still cannot automatically understand language, spread activation, retrieve durable memory, or learn from live outcomes on its own.
 
 # Maintenance Rule
 
-Whenever meaningful code changes, keep this guide understandable to a non-programmer and explain:
-
-```text
-what the file does
-what each important class/function does
-what goes in
-what comes out
-what state it owns
-what calls it
-what it calls
-what is live
-what is still planned
-```
+Whenever meaningful code changes, keep this guide understandable to a non-programmer and explain what each owner does, what goes in/out, what state it owns, what calls it, what is live, and what is still planned.
