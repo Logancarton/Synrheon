@@ -21,9 +21,9 @@ Keep separate from implementation status:
 | Stage | Capability | Status | Cognitive Effect | Evidence |
 |---|---|---|---|---|
 | 0A | Architecture Stewardship | Designed | Infrastructure | Agent + canonical development workflow |
-| 0B | Observable Runtime + Development UI | Verified | Infrastructure | Connected browser/API/runtime/state path; focused runtime + HTTP regression tests; live browser run confirmed Start, Chat, Internal Thought, Step, Continue, Pause, state, and trace behavior |
-| 1 | Cognitive Substrate | Not Started | Cognitive improvement | Active next stage; no cognitive mechanism implemented yet |
-| 2 | Computational Time + Experience | Not Started | Cognitive improvement | |
+| 0B | Observable Runtime + Development UI | Verified | Infrastructure | Connected browser/API/runtime/state path; focused runtime + HTTP regression tests; live browser run confirmed controls, state, and trace |
+| 1 | Cognitive Substrate | Built | Cognitive improvement target; current increment is supporting cognition | Concept/world/self/activation contracts built; concept/world/self injection reaches live runtime/API/UI; sparse activation dynamics not implemented |
+| 2 | Computational Time + Experience | Integrated | Cognitive improvement target; current increment is supporting cognition | Current-episode timestamp, elapsed time, monotonic sequence, episode ID, provenance, and previous/next links are live; this is only a partial Stage 2 foundation |
 | 3 | Memory + Sparse Activation | Not Started | Cognitive improvement | |
 | 4 | Level 1→2→3 Retrieval | Not Started | Cognitive improvement | |
 | 5 | Scratchpad + Recursive Loop | Not Started | Cognitive improvement | |
@@ -34,21 +34,59 @@ Keep separate from implementation status:
 | 10 | Continuous Autonomous Cognition | Not Started | Cognitive improvement | |
 | 11 | External Intelligence + Tools | Not Started | Supporting cognition | |
 
+## Stage 1 Component Truth
+
+```text
+Concept identity                              Built
+WorldRelation representation                  Built
+SelfRelationVector representation             Built
+World/self provenance separation              Integrated
+Explicit concept/world/self injection          Integrated
+Confidence-weighted self-vector update         Built
+Self-learning from live outcomes               Not Started
+ActivationState representation                Built
+Recurrent spreading activation                 Not Started
+Competition / inhibition                       Not Started
+Top-K sparse activation                        Not Started
+Language → concept interpretation               Not Started
+```
+
+The self-vector update is:
+
+```text
+s_new = s_old + (learning_rate × trust) × (observation - s_old)
+```
+
+The explicit self vector preserves evidence event IDs outside any future neural weights.
+
+## Current Temporal / Experience Foundation
+
+```text
+Episode ID                                    Integrated
+Absolute event timestamp                       Integrated
+Elapsed episode time                           Integrated
+Monotonic experience sequence                  Integrated
+Observed vs injected provenance                Integrated
+Previous / next event links                    Integrated
+Experience event linked from stimulus          Integrated
+Internal Thought thread visualization          Integrated
+Durable cross-process memory                   Not Started
+Day membership / temporal context              Not Started
+Recent trajectory model                        Not Started
+```
+
+The current thread is autobiographical **current-process experience**, not durable memory.
+
 ## Stage 0B Component Truth
 
 ```text
-Modern development UI shell             Verified
-Browser → Python HTTP boundary           Verified
-Start / Step / Continue / Pause          Verified
-External Chat stimulus channel           Verified
-Internal thought injection channel       Verified
-In-memory session state + trace          Verified
-Human live-browser inspection            Verified
-Deep cognition                           Not Started
+Modern development UI shell                    Verified
+Browser → Python HTTP boundary                  Verified
+Start / Step / Continue / Pause                 Verified
+External Chat stimulus channel                  Verified
+Internal thought injection channel              Verified
+In-memory session state + trace                 Verified
+Human live-browser inspection                   Verified
 ```
 
-Stage 0B is complete as an observable development foundation. It is **Infrastructure**, not cognitive improvement.
-
-`Continue` currently advances observable harness cycles. It does not mean autonomous cognition exists.
-
-The Internal Thought tab currently shows harness trace and explicit injected thoughts. It does not yet show self-generated cognitive thought.
+`Continue` still advances harness cycles only. It does not mean autonomous cognition exists.
