@@ -19,7 +19,7 @@
     }
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
-    button, textarea, input, select { font: inherit; }
+    button, textarea, input { font: inherit; }
     button { color: inherit; }
     .app { min-height: 100vh; display: grid; grid-template-columns: 240px minmax(0, 1fr) 320px; }
     .sidebar, .inspector { background: #11151c; border-color: var(--line); border-style: solid; }
@@ -74,8 +74,8 @@
     .fields.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .field { display: grid; gap: 6px; }
     .field label { color: var(--muted); font-size: 12px; }
-    .field input, .field select { width: 100%; color: var(--text); background: #0f131a; border: 1px solid var(--line); border-radius: 9px; padding: 9px 10px; outline: none; }
-    .field input:focus, .field select:focus { border-color: #425063; }
+    .field input { width: 100%; color: var(--text); background: #0f131a; border: 1px solid var(--line); border-radius: 9px; padding: 9px 10px; outline: none; }
+    .field input:focus { border-color: #425063; }
     .knowledge-actions { margin-top: 12px; display: flex; justify-content: flex-end; }
     .error { position: fixed; top: 78px; left: 50%; transform: translateX(-50%); background: #3a2023; border: 1px solid #6d343a; color: #ffd8dc; padding: 10px 14px; border-radius: 10px; z-index: 20; display: none; }
     @media (max-width: 1050px) { .app { grid-template-columns: 210px minmax(0,1fr); } .inspector { display: none; } .composer-wrap { left: 210px; right: 0; } }
@@ -107,7 +107,7 @@
           <button class="tab" data-view="thought">Internal Thought</button>
           <button class="tab" data-view="knowledge">Knowledge</button>
         </div>
-        <div class="stage">World knowledge ≠ self knowledge ≠ current activation</div>
+        <div class="stage">World knowledge ≠ organism relations ≠ current activation</div>
       </header>
 
       <section id="chatView" class="view active"><div id="chatFeed" class="feed"></div></section>
@@ -141,18 +141,11 @@
 
             <div class="knowledge-card">
               <h3>Inject Self Relation</h3>
-              <p>Define how a concept relates to Synrheon without mixing it into generic world truth. Injected values remain marked injected.</p>
+              <p>Relation types are open-ended data. Injected relations remain separate from anything Synrheon later learns herself.</p>
               <div class="fields three">
                 <div class="field"><label>Concept ID</label><input id="selfConcept" placeholder="daisy"></div>
-                <div class="field">
-                  <label>Dimension</label>
-                  <select id="selfDimension">
-                    <option>ownership</option><option>experience</option><option>social</option><option>goal</option>
-                    <option>history</option><option>knowledge</option><option>trust</option><option>prediction</option>
-                    <option>consequence</option><option>preference</option><option>uncertainty</option>
-                  </select>
-                </div>
-                <div class="field"><label>Value 0–1</label><input id="selfValue" type="number" min="0" max="1" step="0.05" value="0.5"></div>
+                <div class="field"><label>Relation type</label><input id="selfRelationType" placeholder="protective_of"></div>
+                <div class="field"><label>Strength 0–1</label><input id="selfStrength" type="number" min="0" max="1" step="0.05" value="0.5"></div>
               </div>
               <div class="fields" style="margin-top:10px;">
                 <div class="field"><label>Confidence 0–1</label><input id="selfConfidence" type="number" min="0" max="1" step="0.05" value="1"></div>
@@ -330,8 +323,8 @@
     async function addSelfRelation() {
       await command("/api/self-relation", {
         concept_id:$("selfConcept").value.trim(),
-        dimension:$("selfDimension").value,
-        value:Number($("selfValue").value),
+        relation_type:$("selfRelationType").value.trim(),
+        strength:Number($("selfStrength").value),
         confidence:Number($("selfConfidence").value)
       });
     }
