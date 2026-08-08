@@ -102,9 +102,19 @@ Must remain unchanged:
 - activation representation
 - runtime remains a router rather than cognition owner
 
-Failure means any new organism relation type still requires a code edit, injected state can overwrite learned state (or vice versa), or the UI/API manufactures a closed ontology.
+Candidate automated result:
+- 8/8 focused/full preview tests passed after replacing the fixed vector
+- Python compilation passed
+- `protective_of`, `expects_help_from`, and `reminds_me_of_home` were accepted without any production-code declaration for those names
+- HTTP integration accepted `protective_of` through the real API/runtime/substrate path
+- injected `protective_of` remained unchanged while a learned `protective_of` updated independently
+- learned evidence lineage remained attached to the learned relation
+- blank relation type and out-of-range strength failed safely
+- Stage 0B controls and ordered experience tests remained passing
 
-Status: **Pre-registered; implementation pending.**
+Interpretation: the fixed cognitive ontology has been removed while the provenance boundary remains intact. This is a **Built** representation and an **Integrated** injection path, but not yet a cognitive sparse-activation mechanism.
+
+Status: **Not Verified until human live UI/state inspection.**
 
 ## E002 — Ordered Experience Thread
 
