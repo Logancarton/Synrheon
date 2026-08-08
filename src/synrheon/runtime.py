@@ -95,22 +95,22 @@ class SynrheonRuntime:
     def define_self_relation(
         self,
         concept_id: str,
-        dimension: str,
-        value: float,
+        relation_type: str,
+        strength: float,
         confidence: float = 1.0,
     ) -> dict[str, object]:
-        """Route injected organism-relative scaffolding to a separate self vector."""
+        """Route arbitrary injected organism-relative scaffolding to the substrate."""
         with self._lock:
             self._require_started()
             relation = self._state.substrate.set_injected_self_relation(
                 concept_id=concept_id.strip(),
-                dimension=dimension.strip(),
-                value=value,
+                relation_type=relation_type,
+                strength=strength,
                 confidence=confidence,
             )
             self._trace(
                 "self_relation_injected",
-                f"{relation.concept_id} self.{dimension} = {value:.3f}.",
+                f"self {relation.relation_type} {concept_id.strip()} = {relation.strength:.3f}.",
             )
             return self._state.snapshot()
 
