@@ -91,7 +91,13 @@ Expected result:
 
 Failure means world/self provenance is merged, activation overwrites stored knowledge, or self-learning rewrites generic world truth.
 
-Status: Pre-registered; implementation pending.
+Candidate verification: 7/7 focused/full current tests passed in the isolated preview and Python compilation passed.
+
+Automated candidate result: the substrate separation and self-learning tests passed. The HTTP integration test also reached concept/world/self injection through the real runtime/API and confirmed malformed unknown-concept relations fail with HTTP 400.
+
+Interpretation: the representation boundary is Built, and explicit concept/world/self injection is Integrated through the live backend/UI path. The confidence-weighted self-learning method is Built but not yet invoked by live outcome feedback.
+
+Status: **Built / Integrated candidate; human live UI inspection pending before any Stage 1 capability is called Verified.**
 
 ## E002 — Ordered Experience Thread
 
@@ -120,7 +126,11 @@ Expected result:
 
 Failure means provenance collapses, ordering is ambiguous, links disagree, or the thread is created only in JavaScript/tests.
 
-Status: Pre-registered; implementation pending.
+Automated candidate result: the ordered-experience test produced `observed → injected` provenance, exact sequence `1 → 2`, consistent forward/back links, stimulus-to-experience IDs, and an experience sequence of 2. The HTTP integration test reached the same path through the real backend, and the UI candidate renders the thread in Internal Thought.
+
+Interpretation: the current-process experience thread is Integrated candidate behavior. It supplies sequencing and an autobiographical thread without falsely claiming durable memory.
+
+Status: **Integrated candidate; human live UI inspection pending before this bounded behavior is called Verified.**
 
 ## E003 — Temporal Retrieval
 
