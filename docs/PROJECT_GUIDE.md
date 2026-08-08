@@ -28,30 +28,32 @@ UI
 YOU
 ```
 
-At Stage 0B, the state changes are deliberately simple. The purpose is to create a real organism shell that later cognitive owners can plug into.
+Stage 0B established and live-verified this organism shell. Stage 1 now begins adding the first real cognitive substrate inside that observable path.
 
 ```text
 UI          = dashboard / microscope
 interfaces  = outside-world transport boundary
 runtime     = traffic controller / sequencer
-core        = current Synrheon-owned observable state
+core        = current Synrheon-owned observable state and likely Stage 1 substrate owner
 cognition   = future next-state cognitive transformation
 docs        = project truth
 tests       = regression protection
 scripts     = developer convenience
 ```
 
-The UI does not think. The HTTP layer does not think. The runtime does not interpret language. Later cognitive owners will receive signals through these existing boundaries.
+The UI does not think. The HTTP layer does not think. The runtime does not interpret language. Cognitive owners must produce cognitive behavior and expose it through these verified boundaries.
 
 # Current Project Status
 
 Current stage:
 
 ```text
-Stage 0B — Observable Organism Harness
+Stage 1 — Cognitive Substrate
 ```
 
-The Stage 0B application now has a real frontend/backend/runtime path in code:
+Stage 0B — Observable Organism Harness is **Verified**.
+
+The live frontend/backend/runtime path is:
 
 ```text
 Browser
@@ -67,7 +69,7 @@ snapshot + trace
 Browser
 ```
 
-The UI provides:
+The live UI provides:
 
 - Chat tab for external user stimuli
 - Internal Thought tab for runtime trace and explicit internal-thought injection
@@ -78,9 +80,9 @@ The UI provides:
 - current status, session, cycle, event and input counts
 - raw state inspection
 
-This is **Infrastructure**, not cognitive improvement.
+The user ran the supported local application and confirmed the real UI workflow worked. That verifies Stage 0B as **Infrastructure**.
 
-No language understanding, memory, retrieval, learning, abstraction, or autonomous cognition is implemented yet.
+Stage 1 is the first planned **Cognitive improvement** stage, but no Stage 1 cognitive mechanism is implemented yet. There is still no language understanding, durable memory, retrieval, learning, abstraction, or autonomous cognition.
 
 # Root Files
 
@@ -158,7 +160,7 @@ runtime.main()
 
 ## `src/synrheon/core.py`
 
-**Plain English:** owns the smallest real Synrheon state used by the Stage 0B organism.
+**Plain English:** owns the smallest real Synrheon state used by the verified Stage 0B organism.
 
 ### `OrganismState`
 Holds the current in-memory session state:
@@ -184,12 +186,12 @@ Represents one received input.
 These channels are intentionally separate so future cognition can treat them differently.
 
 ### `TraceEvent`
-Records what the Stage 0B harness actually did. Trace is observation data, not hidden reasoning.
+Records what the observable harness actually did. Trace is observation data, not hidden reasoning.
 
 ### `utc_now()`
 Provides timestamps for observable events.
 
-Planned Stage 1 additions such as concepts, connections, activation, and richer cognitive state still belong here when their design is mature.
+Stage 1 is expected to add the minimum substrate required for concepts, connections, activation, cognitive state, and basic state transitions. The exact mechanism must still pass the architecture gate and live experiment before implementation.
 
 ## `src/synrheon/runtime.py`
 
@@ -297,12 +299,12 @@ Placeholder for deciding whether unresolved internal state merits another cognit
 
 ## `ui/index.html`
 
-**Plain English:** the development product shell and microscope.
+**Plain English:** the verified development product shell and microscope.
 
 ### Chat
 Shows external user stimuli sent to `/api/stimulus`.
 
-Stage 0B does not fabricate Synrheon replies. Future language/output cognition can populate this conversation through the real organism path.
+The current harness does not fabricate Synrheon replies. Future language/output cognition can populate this conversation through the real organism path.
 
 ### Internal Thought
 Shows Stage 0B trace plus explicit thoughts injected through `/api/thought`.
@@ -320,7 +322,7 @@ Shows status, cycle, event count, input count, and the complete returned state s
 The browser polls `/api/state` so continued runtime cycles remain visible.
 
 ## `ui/README.md`
-Documents the UI ownership boundary and current Stage 0B controls.
+Documents the UI ownership boundary and current controls.
 
 # Tests
 
@@ -341,7 +343,7 @@ The tests prove:
 - the HTTP boundary reaches the actual runtime
 - the backend serves the connected UI
 
-These are regression tests. They do not replace human live-browser inspection.
+These regression tests are now accompanied by successful human live-browser verification of the Stage 0B workflow.
 
 # Data
 
@@ -364,7 +366,7 @@ Main PowerShell developer command.
 .\scripts\synrheon.ps1 context
 ```
 
-`run` now enters the real Stage 0B application through `python -m synrheon`.
+`run` enters the verified Stage 0B development application through `python -m synrheon`.
 
 ## `scripts/context.ps1`
 Creates a repository/context snapshot for a new AI thread.
@@ -396,7 +398,7 @@ Browser Inject Thought -----------┤
                                Browser
 ```
 
-No cognitive owner is bypassed because deep cognitive owners do not exist yet. When they are implemented, runtime should route signals to them rather than absorbing their responsibilities.
+This flow is live and verified as infrastructure. Deep cognitive owners still do not exist. As Stage 1 and later owners are implemented, runtime should route signals to them rather than absorbing their responsibilities.
 
 # Maintenance Rule
 
