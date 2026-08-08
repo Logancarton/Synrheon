@@ -20,7 +20,7 @@ from synrheon.core import (
     ActivationContribution,
     CognitiveFrame,
     CognitiveSubstrate,
-    OrganismRelation,
+    WorldRelation,
 )
 
 _TOKEN_RE = re.compile(r"[a-z0-9]+")
@@ -177,8 +177,8 @@ def _contains_phrase(tokens: tuple[str, ...], phrase: tuple[str, ...]) -> bool:
     return any(tokens[index : index + width] == phrase for index in range(len(tokens) - width + 1))
 
 
-def _outgoing_relations(substrate: CognitiveSubstrate) -> dict[str, tuple[object, ...]]:
-    grouped: dict[str, list[object]] = defaultdict(list)
+def _outgoing_relations(substrate: CognitiveSubstrate) -> dict[str, tuple[WorldRelation, ...]]:
+    grouped: dict[str, list[WorldRelation]] = defaultdict(list)
     for relation in substrate.world_relations:
         grouped[relation.source_concept_id].append(relation)
     return {source: tuple(relations) for source, relations in grouped.items()}
