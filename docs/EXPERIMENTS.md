@@ -14,7 +14,29 @@ Record:
 
 Automated tests may protect a discovered behavior but should not be treated as the only evidence that cognition works.
 
-This file tracks falsifiable architectural experiments.
+## E000 — Stage 0B Connected Organism Transport
+
+Hypothesis: a browser-facing control/input request can cross into the real Python runtime, mutate Synrheon-owned session state, and return an observable snapshot without placing cognition in the UI or transport layer.
+
+Implemented regression path:
+
+```text
+HTTP request
+ ↓
+interfaces.py
+ ↓
+SynrheonRuntime
+ ↓
+OrganismState
+ ↓
+snapshot
+ ↓
+HTTP response
+```
+
+Automated preview result: 4 focused tests passed, including the HTTP boundary test, distinct external/internal stimulus channels, one-step cycle behavior, and safe pre-start/empty-input failure.
+
+Status: Integrated code path; human live-browser verification pending before Stage 0B is called Verified.
 
 ## E001 — Cognitive Substrate
 
