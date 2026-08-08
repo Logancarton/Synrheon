@@ -10,43 +10,41 @@ Stage 0B — Observable Organism Harness is **Verified** and remains the live la
 
 ## Current Stage 1 Boundary
 
-The first Stage 1 increment now targets four separable substrate layers:
+The first Stage 1 increment uses four separable substrate layers:
 
 ```text
 Layer 1 — Concept Identity
 Layer 2 — World Relations
 Layer 3 — Current Activation / Situation
-Layer 4 — Organism Relation
+Layer 4 — Organism Relations
 ```
 
-Layer 4 is not one blended personal score. Each concept has two permanently separate organism-relative vectors:
+Layer 4 is now deliberately **open-ended**. Synrheon is not limited to a hard-coded list such as ownership, social, trust, or prediction.
+
+For each concept, organism-relative relations are stored as arbitrary typed data, for example:
 
 ```text
-injected_self_vector
-self_learned_vector
+protective_of
+expects_help_from
+reminds_me_of_home
+trusted_source
 ```
 
-Both use these initial dimensions:
+Production code does not need to know those relation types in advance.
+
+Injected and self-learned organism relations remain permanently separate:
 
 ```text
-ownership
-experience
-social
-goal
-history
-knowledge
-trust
-prediction
-consequence
-preference
-uncertainty
+injected relations
+≠
+self-learned relations
 ```
 
-Injected self scaffolding may seed the first vector. Only experience-based learning may update the second. Later activation can combine both without losing their provenance.
+Injected scaffolding can create only injected relations. Experience-based learning can create or update only learned relations. Later sparse activation may combine their relevance without losing provenance.
 
 ## Sequencing Foundation Pulled Forward
 
-Because computational time is foundational and the design needs a memory thread, this Stage 1 increment also introduces a narrow Stage 2 foundation:
+Because computational time is foundational and the design needs a memory thread, Stage 1 also uses a narrow Stage 2 foundation:
 
 ```text
 meaningful event
@@ -64,11 +62,13 @@ This does **not** mean Stage 2 is complete. The current thread is in-memory only
 
 ## Implemented in the Current Candidate
 
-- `Concept`, `WorldRelation`, `SelfRelation`, `SelfRelationVector`, and `ActivationState`
-- separate generic world state, injected self state, self-learned state, and current activation
-- confidence-weighted update of the **learned** self vector only
+- `Concept`, `WorldRelation`, `OrganismRelation`, `SelfRelation`, and `ActivationState`
+- open-ended organism relation types stored as data rather than Python fields
+- separate generic world state, injected organism-relative state, self-learned state, and current activation
+- confidence-weighted update of one arbitrary **learned** relation type
 - learned evidence-event lineage and learned confidence
-- Knowledge UI for explicit concept/world/self injection
+- Knowledge UI for explicit concept/world/injected-self scaffolding
+- free-form organism relation type input in the UI/API
 - computational episode time and monotonic experience sequence
 - ordered `ExperienceThread` with previous/next links
 - Chat recorded as `observed`
@@ -80,6 +80,7 @@ This does **not** mean Stage 2 is complete. The current thread is in-memory only
 Stage 1 is not complete. There is still no implemented:
 
 - automatic language-to-concept interpretation
+- automatic discovery/naming of new relation types from experience
 - recurrent spreading activation
 - competition / inhibition
 - Top-K sparse activation
@@ -99,13 +100,13 @@ world relation support
 +
 current context
 +
-injected self relevance
+relevant injected organism relations
 +
-self-learned relevance
+relevant self-learned organism relations
 -
 competition
 -
 decay
 ```
 
-and exposes the winning active concepts through Internal Thought.
+and exposes the winning active concepts and contributing relation paths through Internal Thought.
