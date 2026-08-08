@@ -164,6 +164,7 @@ def test_arbitrary_relation_types_and_invalid_values() -> None:
     }
     assert types == {"expects_help_from", "reminds_me_of_home"}
 
+    before_invalid = substrate.snapshot()
     with pytest.raises(ValueError):
         substrate.set_injected_self_relation(
             concept_id="daisy",
@@ -178,6 +179,14 @@ def test_arbitrary_relation_types_and_invalid_values() -> None:
             strength=1.2,
             confidence=0.8,
         )
+    with pytest.raises(KeyError):
+        substrate.set_injected_self_relation(
+            concept_id="unknown",
+            relation_type="anything",
+            strength=0.2,
+            confidence=0.8,
+        )
+    assert substrate.snapshot() == before_invalid
 
 
 def test_runtime_controls_require_start_and_reject_empty_input() -> None:
