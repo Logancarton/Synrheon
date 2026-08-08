@@ -2,11 +2,7 @@
 
 This document separates **CURRENT REAL FLOW** from **PLANNED / INTENDED FLOW**.
 
-# 1. Current Real Flow — Stage 0B
-
-Synrheon now has a connected development-organism path in code.
-
-Startup:
+# 1. Current Real Application Flow
 
 ```text
 PowerShell
@@ -14,333 +10,284 @@ PowerShell
         ↓
 python -m synrheon
         ↓
-src/synrheon/__main__.py
-        ↓
 runtime.main()
         ↓
-SynrheonRuntime created
+SynrheonRuntime
         ↓
 interfaces.run_development_server(runtime)
         ↓
 local HTTP server
         ↓
-browser opens http://127.0.0.1:8765
+browser
 ```
 
-Browser command path:
+The UI remains a control/observation surface.
+
+# 2. Current External Experience Flow
 
 ```text
-Browser control / input
-        ↓
-HTTP endpoint in interfaces.py
-        ↓
-SynrheonRuntime method
-        ↓
-OrganismState changes
-        ↓
-JSON state snapshot + trace
-        ↓
-interfaces.py
-        ↓
-Browser renders returned state
-```
-
-JavaScript does not own the organism state.
-
-# 2. Current State Ownership
-
-`core.py` currently owns the minimal Stage 0B `OrganismState`.
-
-It contains:
-
-```text
-session_id
-status: off / paused / running
-cycle
-event_sequence
-external/internal stimulus records
-trace events
-```
-
-This is in-memory session state only. It is not durable memory and does not survive process restart.
-
-# 3. Current Chat Flow
-
-```text
-Chat tab
+Chat
  ↓
 POST /api/stimulus
  ↓
-interfaces.py validates transport
+interfaces.py
  ↓
 runtime.send_external_stimulus()
  ↓
-StimulusRecord(kind="external")
+time.py → next TemporalCoordinate
  ↓
-OrganismState
+experience.py → append ExperienceEvent(origin="observed")
  ↓
-snapshot
+previous / next event links updated
  ↓
-Chat tab
+StimulusRecord links to experience_event_id
+ ↓
+OrganismState snapshot
+ ↓
+UI
 ```
 
-No semantic interpretation or reply generation occurs yet.
+The event receives:
+- episode ID
+- monotonic experience sequence
+- absolute timestamp
+- elapsed episode time
+- previous/next event links
 
-# 4. Current Internal Thought Flow
+# 3. Current Injected Internal Experience Flow
 
 ```text
-Internal Thought tab
- ↓
-user explicitly injects thought
+Internal Thought composer
  ↓
 POST /api/thought
  ↓
-interfaces.py validates transport
+interfaces.py
  ↓
 runtime.inject_internal_thought()
  ↓
-StimulusRecord(kind="internal")
+time.py → next TemporalCoordinate
  ↓
-OrganismState + trace
+experience.py → append ExperienceEvent(origin="injected")
  ↓
-snapshot
+ordered experience thread
  ↓
-Internal Thought tab
+state + trace
+ ↓
+Internal Thought view
 ```
 
-An injected thought is not presented as self-generated Synrheon cognition.
+An injected thought remains explicitly **injected**. It is not presented as self-generated cognition or self-learned knowledge.
 
-The Internal Thought view also shows runtime trace events. Future structured cognitive activity can use the same observation surface.
+# 4. Current Knowledge Injection Flow
 
-# 5. Current Control Flow
+The Knowledge tab provides explicit developer scaffolding.
 
-## Start
+## Concept
 
 ```text
-UI Start
+Knowledge UI
  ↓
-POST /api/start
+POST /api/concept
  ↓
-runtime.start()
+runtime.define_concept()
  ↓
-fresh OrganismState session
-status = paused
-cycle = 0
+core.CognitiveSubstrate.add_concept()
  ↓
-session_started trace
+Concept stored
  ↓
 snapshot → UI
 ```
 
-## Think One Step
+## World Relation
 
 ```text
-UI Think One Step
+Knowledge UI
  ↓
-POST /api/step
+POST /api/world-relation
  ↓
-runtime.think_one_step()
+runtime.define_world_relation()
  ↓
-cycle += 1 exactly once
+core.CognitiveSubstrate.add_world_relation()
  ↓
-cycle_advanced trace
+WorldRelation(origin="injected")
  ↓
 snapshot → UI
 ```
 
-This is an observable harness cycle, not real cognition yet.
-
-## Continue
+## Self Relation
 
 ```text
-UI Continue
+Knowledge UI
  ↓
-POST /api/continue
+POST /api/self-relation
  ↓
-status = running
+runtime.define_self_relation()
  ↓
-background runtime worker
+core.CognitiveSubstrate.set_injected_self_relation()
  ↓
-repeated observable cycle advancement
+SelfRelation(origin="injected")
  ↓
-browser polls /api/state
- ↓
-updated cycle + trace visible
+snapshot → UI
 ```
 
-## Pause
+Generic world knowledge and organism-relative knowledge are separate state.
+
+# 5. Current Substrate Ownership
 
 ```text
-UI Pause
- ↓
-POST /api/pause
- ↓
-status = paused
- ↓
-background worker stops advancing cycles
- ↓
-current state remains inspectable
-```
-
-# 6. Current Ownership Boundary
-
-```text
-UI
-controls + displays
-
-interfaces.py
-HTTP/browser transport
-
-runtime.py
-session sequencing + control routing
-
 core.py
-minimal Synrheon-owned observable state
-```
+├─ Concept
+├─ WorldRelation
+├─ SelfRelationVector
+├─ SelfRelation
+├─ ActivationState
+├─ CognitiveSubstrate
+└─ OrganismState
 
-There is still no implemented memory, retrieval, semantic understanding, learning, abstraction, or autonomous cognition.
-
-# 7. Planned Cognitive Flow
-
-This remains intended architecture, not current implementation.
-
-```text
-EXTERNAL STIMULUS
-        ↓
-interfaces.py
-        ↓
-runtime.py
-        ↓
 time.py
-        ↓
+├─ TemporalCoordinate
+└─ ComputationalTime
+
 experience.py
-        ↓
-core.py
-        ↓
-cognition.py
-        ↓
-   ┌────┴─────────────────────┐
-   ↓                          ↓
-retrieval.py          problem_solving.py
-   ↓                          ↓
-memory.py                  prediction /
-   ↓                       trial / model
-scratchpad.py                 ↓
-   └──────────┬───────────────┘
-              ↓
-         new cognitive state
-              ↓
-           runtime
-              ↓
-      interfaces / UI output
-              ↓
-        OUTCOME / FEEDBACK
-              ↓
-        experience.py
-              ↓
-         learning.py
-```
+├─ ExperienceEvent
+└─ ExperienceThread
 
-Longer timescales:
-
-```text
-accumulated experience
-        ↓
-consolidation.py
-        ↓
-patterns / compression
-        ↓
-abstraction.py
-        ↓
-future cognition / retrieval / prediction
-```
-
-Autonomous continuation later becomes:
-
-```text
-unresolved internal state
-        ↓
-autonomy.py
-continue?
-        ↓ yes
 runtime.py
-        ↓
-next real cognitive cycle
-        ↓
-cognition.py
+└─ sequencing / routing only
+
+interfaces.py
+└─ HTTP / browser transport only
+
+ui/
+└─ injection + observation only
 ```
 
-Stage 0B Continue must not be confused with this future autonomous decision.
+# 6. Current Self-Learning Mechanism — Built, Not Live-Integrated
 
-# 8. Planned Retrieval Flow
+`CognitiveSubstrate.learn_self_relation()` implements:
 
 ```text
-current cue / problem
+s_new
+=
+s_old
++
+(learning_rate × trust)
+×
+(observation - s_old)
+```
+
+It:
+- updates only the explicit self relation vector
+- sets provenance to `learned`
+- increases confidence gradually
+- records evidence event IDs
+- does not rewrite world relations
+
+There is not yet a live outcome/feedback owner that decides when to call this mechanism.
+
+# 7. Current Activation State — Representation Only
+
+`ActivationState` exists and remains separate from stored concept/world/self knowledge.
+
+There is not yet a live activation equation, spreading activation, competition, inhibition, decay, or Top-K sparse selection.
+
+# 8. Current Episode Boundary
+
+Starting a fresh session:
+
+```text
+Start
+ ↓
+new session ID
+ ↓
+new computational-time episode
+ ↓
+experience sequence = 0
+ ↓
+new empty ExperienceThread
+ ↓
+activation cleared
+```
+
+Injected concepts/world/self relations remain in the running process when a session is restarted.
+
+Everything is still in-memory. Process restart loses the current substrate and experience thread.
+
+# 9. Planned Sparse Activation Flow
+
+This is intended architecture, not current implementation.
+
+```text
+stimulus / active context
         ↓
-retrieval.py
+concept candidates
+        ↓
+world relation support
+        +
+organism-relative relevance
+        +
+current goal / recent context
+        ↓
+recurrent activation update
+        ↓
+competition + inhibition + decay
+        ↓
+Top-K sparse active region
+        ↓
+Internal Thought observation
+```
+
+# 10. Planned Retrieval Flow
+
+```text
+active sparse region
+        ↓
 Level 1 coarse orientation
         ↓
 Level 2 relevant situation / episode / concept region
         ↓
 Level 3 detailed evidence / relationships
         ↓
-memory.py retained material
+scratchpad
         ↓
-scratchpad active packages
-        ↓
-cognition.py
+cognition
 ```
 
-# 9. Planned Learning Flow
+# 11. Planned Durable Memory Flow
+
+The current `ExperienceThread` is not durable memory.
+
+Later:
 
 ```text
-problem
- ↓
-model
- ↓
-plan
- ↓
-prediction
- ↓
-trial
- ↓
-outcome
- ↓
-prediction error
- ↓
-causal attribution
- ↓
-learning.py
- ↓
-future usefulness / selection changes
+ordered ExperienceEvent thread
+        ↓
+memory owner
+        ↓
+persistent episode / event storage
+        ↓
+retrieval
+        ↓
+reconstructed sequence / evidence
 ```
 
-Failed reasoning must not automatically mark all participating memories false.
-
-# 10. Planned LLM / External Intelligence Flow
+# 12. Planned Neural Training Flow
 
 ```text
-Synrheon needs outside help
+explicit experience
         ↓
-interfaces.py
+explicit self/world provenance
         ↓
-LLM / tool
+trusted learning trace
         ↓
-candidate interpretation / information / hypothesis
+optional neural training
         ↓
-interfaces.py
-        ↓
-Synrheon evaluates and retains it under Synrheon-owned rules
+weights improve
 ```
 
-External intelligence may participate without becoming the sole persistent cognition owner.
-
-# 11. Trace Boundary
-
-The Stage 0B trace currently records observable harness events such as session start, inputs, pause/continue, and cycle advancement.
-
-Later trace should expose enough structured state to understand owner handoffs and behavior without moving cognition into the UI.
-
-# 12. Maintenance Rule
-
-Update CURRENT REAL FLOW whenever the live call path changes. Keep future architecture under PLANNED / INTENDED FLOW until the real runtime reaches it.
+Training must not erase the explicit record of:
+- what was injected
+- what was observed
+- what was inferred
+- what was learned
+- which evidence supported the learning
