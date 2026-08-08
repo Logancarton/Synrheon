@@ -83,15 +83,26 @@ Knowledge UI → /api/world-relation → runtime.define_world_relation()
              → WorldRelation(origin="injected")
 ```
 
-## Injected Self Relation
+## Injected Organism Relation
 
 ```text
-Knowledge UI → /api/self-relation → runtime.define_self_relation()
-             → CognitiveSubstrate.set_injected_self_relation()
-             → injected_self_vector only
+Knowledge UI
+  relation_type = arbitrary non-empty text
+  strength = 0..1
+  confidence = 0..1
+        ↓
+POST /api/self-relation
+        ↓
+runtime.define_self_relation()
+        ↓
+CognitiveSubstrate.set_injected_self_relation()
+        ↓
+SelfRelation.injected_relations[relation_type]
 ```
 
-Generic world knowledge, injected self state, self-learned state, and current activation are four separate forms of state.
+No production-code list decides which organism relation types are allowed.
+
+Generic world knowledge, injected organism relations, self-learned organism relations, and current activation are separate state.
 
 # 5. Current Substrate Ownership
 
@@ -99,10 +110,10 @@ Generic world knowledge, injected self state, self-learned state, and current ac
 core.py
 ├─ Concept
 ├─ WorldRelation
-├─ SelfRelationVector
+├─ OrganismRelation
 ├─ SelfRelation
-│  ├─ injected_vector
-│  └─ learned_vector
+│  ├─ injected_relations: arbitrary typed relations
+│  └─ learned_relations: arbitrary typed relations
 ├─ ActivationState
 ├─ CognitiveSubstrate
 └─ OrganismState
@@ -122,7 +133,7 @@ ui/            explicit injection + observation only
 
 # 6. Current Self-Learning Mechanism — Built, Not Live-Integrated
 
-`CognitiveSubstrate.learn_self_relation()` implements:
+`CognitiveSubstrate.learn_self_relation()` accepts an arbitrary relation type and implements:
 
 ```text
 learned_new
@@ -131,21 +142,22 @@ learned_old
 +
 (learning_rate × trust)
 ×
-(observation - learned_old)
+(observed_strength - learned_old)
 ```
 
 It:
-- updates only `learned_vector`
-- leaves `injected_vector` unchanged
+- creates the learned relation type if it does not already exist
+- updates only the learned relation with that type
+- leaves the injected relation of the same type unchanged
 - leaves world relations unchanged
 - increases learned confidence gradually
 - records supporting experience-event IDs
 
-There is not yet a live outcome/feedback owner that decides when this mechanism should run.
+There is not yet a live outcome/feedback owner that decides when this mechanism should run or what relation type an experience implies.
 
 # 7. Current Activation State — Representation Only
 
-`ActivationState` exists separately from stored concept/world/self knowledge.
+`ActivationState` exists separately from stored concept/world/organism knowledge.
 
 There is not yet a live activation equation, spreading activation, competition, inhibition, decay, or Top-K sparse selection.
 
@@ -153,7 +165,7 @@ There is not yet a live activation equation, spreading activation, competition, 
 
 Starting a fresh session creates a new episode, resets experience sequence/thread, and clears current activation.
 
-Injected concepts/world relations/injected self state and any learned self state remain for the life of the current process.
+Injected concepts/world relations/injected organism relations and any learned organism relations remain for the life of the current process.
 
 Process restart still loses all of this because durable memory/persistence is not implemented.
 
@@ -166,9 +178,9 @@ concept candidates
         ↓
 world relation support
 +
-injected self relevance
+context-compatible injected organism relations
 +
-self-learned relevance
+context-compatible learned organism relations
 +
 current goal / recent context
         ↓
@@ -180,6 +192,8 @@ Top-K sparse active region
         ↓
 Internal Thought observation
 ```
+
+The activation mechanism should operate over whatever organism relation types exist rather than enumerating a closed relation ontology in code.
 
 # 10. Planned Retrieval Flow
 
@@ -218,7 +232,7 @@ reconstructed sequence / evidence
 ```text
 explicit experience
         ↓
-explicit world/injected-self/learned-self provenance
+explicit world/injected-organism/learned-organism provenance
         ↓
 trusted learning trace
         ↓
@@ -227,4 +241,4 @@ optional neural training
 weights improve
 ```
 
-Training must not erase the explicit record of what was injected, observed, inferred, or learned, nor collapse injected and self-learned vectors into one opaque representation.
+Training must not erase the explicit record of what was injected, observed, inferred, or learned, nor collapse injected and self-learned organism relations into one opaque representation.
