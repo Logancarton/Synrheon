@@ -2,18 +2,18 @@
 
 ## Active Stage
 
-**Stage 0B — Observable Organism Harness**
+**Stage 1 — Cognitive Substrate**
 
-## Current Goal
+## Stage 0B Closure
 
-Finish verification of the first connected Synrheon development organism before Stage 1 cognition begins.
+Stage 0B — Observable Organism Harness is now **Verified**.
 
-The repository now contains the intended Stage 0B product shell:
+The live application was run through the supported local entrypoint and the browser path was exercised successfully:
 
 ```text
-Chat
-Internal Thought
 Start
+Chat stimulus
+Internal Thought injection
 Think One Step
 Continue
 Pause
@@ -21,32 +21,45 @@ Current State
 Trace
 ```
 
-The implemented path is:
+The browser, HTTP boundary, thin runtime, Synrheon-owned in-memory session state, and observable trace all participated in the live path.
+
+Stage 0B remains **Infrastructure**, not cognitive improvement.
+
+## Current Goal
+
+Begin the first real cognitive layer without weakening the verified observation foundation.
+
+Stage 1 should create the minimum internal representations required for Synrheon to possess and transform cognitive state.
+
+The architecture plan currently identifies these likely concerns:
 
 ```text
-browser
- ↓
-HTTP boundary
- ↓
-thin runtime
- ↓
-Synrheon-owned session state
- ↓
-state change + trace
- ↓
-browser
+concepts
+connections
+activation
+cognitive state
+basic state transitions
 ```
 
-Chat input and injected internal thought use distinct runtime channels.
+No Stage 1 mechanism should be called Built, Integrated, or Verified until it actually exists and is exercised through the running organism.
 
-## What Stage 0B Does Not Claim
+## Immediate Development Boundary
 
-Stage 0B is **Infrastructure**.
+Before Stage 1 implementation:
 
-It does not implement:
+1. define the broad cognitive objective and underlying bottleneck
+2. compare candidate substrate representations/mechanisms
+3. identify the correct owner or coordinated owners
+4. pre-register the first live Stage 1 experiment
+5. observe the current baseline through the verified UI/runtime
+
+The existing Stage 0B UI/runtime should remain the laboratory for Stage 1 rather than being replaced by test-only proof.
+
+## Stage 1 Does Not Yet Claim
+
+There is still no implemented:
 
 - semantic understanding
-- language response generation
 - durable memory
 - retrieval
 - learning
@@ -54,25 +67,4 @@ It does not implement:
 - problem solving
 - autonomous cognition
 
-`Continue` only advances the observable harness cycle until future cognitive owners exist.
-
-## Remaining Exit Condition
-
-Before Stage 0B becomes `Verified`, run the application through the supported local entrypoint and inspect it in the browser:
-
-```powershell
-.\scripts\synrheon.ps1 run
-```
-
-Verify that:
-
-- the browser opens the Synrheon development application
-- Start creates a real session
-- Chat sends an external stimulus
-- Internal Thought injects a distinct internal stimulus
-- Think One Step increments exactly once
-- Continue advances cycles
-- Pause stops further cycle advancement
-- state and trace visibly match those actions
-
-Automated regression tests protect the path but do not replace this live-browser observation.
+Stage 1 is the first planned **Cognitive improvement** stage, but it is currently **Not Started**.
