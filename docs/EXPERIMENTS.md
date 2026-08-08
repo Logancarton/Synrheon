@@ -151,11 +151,91 @@ Can Synrheon restrict retrieval to a time region such as earlier today without s
 
 Status: Future
 
-## E004 — Sparse Activation
+## E004 — Sparse Chat Activation
 
-Can a relevant cue activate a useful small region while unrelated concepts remain inactive?
+Hypothesis: a Chat stimulus can enter the live cognition owner, seed known concepts through one generic lexical cue rule, spread activation through whatever world relations exist, weight already-reached concepts by arbitrary organism relations, inhibit weak competitors, and retain only a bounded Top-K active region without stimulus-specific branches.
 
-Status: Future
+Baseline before implementation:
+- Chat becomes ordered observed experience
+- `ActivationState` remains empty unless a developer mutates it directly
+- `cognition.py` is a placeholder
+- Chat shows no cognitive consequence
+
+Pre-registered live setup:
+
+```text
+Concepts:
+daisy / Daisy
+dog / dog
+animal / animal
+violin / violin
+music / music
+volcano / volcano
+
+World relations:
+daisy IS_A dog
+dog IS_A animal
+violin PRODUCES music
+
+Arbitrary injected organism relation:
+dog personally_relevant_to_self 0.80 confidence 0.90
+```
+
+Live stimulus A:
+
+```text
+Daisy
+```
+
+Expected A:
+- lexical cueing matches `daisy` generically by concept ID/label, not a Daisy-specific rule
+- `daisy` is strongly active
+- activation spreads `daisy → dog → animal`
+- the arbitrary organism relation on `dog` can increase dog salience without cognition.py naming `personally_relevant_to_self`
+- `violin`, `music`, and `volcano` do not survive the sparse winner set
+- Chat and Internal Thought visibly expose the active winners and contributing paths
+
+Live stimulus B:
+
+```text
+violin
+```
+
+Expected B:
+- the exact same mechanism activates `violin → music`
+- Daisy-network nodes do not survive merely because the first experiment used them
+- no production branch contains `Daisy`, `violin`, or the organism-relation example names
+
+Live stimulus C:
+
+```text
+quasar
+```
+
+Expected C:
+- if no injected concept matches, Synrheon reports that no known concept cue matched
+- current activation is cleared rather than falsely claiming understanding
+- the observed experience is still retained in the ordered experience thread
+
+Algorithm boundary:
+- concept matching is a temporary generic lexical bootstrap, not semantic language understanding
+- world-relation direction is respected
+- outgoing spread is normalized so high-degree nodes do not gain unlimited activation merely from having many edges
+- organism relation types are treated generically as salience evidence; no fixed ontology is reintroduced
+- competition uses a floor + winner-relative threshold and bounded Top-K selection
+- runtime only routes the observed event into `cognition.py`; cognition owns the state transformation
+
+Must remain unchanged:
+- injected / learned provenance separation
+- world knowledge is not rewritten by activation
+- organism relations are not rewritten by activation
+- experience sequencing and before/after links
+- UI remains observation/control only
+- unknown concepts and malformed knowledge fail safely
+
+Failure means the live Chat path still does not reach cognition, activation requires phrase-specific code, arbitrary organism relation types are enumerated, unrelated nodes remain broadly active, or cognition mutates stored knowledge while thinking.
+
+Status: **Pre-registered; implementation pending.**
 
 ## E005 — Three-Level Retrieval
 
