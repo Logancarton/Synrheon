@@ -1,39 +1,46 @@
 # Synrheon Development UI
 
-The UI is Synrheon's development microscope and control surface.
+The UI is Synrheon's development microscope and control surface. Stage 0B remains the verified frontend/backend/runtime foundation; Stage 1 now adds observable substrate state without moving cognition into JavaScript.
 
-Stage 0B now provides a connected modern application with two main views:
+Current views:
 
 ```text
 Chat
 Internal Thought
+Knowledge
 ```
 
 ## Chat
 
-Chat sends external user stimuli through:
+Chat sends external user stimuli through the real Python boundary. Each accepted Chat stimulus now also becomes an autobiographical `ExperienceEvent` with `origin = observed`, an episode-relative sequence number, and before/after linkage.
 
-```text
-browser
- ↓
-POST /api/stimulus
- ↓
-interfaces.py
- ↓
-runtime.py
- ↓
-Synrheon-owned state
-```
-
-Stage 0B does not generate fake replies.
+No fake conversational reply is generated.
 
 ## Internal Thought
 
-This tab displays observable runtime trace and explicit thought injections.
+Internal Thought sends explicit injections through `/api/thought`. Those events become `origin = injected`, not self-generated thought.
 
-Injected thoughts travel through a distinct `/api/thought` boundary so they are not confused with user chat.
+The view now displays the ordered current-episode experience thread together with runtime trace so the developer can inspect:
 
-Later cognitive owners can publish structured internal state here, including activation, retrieval, scratchpad, predictions, uncertainty, learning, and autonomous thought.
+- experience sequence
+- observed vs injected provenance
+- previous/next event linkage
+- elapsed episode time
+- runtime trace
+
+This is an observable memory thread, not durable memory across process restart.
+
+## Knowledge
+
+The Knowledge tab provides explicit developer injection for the first Stage 1 substrate:
+
+- concepts
+- world relations
+- organism/self relations
+
+World and self relations are stored separately. Injected self relations remain marked `origin = injected`; they are not relabeled as learned.
+
+The current substrate snapshot is visible in the same tab.
 
 ## Controls
 
@@ -48,18 +55,10 @@ All controls call Python. JavaScript does not own the organism state transition.
 
 ## Inspector
 
-The right-side inspector shows:
-
-- status
-- cycle
-- event count
-- input count
-- complete current state snapshot
-
-The browser polls the backend so continued runtime cycles remain visible.
+The right-side inspector shows status, cycle, trace-event count, experience count, concept count, and the complete backend state snapshot.
 
 ## Boundary Rule
 
-The UI controls and observes.
+The UI controls, injects explicit developer scaffolding, and observes.
 
-It must not own cognitive interpretation, memory, retrieval, learning, abstraction, or problem solving.
+It must not own semantic interpretation, sparse activation, retrieval, durable memory, learning, abstraction, or problem solving.
