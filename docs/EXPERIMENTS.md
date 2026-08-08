@@ -235,7 +235,25 @@ Must remain unchanged:
 
 Failure means the live Chat path still does not reach cognition, activation requires phrase-specific code, arbitrary organism relation types are enumerated, unrelated nodes remain broadly active, or cognition mutates stored knowledge while thinking.
 
-Status: **Pre-registered; implementation pending.**
+Candidate implementation result:
+- `cognition.py` now owns the bounded activation transformation
+- Chat and Internal Thought both reach that owner through the thin runtime
+- the same mechanism activated the independent `daisy → dog → animal` and `violin → music` networks
+- with the preregistered organism relation, the Daisy-network preview produced `daisy=1.000`, `dog=1.000`, `animal≈0.764`; unrelated violin/music/volcano nodes did not survive
+- the violin-network preview produced `violin=1.000`, `music≈0.862`; Daisy-network nodes did not survive
+- arbitrary organism relation names contribute salience without being enumerated in cognition production code
+- Top-K was proven with a source connected to eight children; only five concepts survived
+- `quasar` produced `unmatched`, cleared stale activation, and retained the experience
+- activation did not rewrite world or organism relation state
+- runtime and HTTP integration reached the same cognition owner
+- reconstructed exact-candidate suite: **12/12 passed**
+- Python `compileall` passed
+
+Testing note: direct GitHub cloning was unavailable from the execution sandbox, so these automated results came from an isolated reconstruction of the exact candidate Python sources and test logic. The repository's own local `verify` command remains the authoritative local pytest/compile/diff check once pulled.
+
+Interpretation: this is the first **Integrated cognitive improvement** in Synrheon: a stimulus now changes a bounded internal activation region through general relation mathematics. It is not semantic language understanding, retrieval, natural-language response generation, or autonomy.
+
+Status: **Integrated candidate; Not Verified until human live UI/state inspection.**
 
 ## E005 — Three-Level Retrieval
 
