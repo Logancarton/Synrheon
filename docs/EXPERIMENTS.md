@@ -4,64 +4,21 @@
 
 The preferred experiment is a real stimulus applied through the running Synrheon organism.
 
-Record:
-- stimulus or action
-- baseline behavior
-- expected behavior
-- observed UI/runtime output
-- relevant internal state or trace
-- interpretation
+Record stimulus/action, baseline, expected behavior, observed UI/runtime output, relevant internal state/trace, and interpretation.
 
-Automated tests may protect a discovered behavior but should not be treated as the only evidence that cognition works.
+Automated tests protect discovered behavior but are not enough to call cognition `Verified`.
 
 ## E000 — Stage 0B Connected Organism Transport
 
-Hypothesis: a browser-facing control/input request can cross into the real Python runtime, mutate Synrheon-owned session state, and return an observable snapshot without placing cognition in the UI or transport layer.
+Hypothesis: browser-facing actions can cross into the real Python runtime, mutate Synrheon-owned state, and return observable state/trace without placing cognition in the UI/transport layer.
 
-Implemented path:
-
-```text
-Browser action
- ↓
-HTTP request
- ↓
-interfaces.py
- ↓
-SynrheonRuntime
- ↓
-OrganismState
- ↓
-snapshot + trace
- ↓
-HTTP response
- ↓
-Browser
-```
-
-Automated regression evidence: 4 focused tests passed, including the HTTP boundary test, distinct external/internal stimulus channels, one-step cycle behavior, and safe pre-start/empty-input failure.
-
-Live action set:
-
-```text
-Start
-Chat stimulus
-Internal Thought injection
-Think One Step
-Continue
-Pause
-inspect Current State
-inspect Trace
-```
-
-Observed result: the user ran the supported local Synrheon application and confirmed the UI workflow worked. The real frontend/backend/runtime path was therefore observed through the running organism rather than inferred from tests alone.
-
-Interpretation: Stage 0B successfully provides the observable development organism required for later cognitive experiments. This verifies infrastructure only; it does not demonstrate semantic understanding or cognition.
+Observed result: the user ran the supported application and confirmed Start, Chat, Internal Thought, Step, Continue, Pause, Current State, and Trace through the real frontend/backend/runtime path.
 
 Status: **Verified**
 
-## E001 — World / Self / Activation Separation
+## E001 — World / Injected-Self / Learned-Self / Activation Separation
 
-Hypothesis: Synrheon can represent generic world knowledge, organism-relative knowledge, and current activation as separate state so later sparse activation can use self relevance without rewriting world truth.
+Hypothesis: Synrheon can keep generic world knowledge, explicitly injected organism-relative knowledge, self-learned organism-relative knowledge, and current activation separate so later sparse activation can combine them without losing provenance.
 
 Pre-registered setup:
 
@@ -80,28 +37,32 @@ Current activation:
 Daisy = 1.0
 ```
 
-Baseline: before this change `core.py` has only Stage 0B session/stimulus/trace state. There is no concept substrate, world/self distinction, explicit self vector, or activation state.
+Baseline: Stage 0B had no concept substrate, world/self distinction, explicit self-learning representation, or activation state.
 
 Expected result:
-- `Daisy IS_A dog` remains world knowledge with `origin = injected`
-- `Daisy.social` remains a separate self relation with `origin = injected`
-- activation is stored separately from both
-- later self-learning may update a self vector from evidence without mutating the injected world relation
-- malformed references fail without mutating unrelated state
+- `Daisy IS_A dog` remains injected world knowledge
+- injected self `social = 0.8` remains in `injected_vector`
+- `learned_vector` starts independently
+- a trusted learning update changes only `learned_vector`
+- learning preserves evidence-event IDs and learned confidence
+- injected self state and world relation remain unchanged
+- activation remains separate from all stored knowledge
+- malformed references fail without unrelated mutation
 
-Failure means world/self provenance is merged, activation overwrites stored knowledge, or self-learning rewrites generic world truth.
+Candidate automated result:
+- 7/7 current focused/full tests passed in the isolated preview
+- Python compilation passed
+- HTTP integration reached concept/world/injected-self injection through the real runtime/API
+- unknown-concept relation failed safely with HTTP 400
+- learned-vector test changed learned `experience/social/prediction` while injected `social` and world knowledge remained unchanged
 
-Candidate verification: 7/7 focused/full current tests passed in the isolated preview and Python compilation passed.
+Interpretation: the representation boundary is **Built**; explicit concept/world/injected-self injection is **Integrated**; self-learning mathematics is **Built** but not invoked from live outcome feedback.
 
-Automated candidate result: the substrate separation and self-learning tests passed. The HTTP integration test also reached concept/world/self injection through the real runtime/API and confirmed malformed unknown-concept relations fail with HTTP 400.
-
-Interpretation: the representation boundary is Built, and explicit concept/world/self injection is Integrated through the live backend/UI path. The confidence-weighted self-learning method is Built but not yet invoked by live outcome feedback.
-
-Status: **Built / Integrated candidate; human live UI inspection pending before any Stage 1 capability is called Verified.**
+Status: **Not Verified until human live UI/state inspection.**
 
 ## E002 — Ordered Experience Thread
 
-Hypothesis: every meaningful external or explicitly injected internal event can receive an episode coordinate and explicit before/after links without pretending that current-episode experience is durable memory.
+Hypothesis: every meaningful external or explicitly injected internal event can receive an episode coordinate and explicit before/after links without pretending current-episode experience is durable memory.
 
 Pre-registered live stimulus:
 
@@ -111,26 +72,22 @@ Chat: "Daisy came to the door"
 Internal Thought injection: "Consider whether Daisy expects a walk"
 ```
 
-Baseline: Stage 0B records stimuli and trace events, but there is no separate autobiographical event thread, episode sequence, elapsed time, or previous/next event linkage.
-
 Expected result:
-- Chat event is recorded as `origin = observed`
-- Internal Thought injection is recorded as `origin = injected`
+- Chat event is `origin = observed`
+- Internal Thought injection is `origin = injected`
 - experience sequence is exactly `1 → 2`
 - event 1 points forward to event 2
 - event 2 points back to event 1
 - both stimulus records link to their experience event IDs
-- the Internal Thought/UI state exposes the thread
+- Internal Thought/state exposes the thread
 - restarting a session begins a new episode thread
-- no claim of durable cross-process memory is made
+- no durable cross-process memory claim
 
-Failure means provenance collapses, ordering is ambiguous, links disagree, or the thread is created only in JavaScript/tests.
+Candidate automated result: tests produced `observed → injected`, exact sequence `1 → 2`, consistent forward/back links, stimulus-to-experience IDs, and experience sequence 2. HTTP integration reached the same owners through the real backend.
 
-Automated candidate result: the ordered-experience test produced `observed → injected` provenance, exact sequence `1 → 2`, consistent forward/back links, stimulus-to-experience IDs, and an experience sequence of 2. The HTTP integration test reached the same path through the real backend, and the UI candidate renders the thread in Internal Thought.
+Interpretation: this is an **Integrated** current-process autobiographical thread, not durable memory.
 
-Interpretation: the current-process experience thread is Integrated candidate behavior. It supplies sequencing and an autobiographical thread without falsely claiming durable memory.
-
-Status: **Integrated candidate; human live UI inspection pending before this bounded behavior is called Verified.**
+Status: **Not Verified until human live UI/state inspection.**
 
 ## E003 — Temporal Retrieval
 
