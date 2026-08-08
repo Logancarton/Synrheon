@@ -20,7 +20,7 @@ This document records implemented truth, not future intention.
 |---|---|---|---|---|
 | 0A | Architecture Stewardship | Designed | Infrastructure | Agent + canonical development workflow |
 | 0B | Observable Runtime + Development UI | Verified | Infrastructure | Connected browser/API/runtime/state path; focused runtime + HTTP regression tests; live browser run confirmed controls, state, and trace |
-| 1 | Cognitive Substrate | Built | Supporting cognition; foundation for cognitive improvement | Concept/world/self/activation contracts built; explicit concept/world/injected-self injection reaches runtime/API/UI; sparse activation dynamics not implemented |
+| 1 | Cognitive Substrate | Built | Supporting cognition; foundation for cognitive improvement | Concept/world/open-ended organism-relation/activation contracts built; arbitrary injected organism relation types reach runtime/API/UI; sparse activation dynamics not implemented |
 | 2 | Computational Time + Experience | Integrated | Supporting cognition; foundation for later memory/retrieval | Current-episode timestamp, elapsed time, monotonic sequence, episode ID, provenance, and previous/next links are reached by live Chat/Internal Thought paths; partial Stage 2 only |
 | 3 | Memory + Sparse Activation | Not Started | Cognitive improvement | |
 | 4 | Level 1→2→3 Retrieval | Not Started | Cognitive improvement | |
@@ -35,23 +35,25 @@ This document records implemented truth, not future intention.
 ## Stage 1 Component Truth
 
 ```text
-Concept identity                                  Built
-WorldRelation representation                      Built
-Injected self vector representation               Built
-Self-learned vector representation                Built
-Injected/learned self separation                  Built
-Explicit concept/world/injected-self injection    Integrated
-Confidence-weighted learned-vector update          Built
-Learned evidence lineage                          Built
-Automatic self-learning from live outcomes        Not Started
-ActivationState representation                    Built
-Recurrent spreading activation                    Not Started
-Competition / inhibition                          Not Started
-Top-K sparse activation                           Not Started
-Language → concept interpretation                  Not Started
+Concept identity                                      Built
+WorldRelation representation                          Built
+Open-ended OrganismRelation representation            Built
+Injected/learned organism-relation separation         Built
+Arbitrary relation type stored as data                Built
+Explicit concept/world/injected-self injection        Integrated
+Free-form organism relation UI/API path               Integrated
+Confidence-weighted learned-relation update           Built
+Learned evidence lineage                              Built
+Automatic relation discovery from live experience     Not Started
+Automatic self-learning from live outcomes            Not Started
+ActivationState representation                        Built
+Recurrent spreading activation                        Not Started
+Competition / inhibition                              Not Started
+Top-K sparse activation                               Not Started
+Language → concept interpretation                      Not Started
 ```
 
-The learned-vector update is:
+The learned-relation update is:
 
 ```text
 learned_new
@@ -60,12 +62,14 @@ learned_old
 +
 (learning_rate × trust)
 ×
-(observation - learned_old)
+(observed_strength - learned_old)
 ```
 
-It changes only `self_learned_vector`. It does not mutate `injected_self_vector` or world knowledge.
+The equation applies to whatever relation type is being learned. The relation type itself is data and does not have to exist in production code beforehand.
 
-Both explicit self representations remain outside any future neural weights.
+A learned relation changes only the learned collection for that concept/relation type. It does not mutate injected organism relations or world knowledge.
+
+Explicit relation provenance and evidence remain outside any future neural weights.
 
 ## Current Temporal / Experience Foundation
 

@@ -41,9 +41,9 @@ Baseline: Stage 0B had no concept substrate, world/self distinction, explicit se
 
 Expected result:
 - `Daisy IS_A dog` remains injected world knowledge
-- injected self `social = 0.8` remains in `injected_vector`
-- `learned_vector` starts independently
-- a trusted learning update changes only `learned_vector`
+- injected self `social = 0.8` remains injected organism-relative state
+- self-learned state starts independently
+- a trusted learning update changes only self-learned state
 - learning preserves evidence-event IDs and learned confidence
 - injected self state and world relation remain unchanged
 - activation remains separate from all stored knowledge
@@ -56,7 +56,63 @@ Candidate automated result:
 - unknown-concept relation failed safely with HTTP 400
 - learned-vector test changed learned `experience/social/prediction` while injected `social` and world knowledge remained unchanged
 
-Interpretation: the representation boundary is **Built**; explicit concept/world/injected-self injection is **Integrated**; self-learning mathematics is **Built** but not invoked from live outcome feedback.
+Interpretation: the provenance boundary is useful, but the initial fixed 11-field `SelfRelationVector` over-constrained what Synrheon could ever learn about how something relates to herself. E001A corrects that representation before sparse activation is built.
+
+Status: **Superseded representation; provenance separation retained.**
+
+## E001A — Open-Ended Organism Relation Space
+
+Hypothesis: Synrheon can preserve injected-versus-self-learned provenance without hard-coding a closed list of organism-relative dimensions.
+
+Baseline live/code behavior:
+- `SelfRelationVector` contains exactly 11 Python fields
+- the UI presents those same 11 values in a dropdown
+- a new relation such as `protective_of`, `expects_help_from`, or `reminds_me_of` cannot exist without changing production code
+
+Pre-registered live action:
+
+```text
+Start Synrheon
+Add concept: daisy / Daisy
+Inject self relation type: protective_of
+Strength: 0.70
+Confidence: 0.90
+```
+
+Expected post-change behavior:
+- `protective_of` is accepted even though no Python constant or field names it
+- the relation type is stored as data, not as a production-code dimension
+- injected relation state remains explicitly injected
+- self-learned relation state remains separately stored and cannot be directly injected
+- a learning update for an arbitrary relation type changes only the learned representation for that type
+- learning preserves evidence-event IDs
+- world knowledge and current activation are unchanged
+- blank relation types, unknown concepts, and out-of-range strengths/confidence fail safely
+- no special case for `protective_of` exists in production code
+
+State/trace to inspect:
+- `cognitive_substrate.self_relations`
+- injected and learned entries for the same concept/relation type
+- `self_relation_injected` trace event
+
+Must remain unchanged:
+- Stage 0B controls and browser/backend path
+- ordered experience thread
+- world relation representation
+- activation representation
+- runtime remains a router rather than cognition owner
+
+Candidate automated result:
+- 8/8 focused/full preview tests passed after replacing the fixed vector
+- Python compilation passed
+- `protective_of`, `expects_help_from`, and `reminds_me_of_home` were accepted without any production-code declaration for those names
+- HTTP integration accepted `protective_of` through the real API/runtime/substrate path
+- injected `protective_of` remained unchanged while a learned `protective_of` updated independently
+- learned evidence lineage remained attached to the learned relation
+- blank relation type and out-of-range strength failed safely
+- Stage 0B controls and ordered experience tests remained passing
+
+Interpretation: the fixed cognitive ontology has been removed while the provenance boundary remains intact. This is a **Built** representation and an **Integrated** injection path, but not yet a cognitive sparse-activation mechanism.
 
 Status: **Not Verified until human live UI/state inspection.**
 

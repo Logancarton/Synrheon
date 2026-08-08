@@ -27,7 +27,7 @@ UI
 Current cognitive/data owners:
 
 ```text
-core.py        concept/world/self/activation substrate
+core.py        concept/world/organism-relation/activation substrate
 time.py        episode time + experience sequence
 experience.py  ordered autobiographical thread
 runtime.py     sequencing/routing only
@@ -42,18 +42,18 @@ Stage 0B — Observable Organism Harness    Verified
 Stage 1  — Cognitive Substrate            Active
 ```
 
-The current Stage 1 candidate adds:
+The current Stage 1 candidate provides:
 - concept identities
 - world relations
-- an injected organism-relative vector
-- a separate self-learned organism-relative vector
+- open-ended organism-relative relation types
+- permanent separation between injected and self-learned organism relations
 - activation state as separate state
 - explicit injected/observed/inferred/learned provenance
-- a confidence-weighted learned-vector update with evidence lineage
+- a confidence-weighted learned-relation update with evidence lineage
 - ordered current-episode experience sequence and before/after links
 - a Knowledge UI for manual scaffolding
 
-There is still no spreading activation, retrieval, durable memory, language understanding, or autonomous cognition.
+There is still no spreading activation, automatic relation discovery, retrieval, durable memory, language understanding, or autonomous cognition.
 
 # Root / Workflow Files
 
@@ -134,56 +134,43 @@ daisy IS_A dog
 
 It stores source concept, relation type, target concept, provenance, confidence, and later evidence lineage.
 
-### `SelfRelationVector`
+### `OrganismRelation`
 
-One vector shape for organism-relative dimensions:
+One typed relationship between Synrheon and a concept.
 
-```text
-ownership
-experience
-social
-goal
-history
-knowledge
-trust
-prediction
-consequence
-preference
-uncertainty
-```
+Important fields:
+- `relation_type` — arbitrary non-empty text such as `protective_of`
+- `strength` — current strength from 0 to 1
+- `confidence` — confidence from 0 to 1
+- `origin` — `injected` or `learned`
+- `evidence_event_ids` — evidence lineage for learned relations
+
+The important design rule is that `relation_type` is **data**, not a Python field or enum. Synrheon can therefore hold a future relation type that the developers did not anticipate when the code was written.
 
 ### `SelfRelation`
 
-This is intentionally **two separate representations**, not one blended vector:
+Groups organism-relative relations for one concept into two permanently separate collections:
 
 ```text
-injected_vector
-learned_vector
+injected_relations
+learned_relations
 ```
 
-It also keeps separate:
+An injected relation means Synrheon was explicitly told that a concept relates to her in that way.
 
-```text
-injected_confidence
-learned_confidence
-learned_evidence_event_ids
-```
+A learned relation means trusted experience updated that relation through the learning mechanism.
 
-`injected_vector` means what was explicitly supplied about how a concept relates to Synrheon.
-
-`learned_vector` means what Synrheon has accumulated from trusted experience.
-
-Learning never overwrites the injected vector. Later activation may use both, but their origins remain inspectable.
+The same relation type may exist in both collections without either overwriting the other.
 
 ### `ActivationState`
 
-Stores current concept activation separately from concept existence, world truth, injected self state, and learned self state.
+Stores current concept activation separately from concept existence, world truth, injected organism relations, and learned organism relations.
 
 It can currently store and rank activation values; recurrent sparse activation is not implemented yet.
 
 ### `CognitiveSubstrate`
 
-Owns concepts, world relations, self relations, and activation.
+Owns concepts, world relations, organism relations, and activation.
 
 Important methods:
 
@@ -191,9 +178,9 @@ Important methods:
 
 `add_world_relation()` — adds a world relationship only when both concepts exist.
 
-`set_injected_self_relation()` — changes one dimension of `injected_vector` only. It leaves `learned_vector` untouched.
+`set_injected_self_relation()` — accepts any non-empty relation type and writes only the injected collection.
 
-`learn_self_relation()` — changes `learned_vector` only using:
+`learn_self_relation()` — accepts any non-empty relation type and changes only the learned collection using:
 
 ```text
 learned_new
@@ -202,10 +189,10 @@ learned_old
 +
 (learning_rate × trust)
 ×
-(observation - learned_old)
+(observed_strength - learned_old)
 ```
 
-It preserves injected self state, world knowledge, learned confidence, and supporting experience-event IDs.
+It preserves injected organism relations, world knowledge, learned confidence, and supporting experience-event IDs.
 
 `set_activation()` — stores current activation without changing stored knowledge.
 
@@ -221,7 +208,7 @@ Records observable runtime actions. Trace is not hidden reasoning.
 
 Top-level live state containing session status/cycle, stimuli, trace, computational time, experience thread, and cognitive substrate.
 
-A new session resets the current episode and activation. Injected concepts/world/self scaffolding and any learned self state remain for the life of the current Python process.
+A new session resets the current episode and activation. Injected concepts/world/organism relations and learned organism relations remain for the life of the current Python process.
 
 Nothing here survives process restart yet.
 
@@ -261,7 +248,7 @@ Runtime sequences owners and routes commands; it does not own semantic interpret
 
 `define_world_relation()` routes injected world knowledge.
 
-`define_self_relation()` routes injected organism-relative information to `injected_vector`; it cannot write the learned vector.
+`define_self_relation()` passes an arbitrary relation type, strength, and confidence to the substrate's injected organism-relation collection. Runtime does not decide which relation types are valid meanings.
 
 `think_one_step()`, `continue_thinking()`, and `pause()` preserve the verified harness controls. They still advance harness cycles only, not real recursive cognition.
 
@@ -286,7 +273,16 @@ POST /api/world-relation
 POST /api/self-relation
 ```
 
-It validates transport input and calls runtime methods. It does not decide what words mean.
+`/api/self-relation` accepts:
+
+```text
+concept_id
+relation_type
+strength
+confidence
+```
+
+It validates transport shape and calls runtime methods. It does not decide what relation types mean.
 
 ## Other cognitive owners
 
@@ -300,7 +296,7 @@ It validates transport input and calls runtime methods. It does not decide what 
 
 `problem_solving.py` — future problem/model/plan/prediction/trial/outcome/revision.
 
-`learning.py` — future broader learning/credit assignment. The narrow self-vector update currently stays with the self representation because it only updates that owner; broader learning should move/cooperate with `learning.py` when it exists.
+`learning.py` — future broader learning/credit assignment. The narrow arbitrary relation-strength update currently stays with the organism-relation representation because it mutates only that owner; broader learning should move/cooperate with `learning.py` when it exists.
 
 `consolidation.py` — future replay, pattern detection, compression.
 
@@ -329,9 +325,11 @@ The view also displays experience number, observed vs injected provenance, previ
 Manual developer scaffolding for:
 - concept
 - world relation
-- injected self relation dimension
+- injected organism relation
 
-The self-relation form changes only the injected self vector. There is intentionally no UI control that pretends to create self-learned state.
+The organism-relation form uses a free-text `relation_type` rather than a fixed dropdown. It can inject a relation such as `protective_of` without any production-code change.
+
+There is intentionally no UI control that directly creates learned organism relations.
 
 ### Inspector
 
@@ -351,10 +349,11 @@ High-value regression tests prove:
 - experience sequence is monotonic
 - previous/next links agree
 - stimuli link to experience events
-- world / injected-self / learned-self / activation remain distinct
-- self-learning changes the learned vector without changing injected self state or world knowledge
-- malformed relation references fail safely
-- the HTTP boundary reaches the real runtime/substrate
+- arbitrary organism relation types are accepted as data
+- injected and learned versions of the same relation type remain separate
+- learned relation updates do not mutate injected organism state or world knowledge
+- malformed/blank relation types and out-of-range values fail safely
+- the HTTP boundary accepts a relation type that production code never named
 - the Knowledge UI is served by the backend
 
 Tests protect contracts; live UI observation is still required for `Verified`.
@@ -393,7 +392,7 @@ Knowledge injection -------┤
 
 # Important Truth
 
-Current Synrheon can now distinguish:
+Current Synrheon can distinguish:
 
 ```text
 what was injected
@@ -405,7 +404,9 @@ what is currently active
 what happened first / next
 ```
 
-It still cannot automatically understand language, spread activation, retrieve durable memory, or learn from live outcomes on its own.
+And the software no longer decides in advance the complete list of ways something may relate to Synrheon.
+
+It still cannot automatically discover relation meanings from language/experience, spread activation, retrieve durable memory, or learn from live outcomes on its own.
 
 # Maintenance Rule
 

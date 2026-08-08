@@ -66,8 +66,8 @@ class DevelopmentRequestHandler(BaseHTTPRequestHandler):
             elif self.path == "/api/self-relation":
                 state = self.runtime.define_self_relation(
                     self._required_string(payload, "concept_id"),
-                    self._required_string(payload, "dimension"),
-                    self._required_number(payload, "value"),
+                    self._required_string(payload, "relation_type"),
+                    self._required_number(payload, "strength"),
                     self._optional_number(payload, "confidence", 1.0),
                 )
             else:

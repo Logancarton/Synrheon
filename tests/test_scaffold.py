@@ -9,7 +9,7 @@ from urllib.request import Request, urlopen
 
 import pytest
 
-from synrheon.core import CognitiveSubstrate, Concept, SelfRelationVector
+from synrheon.core import CognitiveSubstrate, Concept, WorldRelation
 from synrheon.interfaces import create_development_server
 from synrheon.runtime import SynrheonRuntime
 
@@ -74,46 +74,44 @@ def test_runtime_start_step_and_distinct_input_channels() -> None:
         runtime.close()
 
 
-def test_substrate_keeps_world_self_and_activation_separate() -> None:
+def test_open_ended_self_relations_are_data_not_fixed_dimensions() -> None:
     substrate = CognitiveSubstrate()
     substrate.add_concept(Concept("daisy", "Daisy"))
     substrate.add_concept(Concept("dog", "dog"))
-
-    from synrheon.core import WorldRelation
-
     substrate.add_world_relation(
         WorldRelation("daisy", "IS_A", "dog", origin="injected", confidence=1.0)
     )
-    substrate.set_injected_self_relation(
+
+    injected = substrate.set_injected_self_relation(
         concept_id="daisy",
-        dimension="social",
-        value=0.8,
+        relation_type="protective_of",
+        strength=0.7,
         confidence=0.9,
     )
     substrate.set_activation("daisy", 1.0)
 
     snapshot = substrate.snapshot()
-    assert snapshot["world_relations"][0]["origin"] == "injected"
-    assert snapshot["self_relations"][0]["injected"]["vector"]["social"] == 0.8
-    assert snapshot["self_relations"][0]["learned"]["vector"]["social"] == 0.0
+    self_relation = snapshot["self_relations"][0]
+    assert injected.relation_type == "protective_of"
+    assert self_relation["injected"][0]["relation_type"] == "protective_of"
+    assert self_relation["injected"][0]["strength"] == 0.7
+    assert self_relation["injected"][0]["origin"] == "injected"
+    assert self_relation["learned"] == []
+    assert snapshot["world_relations"][0]["relation"] == "IS_A"
     assert snapshot["activation"] == {"daisy": 1.0}
-    assert snapshot["concepts"][0]["world_vector"] == []
 
 
-def test_self_learning_updates_explicit_vector_without_rewriting_injected_or_world_knowledge() -> None:
+def test_self_learning_updates_arbitrary_relation_without_rewriting_injected_or_world_state() -> None:
     substrate = CognitiveSubstrate()
     substrate.add_concept(Concept("daisy", "Daisy"))
     substrate.add_concept(Concept("dog", "dog"))
-
-    from synrheon.core import WorldRelation
-
     substrate.add_world_relation(
         WorldRelation("daisy", "IS_A", "dog", origin="injected", confidence=1.0)
     )
     substrate.set_injected_self_relation(
         concept_id="daisy",
-        dimension="social",
-        value=0.8,
+        relation_type="protective_of",
+        strength=0.7,
         confidence=0.9,
     )
     before_world = substrate.snapshot()["world_relations"]
@@ -121,20 +119,74 @@ def test_self_learning_updates_explicit_vector_without_rewriting_injected_or_wor
 
     learned = substrate.learn_self_relation(
         concept_id="daisy",
-        observation=SelfRelationVector(experience=1.0, social=0.8, prediction=0.6),
+        relation_type="protective_of",
+        observed_strength=1.0,
         trust=0.8,
         learning_rate=0.5,
         evidence_event_id="experience-1",
     )
 
-    assert learned.injected_vector.social == 0.8
-    assert learned.learned_vector.experience == pytest.approx(0.4)
-    assert learned.learned_vector.social == pytest.approx(0.32)
-    assert learned.learned_vector.prediction == pytest.approx(0.24)
-    assert learned.learned_confidence == pytest.approx(0.4)
-    assert learned.learned_evidence_event_ids == ["experience-1"]
-    assert substrate.snapshot()["world_relations"] == before_world
-    assert substrate.snapshot()["self_relations"][0]["injected"] == before_injected
+    assert learned.strength == pytest.approx(0.4)
+    assert learned.confidence == pytest.approx(0.4)
+    assert learned.origin == "learned"
+    assert learned.evidence_event_ids == ["experience-1"]
+
+    snapshot = substrate.snapshot()
+    assert snapshot["world_relations"] == before_world
+    assert snapshot["self_relations"][0]["injected"] == before_injected
+    assert snapshot["self_relations"][0]["learned"][0]["relation_type"] == "protective_of"
+
+
+def test_arbitrary_relation_types_and_invalid_values() -> None:
+    substrate = CognitiveSubstrate()
+    substrate.add_concept(Concept("daisy", "Daisy"))
+
+    substrate.set_injected_self_relation(
+        concept_id="daisy",
+        relation_type="expects_help_from",
+        strength=0.2,
+        confidence=0.8,
+    )
+    substrate.learn_self_relation(
+        concept_id="daisy",
+        relation_type="reminds_me_of_home",
+        observed_strength=0.9,
+        trust=0.5,
+        learning_rate=0.5,
+        evidence_event_id="experience-2",
+    )
+
+    self_relation = substrate.snapshot()["self_relations"][0]
+    types = {
+        relation["relation_type"]
+        for group in (self_relation["injected"], self_relation["learned"])
+        for relation in group
+    }
+    assert types == {"expects_help_from", "reminds_me_of_home"}
+
+    before_invalid = substrate.snapshot()
+    with pytest.raises(ValueError):
+        substrate.set_injected_self_relation(
+            concept_id="daisy",
+            relation_type="   ",
+            strength=0.2,
+            confidence=0.8,
+        )
+    with pytest.raises(ValueError):
+        substrate.set_injected_self_relation(
+            concept_id="daisy",
+            relation_type="anything",
+            strength=1.2,
+            confidence=0.8,
+        )
+    with pytest.raises(KeyError):
+        substrate.set_injected_self_relation(
+            concept_id="unknown",
+            relation_type="anything",
+            strength=0.2,
+            confidence=0.8,
+        )
+    assert substrate.snapshot() == before_invalid
 
 
 def test_runtime_controls_require_start_and_reject_empty_input() -> None:
@@ -154,7 +206,7 @@ def test_runtime_controls_require_start_and_reject_empty_input() -> None:
         runtime.close()
 
 
-def test_http_boundary_reaches_runtime_thread_and_substrate() -> None:
+def test_http_boundary_accepts_unseen_self_relation_type() -> None:
     runtime = SynrheonRuntime(cycle_interval_seconds=10.0)
     server = create_development_server(runtime, port=0)
     thread = Thread(target=server.serve_forever, daemon=True)
@@ -176,26 +228,22 @@ def test_http_boundary_reaches_runtime_thread_and_substrate() -> None:
     try:
         post("/api/start")
         post("/api/concept", {"concept_id": "daisy", "label": "Daisy"})
-        post("/api/concept", {"concept_id": "dog", "label": "dog"})
         related = post(
-            "/api/world-relation",
-            {
-                "source_concept_id": "daisy",
-                "relation": "IS_A",
-                "target_concept_id": "dog",
-                "confidence": 1.0,
-            },
-        )
-        self_related = post(
             "/api/self-relation",
-            {"concept_id": "daisy", "dimension": "social", "value": 0.9, "confidence": 0.8},
+            {
+                "concept_id": "daisy",
+                "relation_type": "protective_of",
+                "strength": 0.7,
+                "confidence": 0.9,
+            },
         )
         chatted = post("/api/stimulus", {"text": "Daisy"})
         thought = post("/api/thought", {"text": "Daisy may expect a walk"})
         stepped = post("/api/step")
 
-        assert related["state"]["cognitive_substrate"]["world_relations"][0]["origin"] == "injected"
-        assert self_related["state"]["cognitive_substrate"]["self_relations"][0]["injected"]["vector"]["social"] == 0.9
+        injected = related["state"]["cognitive_substrate"]["self_relations"][0]["injected"][0]
+        assert injected["relation_type"] == "protective_of"
+        assert injected["origin"] == "injected"
         assert chatted["state"]["experience_thread"]["events"][-1]["origin"] == "observed"
         assert thought["state"]["experience_thread"]["events"][-1]["origin"] == "injected"
         assert stepped["state"]["cycle"] == 1
@@ -205,15 +253,12 @@ def test_http_boundary_reaches_runtime_thread_and_substrate() -> None:
         assert "Internal Thought" in html
         assert "Knowledge" in html
         assert "Inject Self Relation" in html
+        assert "selfRelationType" in html
 
         bad_request = Request(
-            f"{base}/api/world-relation",
+            f"{base}/api/self-relation",
             data=json.dumps(
-                {
-                    "source_concept_id": "unknown",
-                    "relation": "IS_A",
-                    "target_concept_id": "dog",
-                }
+                {"concept_id": "daisy", "relation_type": "", "strength": 0.7}
             ).encode("utf-8"),
             headers={"Content-Type": "application/json"},
             method="POST",

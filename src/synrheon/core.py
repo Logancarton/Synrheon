@@ -1,7 +1,7 @@
 """Core cognitive substrate and observable organism state.
 
-Stage 1 separates generic world knowledge, organism-relative knowledge, and
-current activation so later sparse activation can weight them differently.
+Stage 1 separates generic world knowledge, open-ended organism-relative relations,
+and current activation so later sparse activation can weight them differently.
 """
 
 from __future__ import annotations
@@ -16,20 +16,7 @@ from synrheon.time import ComputationalTime
 RunStatus = Literal["off", "paused", "running"]
 StimulusKind = Literal["external", "internal"]
 RelationOrigin = Literal["injected", "observed", "inferred", "learned"]
-
-SELF_RELATION_DIMENSIONS = (
-    "ownership",
-    "experience",
-    "social",
-    "goal",
-    "history",
-    "knowledge",
-    "trust",
-    "prediction",
-    "consequence",
-    "preference",
-    "uncertainty",
-)
+OrganismRelationOrigin = Literal["injected", "learned"]
 
 
 @dataclass(slots=True)
@@ -87,59 +74,42 @@ class WorldRelation:
 
 
 @dataclass(slots=True)
-class SelfRelationVector:
-    """Organism-relative dimensions used later to gate sparse activation."""
+class OrganismRelation:
+    """One open-ended relationship between Synrheon and a concept.
 
-    ownership: float = 0.0
-    experience: float = 0.0
-    social: float = 0.0
-    goal: float = 0.0
-    history: float = 0.0
-    knowledge: float = 0.0
-    trust: float = 0.0
-    prediction: float = 0.0
-    consequence: float = 0.0
-    preference: float = 0.0
-    uncertainty: float = 0.0
+    The relation type is data. Production code does not define a closed ontology of
+    allowed meanings such as social, trust, preference, or prediction.
+    """
 
-    def to_list(self) -> list[float]:
-        return [getattr(self, name) for name in SELF_RELATION_DIMENSIONS]
+    relation_type: str
+    strength: float
+    confidence: float
+    origin: OrganismRelationOrigin
+    evidence_event_ids: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> dict[str, float]:
+    def to_dict(self) -> dict[str, object]:
         return asdict(self)
-
-    def with_dimension(self, dimension: str, value: float) -> SelfRelationVector:
-        if dimension not in SELF_RELATION_DIMENSIONS:
-            raise ValueError(f"Unknown self-relation dimension: {dimension}")
-        _validate_unit_interval(value, "Self-relation value")
-        values = self.to_dict()
-        values[dimension] = value
-        return SelfRelationVector(**values)
 
 
 @dataclass(slots=True)
 class SelfRelation:
-    """Separate injected and self-learned organism-relative representations."""
+    """Open-ended injected and self-learned relations for one concept."""
 
     concept_id: str
-    injected_vector: SelfRelationVector = field(default_factory=SelfRelationVector)
-    learned_vector: SelfRelationVector = field(default_factory=SelfRelationVector)
-    injected_confidence: float = 0.0
-    learned_confidence: float = 0.0
-    learned_evidence_event_ids: list[str] = field(default_factory=list)
+    injected_relations: dict[str, OrganismRelation] = field(default_factory=dict)
+    learned_relations: dict[str, OrganismRelation] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, object]:
         return {
             "concept_id": self.concept_id,
-            "injected": {
-                "vector": self.injected_vector.to_dict(),
-                "confidence": self.injected_confidence,
-            },
-            "learned": {
-                "vector": self.learned_vector.to_dict(),
-                "confidence": self.learned_confidence,
-                "evidence_event_ids": list(self.learned_evidence_event_ids),
-            },
+            "injected": [
+                self.injected_relations[key].to_dict()
+                for key in sorted(self.injected_relations)
+            ],
+            "learned": [
+                self.learned_relations[key].to_dict()
+                for key in sorted(self.learned_relations)
+            ],
         }
 
 
@@ -160,7 +130,7 @@ class ActivationState:
 
 @dataclass(slots=True)
 class CognitiveSubstrate:
-    """Stage 1 representation boundary for world/self knowledge and activation."""
+    """Stage 1 boundary for world/self knowledge and current activation."""
 
     concepts: dict[str, Concept] = field(default_factory=dict)
     world_relations: list[WorldRelation] = field(default_factory=list)
@@ -186,75 +156,73 @@ class CognitiveSubstrate:
         self,
         *,
         concept_id: str,
-        dimension: str,
-        value: float,
+        relation_type: str,
+        strength: float,
         confidence: float,
-    ) -> SelfRelation:
-        """Update only injected self state; learned self state remains untouched."""
+    ) -> OrganismRelation:
+        """Set only injected organism-relative state for an arbitrary relation type."""
 
         self._require_concept(concept_id)
+        relation_type = _require_relation_type(relation_type)
+        _validate_unit_interval(strength, "Relation strength")
         _validate_unit_interval(confidence, "Confidence")
-        current = self.self_relations.get(concept_id, SelfRelation(concept_id=concept_id))
-        relation = SelfRelation(
-            concept_id=concept_id,
-            injected_vector=current.injected_vector.with_dimension(dimension, value),
-            learned_vector=current.learned_vector,
-            injected_confidence=confidence,
-            learned_confidence=current.learned_confidence,
-            learned_evidence_event_ids=list(current.learned_evidence_event_ids),
+
+        container = self.self_relations.setdefault(concept_id, SelfRelation(concept_id=concept_id))
+        relation = OrganismRelation(
+            relation_type=relation_type,
+            strength=strength,
+            confidence=confidence,
+            origin="injected",
         )
-        self.self_relations[concept_id] = relation
+        container.injected_relations[relation_type] = relation
         return relation
 
     def learn_self_relation(
         self,
         *,
         concept_id: str,
-        observation: SelfRelationVector,
+        relation_type: str,
+        observed_strength: float,
         trust: float,
         learning_rate: float,
         evidence_event_id: str,
-    ) -> SelfRelation:
-        """Update only the distinct self-learned vector from trusted evidence.
+    ) -> OrganismRelation:
+        """Update only a self-learned arbitrary relation from trusted evidence.
 
-        learned_new =
-            learned_old
-            + (learning_rate * trust) * (observation - learned_old)
+        learned_new = learned_old + (learning_rate * trust) *
+            (observed_strength - learned_old)
 
-        Injected self state is never rewritten by this operation.
+        Injected organism-relative state is never rewritten by this operation.
         """
 
         self._require_concept(concept_id)
+        relation_type = _require_relation_type(relation_type)
+        _validate_unit_interval(observed_strength, "Observed relation strength")
         _validate_unit_interval(trust, "Trust")
         _validate_unit_interval(learning_rate, "Learning rate")
         if not evidence_event_id.strip():
             raise ValueError("Evidence event ID is required.")
 
-        current = self.self_relations.get(concept_id, SelfRelation(concept_id=concept_id))
+        container = self.self_relations.setdefault(concept_id, SelfRelation(concept_id=concept_id))
+        previous = container.learned_relations.get(relation_type)
+        old_strength = previous.strength if previous is not None else 0.0
+        old_confidence = previous.confidence if previous is not None else 0.0
+        evidence_ids = list(previous.evidence_event_ids) if previous is not None else []
+
         effective_rate = learning_rate * trust
-        old_values = current.learned_vector.to_dict()
-        observed_values = observation.to_dict()
-        updated_values = {
-            name: old_values[name] + effective_rate * (observed_values[name] - old_values[name])
-            for name in SELF_RELATION_DIMENSIONS
-        }
-        learned_confidence = (
-            current.learned_confidence
-            + effective_rate * (1.0 - current.learned_confidence)
-        )
-        evidence_ids = list(current.learned_evidence_event_ids)
+        new_strength = old_strength + effective_rate * (observed_strength - old_strength)
+        new_confidence = old_confidence + effective_rate * (1.0 - old_confidence)
         if evidence_event_id not in evidence_ids:
             evidence_ids.append(evidence_event_id)
 
-        learned = SelfRelation(
-            concept_id=concept_id,
-            injected_vector=current.injected_vector,
-            learned_vector=SelfRelationVector(**updated_values),
-            injected_confidence=current.injected_confidence,
-            learned_confidence=learned_confidence,
-            learned_evidence_event_ids=evidence_ids,
+        learned = OrganismRelation(
+            relation_type=relation_type,
+            strength=new_strength,
+            confidence=new_confidence,
+            origin="learned",
+            evidence_event_ids=evidence_ids,
         )
-        self.self_relations[concept_id] = learned
+        container.learned_relations[relation_type] = learned
         return learned
 
     def set_activation(self, concept_id: str, value: float) -> None:
@@ -316,6 +284,13 @@ class OrganismState:
             "experience_thread": self.experience.snapshot(),
             "cognitive_substrate": self.substrate.snapshot(),
         }
+
+
+def _require_relation_type(relation_type: str) -> str:
+    cleaned = relation_type.strip()
+    if not cleaned:
+        raise ValueError("Organism relation type is required.")
+    return cleaned
 
 
 def _validate_unit_interval(value: float, label: str) -> None:

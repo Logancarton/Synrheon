@@ -64,13 +64,13 @@ How can things relate in general?
 LAYER 3 — CURRENT SITUATION / ACTIVATION
 What is active now?
 
-LAYER 4 — ORGANISM RELATION
-What does this mean to Synrheon?
+LAYER 4 — ORGANISM RELATIONS
+How does this relate to Synrheon?
 ```
 
 ### Layer 1 — Concept Identity
 
-Concepts receive stable identities separate from display labels and later word/sense forms. Future language systems may map many expressions onto the same concept without making the surface wording the concept itself.
+Concepts receive stable identities separate from display labels and later word/sense forms. Future language systems may map many expressions onto the same concept without making surface wording the concept itself.
 
 ### Layer 2 — World Relations
 
@@ -82,7 +82,7 @@ leash USED_FOR walk
 dog HAS_PROPERTY fur
 ```
 
-World relations preserve source/provenance, confidence, and later evidence lineage.
+World relations preserve provenance, confidence, and later evidence lineage.
 
 ### Layer 3 — Current Situation / Activation
 
@@ -90,42 +90,39 @@ Current activation is separate from concept existence and stored relationship tr
 
 Future sparse activation should combine seeded context, weighted support, organism-relative relevance, decay, inhibition/competition, and bounded Top-K survival.
 
-### Layer 4 — Organism Relation
+### Layer 4 — Organism Relations
 
 Generic semantic relevance is not enough to produce organism-specific sparse activation.
 
-Each concept may carry two permanently separate organism-relative representations:
+Synrheon must also represent how a concept relates to herself. Those relations are **open-ended typed data**, not a fixed vector chosen by developers.
+
+Examples may include:
 
 ```text
-injected_self_vector
-self_learned_vector
+protective_of
+expects_help_from
+reminds_me_of_home
+trusted_source
 ```
 
-Both initially use:
+These are examples only. New relation types must be representable without adding Python fields or editing an allowed-values list.
+
+For each concept, two collections remain permanently separate:
 
 ```text
-ownership
-experience
-social
-goal
-history
-knowledge
-trust
-prediction
-consequence
-preference
-uncertainty
+injected_relations
+learned_relations
 ```
 
-The injected vector answers what Synrheon was explicitly told about how something relates to her.
+The injected collection records what Synrheon was explicitly told about how something relates to her.
 
-The learned vector answers what Synrheon has accumulated from her own trusted experience.
+The learned collection records organism-relative regularities accumulated from trusted experience.
 
-They may both influence future activation, but they must remain separately inspectable.
+Both may later influence activation while remaining independently inspectable.
 
 ### Provenance
 
-Initial provenance categories:
+Initial broader provenance categories remain:
 
 ```text
 injected
@@ -138,7 +135,7 @@ Injected information may bootstrap the organism but must never silently become s
 
 ### Explicit Self Learning
 
-Only the learned vector is updated by experience:
+For one arbitrary learned organism relation type:
 
 ```text
 learned_new
@@ -147,10 +144,12 @@ learned_old
 +
 (learning_rate × trust)
 ×
-(observation - learned_old)
+(observed_strength - learned_old)
 ```
 
-The injected vector remains unchanged. Learned confidence and supporting experience-event IDs remain explicit outside future neural weights.
+The corresponding injected relation remains unchanged. Learned confidence and supporting experience-event IDs remain explicit outside future neural weights.
+
+Automatic discovery of which relation type an experience implies is **not implemented yet**.
 
 ### Stage 1 Activation Target
 
@@ -163,9 +162,9 @@ world support
 +
 current context
 +
-injected self relevance
+context-compatible injected organism relevance
 +
-self-learned relevance
+context-compatible learned organism relevance
 +
 goal / recent relevance
 -
@@ -175,6 +174,8 @@ decay
 ```
 
 followed by sparse selection.
+
+The activation algorithm should operate over relation records generically rather than enumerating a closed self-relation ontology.
 
 ## Stage 2 — Computational Time + Experience
 
@@ -248,7 +249,7 @@ Failed attempts remain remembered.
 
 ## Stage 7 — Learning + Cognitive Plasticity
 
-Experience should modify useful associations, retrieval routes, cognitive-operation selection, prediction reliability, failed routes, variable-selection strategy, and self-learned relevance without rewriting provenance.
+Experience should modify useful associations, retrieval routes, cognitive-operation selection, prediction reliability, failed routes, variable-selection strategy, and organism-relative learned relations without rewriting provenance.
 
 ## Stage 8 — Consolidation + Abstraction
 
@@ -262,7 +263,7 @@ Higher layers must preserve lineage to lower-level evidence.
 
 Potential targets include activation behavior, retrieval, prediction, route selection, semantic representation, and abstraction.
 
-Neural training may absorb regularities, but explicit injected/self-learned vectors, experience, and provenance remain separately inspectable.
+Neural training may absorb regularities, but explicit injected/learned organism relations, experience, and provenance remain separately inspectable.
 
 ## Stage 10 — Continuous Autonomous Cognition
 
