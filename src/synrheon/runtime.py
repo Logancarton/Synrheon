@@ -14,6 +14,7 @@ Runtime must not:
 Status: Scaffold only.
 """
 
+
 def main() -> None:
     """Run the current scaffold entry point."""
-    print("Synrheon scaffold ready. Stage 1 cognitive substrate is not implemented yet.")
+    print("Synrheon scaffold ready. Stage 0B observable organism harness is not implemented yet.")
