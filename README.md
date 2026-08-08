@@ -4,6 +4,8 @@
 
 This repository is the canonical home for Synrheon.
 
-The current implementation priority is **Stage 0B — Observable Organism Harness**: establish a thin runtime and development UI so later cognitive mechanisms can be stimulated, stepped, observed, traced, and tested through the running organism rather than inferred only from pass/fail tests.
+The current implementation priority is **Stage 1 — Cognitive Substrate + First Sparse Activation**. The verified Stage 0B runtime/UI now carries Chat and Internal Thought stimuli into a real `cognition.py` state transition: known concept cues seed activation, directed world relations spread it, open-ended organism relations contribute personal salience, and competition retains a bounded Top-K active region.
 
-See `docs/PROJECT_GUIDE.md`, `docs/SIGNAL_FLOW.md`, `docs/ARCHITECTURE_PLAN.md`, and `docs/IMPLEMENTATION_STATUS.md` for the current working architecture and project truth.
+This is real cognitive state change, but it is intentionally narrow. The current text-to-concept bridge is lexical rather than semantic; durable memory, retrieval, response generation, and autonomous cognition are still future work.
+
+See `docs/PROJECT_GUIDE.md`, `docs/SIGNAL_FLOW.md`, `docs/ARCHITECTURE_PLAN.md`, `docs/IMPLEMENTATION_STATUS.md`, and `docs/CURRENT_STAGE.md` for current implemented truth.
