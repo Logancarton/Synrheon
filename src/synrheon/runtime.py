@@ -9,6 +9,7 @@ from __future__ import annotations
 from threading import Event, RLock, Thread
 from time import sleep
 
+from synrheon.cognition import activate_from_text
 from synrheon.core import Concept, OrganismState, StimulusKind, StimulusRecord, TraceEvent, WorldRelation
 from synrheon.time import utc_now
 
@@ -162,6 +163,27 @@ class SynrheonRuntime:
                     created_at=coordinate.occurred_at,
                 )
             )
+
+            frame = activate_from_text(
+                self._state.substrate,
+                text=cleaned,
+                experience_event_id=experience_event.event_id,
+            )
+            self._state.cognitive_frames.append(frame)
+            if frame.status == "activated":
+                winners = ", ".join(
+                    f"{concept_id}={activation:.3f}"
+                    for concept_id, activation in frame.active_concepts.items()
+                )
+                self._trace(
+                    "cognition_activated",
+                    f"Matched {', '.join(frame.matched_concept_ids)}; sparse winners: {winners}.",
+                )
+            else:
+                self._trace(
+                    "cognition_unmatched",
+                    "No known concept cue matched this experience; activation cleared.",
+                )
             return self._state.snapshot()
 
     def _advance_cycle(self, source: str) -> None:
