@@ -21,8 +21,8 @@ Keep separate from implementation status:
 | Stage | Capability | Status | Cognitive Effect | Evidence |
 |---|---|---|---|---|
 | 0A | Architecture Stewardship | Designed | Infrastructure | Agent + canonical development workflow |
-| 0B | Observable Runtime + Development UI | Integrated | Infrastructure | Connected browser/API/runtime/state path in code; focused runtime + HTTP regression tests; human live-browser verification still required before `Verified` |
-| 1 | Cognitive Substrate | Not Started | Cognitive improvement | |
+| 0B | Observable Runtime + Development UI | Verified | Infrastructure | Connected browser/API/runtime/state path; focused runtime + HTTP regression tests; live browser run confirmed Start, Chat, Internal Thought, Step, Continue, Pause, state, and trace behavior |
+| 1 | Cognitive Substrate | Not Started | Cognitive improvement | Active next stage; no cognitive mechanism implemented yet |
 | 2 | Computational Time + Experience | Not Started | Cognitive improvement | |
 | 3 | Memory + Sparse Activation | Not Started | Cognitive improvement | |
 | 4 | Level 1→2→3 Retrieval | Not Started | Cognitive improvement | |
@@ -37,16 +37,18 @@ Keep separate from implementation status:
 ## Stage 0B Component Truth
 
 ```text
-Modern development UI shell             Built
-Browser → Python HTTP boundary           Integrated
-Start / Step / Continue / Pause          Integrated
-External Chat stimulus channel           Integrated
-Internal thought injection channel       Integrated
-In-memory session state + trace          Integrated
-Human live-browser inspection            Not yet Verified
+Modern development UI shell             Verified
+Browser → Python HTTP boundary           Verified
+Start / Step / Continue / Pause          Verified
+External Chat stimulus channel           Verified
+Internal thought injection channel       Verified
+In-memory session state + trace          Verified
+Human live-browser inspection            Verified
 Deep cognition                           Not Started
 ```
 
-`Continue` currently advances observable Stage 0B cycles. It does not mean autonomous cognition exists.
+Stage 0B is complete as an observable development foundation. It is **Infrastructure**, not cognitive improvement.
+
+`Continue` currently advances observable harness cycles. It does not mean autonomous cognition exists.
 
 The Internal Thought tab currently shows harness trace and explicit injected thoughts. It does not yet show self-generated cognitive thought.

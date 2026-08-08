@@ -18,9 +18,11 @@ Automated tests may protect a discovered behavior but should not be treated as t
 
 Hypothesis: a browser-facing control/input request can cross into the real Python runtime, mutate Synrheon-owned session state, and return an observable snapshot without placing cognition in the UI or transport layer.
 
-Implemented regression path:
+Implemented path:
 
 ```text
+Browser action
+ ↓
 HTTP request
  ↓
 interfaces.py
@@ -29,20 +31,39 @@ SynrheonRuntime
  ↓
 OrganismState
  ↓
-snapshot
+snapshot + trace
  ↓
 HTTP response
+ ↓
+Browser
 ```
 
-Automated preview result: 4 focused tests passed, including the HTTP boundary test, distinct external/internal stimulus channels, one-step cycle behavior, and safe pre-start/empty-input failure.
+Automated regression evidence: 4 focused tests passed, including the HTTP boundary test, distinct external/internal stimulus channels, one-step cycle behavior, and safe pre-start/empty-input failure.
 
-Status: Integrated code path; human live-browser verification pending before Stage 0B is called Verified.
+Live action set:
+
+```text
+Start
+Chat stimulus
+Internal Thought injection
+Think One Step
+Continue
+Pause
+inspect Current State
+inspect Trace
+```
+
+Observed result: the user ran the supported local Synrheon application and confirmed the UI workflow worked. The real frontend/backend/runtime path was therefore observed through the running organism rather than inferred from tests alone.
+
+Interpretation: Stage 0B successfully provides the observable development organism required for later cognitive experiments. This verifies infrastructure only; it does not demonstrate semantic understanding or cognition.
+
+Status: **Verified**
 
 ## E001 — Cognitive Substrate
 
 Can Synrheon represent a tiny world of concepts and relationships and transform activation/state without stimulus-specific logic?
 
-Status: Not Run
+Status: Active next experiment; not yet pre-registered or run.
 
 ## E002 — Sequence Reconstruction
 
