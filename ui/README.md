@@ -30,13 +30,15 @@ The Knowledge tab provides explicit developer scaffolding for:
 
 - concepts
 - world relations
-- injected organism/self relations
+- injected organism relations
 
-World knowledge, injected self state, self-learned state, and current activation are separate backend representations.
+World knowledge, injected organism state, self-learned organism state, and current activation are separate backend representations.
 
-The Self Relation form writes only the **injected self vector**. There is intentionally no control that lets a developer directly label data as self-learned. The learned vector can only be changed by the learning mechanism when trusted experience evidence exists.
+The Self Relation form uses a free-text **Relation type** field. The UI does not provide a fixed dropdown or an allowed ontology. A relation such as `protective_of` can be injected without changing production code.
 
-The current substrate JSON displays both injected and learned self sections so their separation remains inspectable.
+The form writes only the injected organism-relation collection. There is intentionally no control that lets a developer directly label data as self-learned. Learned organism relations can only be changed by the learning mechanism when trusted experience evidence exists.
+
+The substrate JSON displays injected and learned relation collections separately so their provenance remains inspectable.
 
 ## Controls
 
@@ -57,4 +59,4 @@ The right-side inspector shows status, cycle, trace-event count, experience coun
 
 The UI controls, injects explicit scaffolding, and observes.
 
-It must not own semantic interpretation, sparse activation, retrieval, durable memory, learning, abstraction, or problem solving.
+It must not own semantic interpretation, relation discovery, sparse activation, retrieval, durable memory, learning, abstraction, or problem solving.
