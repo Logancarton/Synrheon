@@ -5,7 +5,6 @@ This document separates **CURRENT REAL FLOW** from **PLANNED / INTENDED FLOW**.
 # 1. Current Real Application Flow
 
 ```text
-PowerShell
 .\scripts\synrheon.ps1 run
         ↓
 python -m synrheon
@@ -21,7 +20,7 @@ local HTTP server
 browser
 ```
 
-The UI remains a control/observation surface.
+The UI controls/injects explicit scaffolding and observes. It does not own cognition.
 
 # 2. Current External Experience Flow
 
@@ -36,101 +35,63 @@ runtime.send_external_stimulus()
  ↓
 time.py → next TemporalCoordinate
  ↓
-experience.py → append ExperienceEvent(origin="observed")
+experience.py → ExperienceEvent(origin="observed")
  ↓
-previous / next event links updated
+previous / next links
  ↓
-StimulusRecord links to experience_event_id
+StimulusRecord → experience_event_id
  ↓
-OrganismState snapshot
- ↓
-UI
+state → UI
 ```
 
-The event receives:
-- episode ID
-- monotonic experience sequence
-- absolute timestamp
-- elapsed episode time
-- previous/next event links
+Each event receives episode ID, monotonic experience sequence, timestamp, elapsed episode time, and before/after links.
 
 # 3. Current Injected Internal Experience Flow
 
 ```text
-Internal Thought composer
+Internal Thought
  ↓
 POST /api/thought
  ↓
-interfaces.py
- ↓
 runtime.inject_internal_thought()
  ↓
-time.py → next TemporalCoordinate
+time.py
  ↓
-experience.py → append ExperienceEvent(origin="injected")
+experience.py → ExperienceEvent(origin="injected")
  ↓
-ordered experience thread
+ordered current-episode thread
  ↓
-state + trace
- ↓
-Internal Thought view
+UI
 ```
 
-An injected thought remains explicitly **injected**. It is not presented as self-generated cognition or self-learned knowledge.
+Injected thought remains explicitly injected. It is not self-generated cognition or self-learned knowledge.
 
 # 4. Current Knowledge Injection Flow
-
-The Knowledge tab provides explicit developer scaffolding.
 
 ## Concept
 
 ```text
-Knowledge UI
- ↓
-POST /api/concept
- ↓
-runtime.define_concept()
- ↓
-core.CognitiveSubstrate.add_concept()
- ↓
-Concept stored
- ↓
-snapshot → UI
+Knowledge UI → /api/concept → runtime.define_concept()
+             → CognitiveSubstrate.add_concept()
 ```
 
 ## World Relation
 
 ```text
-Knowledge UI
- ↓
-POST /api/world-relation
- ↓
-runtime.define_world_relation()
- ↓
-core.CognitiveSubstrate.add_world_relation()
- ↓
-WorldRelation(origin="injected")
- ↓
-snapshot → UI
+Knowledge UI → /api/world-relation → runtime.define_world_relation()
+             → CognitiveSubstrate.add_world_relation()
+             → WorldRelation(origin="injected")
 ```
 
-## Self Relation
+## Injected Self Relation
 
 ```text
-Knowledge UI
- ↓
-POST /api/self-relation
- ↓
-runtime.define_self_relation()
- ↓
-core.CognitiveSubstrate.set_injected_self_relation()
- ↓
-SelfRelation(origin="injected")
- ↓
-snapshot → UI
+Knowledge UI → /api/self-relation → runtime.define_self_relation()
+             → CognitiveSubstrate.set_injected_self_relation()
+             → injected_self_vector only
 ```
 
-Generic world knowledge and organism-relative knowledge are separate state.
+Generic world knowledge, injected self state, self-learned state, and current activation are four separate forms of state.
 
 # 5. Current Substrate Ownership
 
@@ -140,6 +101,8 @@ core.py
 ├─ WorldRelation
 ├─ SelfRelationVector
 ├─ SelfRelation
+│  ├─ injected_vector
+│  └─ learned_vector
 ├─ ActivationState
 ├─ CognitiveSubstrate
 └─ OrganismState
@@ -152,14 +115,9 @@ experience.py
 ├─ ExperienceEvent
 └─ ExperienceThread
 
-runtime.py
-└─ sequencing / routing only
-
-interfaces.py
-└─ HTTP / browser transport only
-
-ui/
-└─ injection + observation only
+runtime.py     sequencing / routing only
+interfaces.py  HTTP / browser transport only
+ui/            explicit injection + observation only
 ```
 
 # 6. Current Self-Learning Mechanism — Built, Not Live-Integrated
@@ -167,55 +125,39 @@ ui/
 `CognitiveSubstrate.learn_self_relation()` implements:
 
 ```text
-s_new
+learned_new
 =
-s_old
+learned_old
 +
 (learning_rate × trust)
 ×
-(observation - s_old)
+(observation - learned_old)
 ```
 
 It:
-- updates only the explicit self relation vector
-- sets provenance to `learned`
-- increases confidence gradually
-- records evidence event IDs
-- does not rewrite world relations
+- updates only `learned_vector`
+- leaves `injected_vector` unchanged
+- leaves world relations unchanged
+- increases learned confidence gradually
+- records supporting experience-event IDs
 
-There is not yet a live outcome/feedback owner that decides when to call this mechanism.
+There is not yet a live outcome/feedback owner that decides when this mechanism should run.
 
 # 7. Current Activation State — Representation Only
 
-`ActivationState` exists and remains separate from stored concept/world/self knowledge.
+`ActivationState` exists separately from stored concept/world/self knowledge.
 
 There is not yet a live activation equation, spreading activation, competition, inhibition, decay, or Top-K sparse selection.
 
 # 8. Current Episode Boundary
 
-Starting a fresh session:
+Starting a fresh session creates a new episode, resets experience sequence/thread, and clears current activation.
 
-```text
-Start
- ↓
-new session ID
- ↓
-new computational-time episode
- ↓
-experience sequence = 0
- ↓
-new empty ExperienceThread
- ↓
-activation cleared
-```
+Injected concepts/world relations/injected self state and any learned self state remain for the life of the current process.
 
-Injected concepts/world/self relations remain in the running process when a session is restarted.
-
-Everything is still in-memory. Process restart loses the current substrate and experience thread.
+Process restart still loses all of this because durable memory/persistence is not implemented.
 
 # 9. Planned Sparse Activation Flow
-
-This is intended architecture, not current implementation.
 
 ```text
 stimulus / active context
@@ -223,9 +165,11 @@ stimulus / active context
 concept candidates
         ↓
 world relation support
-        +
-organism-relative relevance
-        +
++
+injected self relevance
++
+self-learned relevance
++
 current goal / recent context
         ↓
 recurrent activation update
@@ -257,14 +201,12 @@ cognition
 
 The current `ExperienceThread` is not durable memory.
 
-Later:
-
 ```text
 ordered ExperienceEvent thread
         ↓
 memory owner
         ↓
-persistent episode / event storage
+persistent episodes/events
         ↓
 retrieval
         ↓
@@ -276,7 +218,7 @@ reconstructed sequence / evidence
 ```text
 explicit experience
         ↓
-explicit self/world provenance
+explicit world/injected-self/learned-self provenance
         ↓
 trusted learning trace
         ↓
@@ -285,9 +227,4 @@ optional neural training
 weights improve
 ```
 
-Training must not erase the explicit record of:
-- what was injected
-- what was observed
-- what was inferred
-- what was learned
-- which evidence supported the learning
+Training must not erase the explicit record of what was injected, observed, inferred, or learned, nor collapse injected and self-learned vectors into one opaque representation.
