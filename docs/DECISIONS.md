@@ -81,7 +81,7 @@ Examples:
 Daisy IS_A dog
 ```
 
-is world knowledge, while organism-relative values describe what Daisy means to Synrheon.
+is world knowledge, while organism-relative relations describe what Daisy means to Synrheon.
 
 The two may influence the same future activation calculation but one must not overwrite or silently become the other.
 
@@ -102,48 +102,44 @@ Injected developer scaffolding must never be relabeled as self-learned merely be
 
 If neural training later absorbs a pattern, the explicit source/evidence representation remains outside model weights.
 
-## D014 — Injected Self State and Self-Learned State Are Permanent Separate Representations
+## D014 — Organism Relations Are Open-Ended Data, Not a Fixed Cognitive Ontology
 
-For each concept, Synrheon keeps two organism-relative vectors:
+Synrheon must not be limited to a hard-coded list of ways that something can matter to her.
 
-```text
-injected_self_vector
-self_learned_vector
-```
-
-Both use the same initial dimensions:
+Organism-relative relation types are stored as data, for example:
 
 ```text
-ownership
-experience
-social
-goal
-history
-knowledge
-trust
-prediction
-consequence
-preference
-uncertainty
+protective_of
+expects_help_from
+reminds_me_of_home
+trusted_source
 ```
 
-Injected self scaffolding updates only `injected_self_vector`.
+Those examples are not reserved categories. A relation type not known when the software was written must be representable without changing production code.
 
-Experience-based learning updates only `self_learned_vector`.
-
-The learning operation must never rewrite the injected vector merely to simplify storage or training.
-
-The initial online learned-vector update is:
+For each concept, injected and self-learned organism relations remain permanently separate collections:
 
 ```text
-learned_new = learned_old + (learning_rate × trust) × (observation - learned_old)
+injected_relations
+≠
+learned_relations
 ```
 
-Each learned update preserves supporting experience-event IDs and its own learned confidence.
+Injected developer scaffolding may write only `injected_relations`.
 
-Later sparse activation may combine the two vectors, but their provenance remains separable and inspectable.
+Experience-based learning may create or update only `learned_relations`.
 
-If neural training later absorbs regularities from either representation, the explicit injected and learned vectors remain authoritative provenance-bearing state outside model weights.
+For one learned relation type, the initial online update is:
+
+```text
+learned_new = learned_old + (learning_rate × trust) × (observed_strength - learned_old)
+```
+
+Each learned relation preserves its own confidence and supporting experience-event IDs.
+
+Later sparse activation may combine contributions from both collections, but their provenance remains separable and inspectable.
+
+Neural training may absorb broader regularities, but the explicit provenance-bearing relations remain authoritative state outside model weights.
 
 ## D015 — Experience Thread Is Ordered but Is Not Yet Durable Memory
 
