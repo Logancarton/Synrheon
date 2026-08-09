@@ -6,21 +6,14 @@ Canonical repository:
 https://github.com/Logancarton/Synrheon
 ```
 
-Start by reading `README.md`.
-
-Then read:
+Start by reading `README.md`, then:
 
 ```text
 agent/ARCHITECTURE_STEWARD.md
-```
-
-Then load and follow the canonical workflow:
-
-```text
 .agents/skills/synrheon-development-workflow/SKILL.md
 ```
 
-Before material implementation, review and reconcile:
+Before material implementation, reconcile:
 
 ```text
 docs/SCAFFOLD.md
@@ -31,28 +24,32 @@ docs/EXPERIMENTS.md
 docs/SIGNAL_FLOW.md
 ```
 
-Synrheon is developed broad-to-narrow and bottom-up.
+Stage 0B — the observable runtime/UI organism — is **Verified**.
 
-Stage 0B — the observable runtime/UI organism — already exists and is **Verified**.
+E011-A v1 is now **Built** and its frozen controlled Level-1 numeric gate passed. It is not live-integrated.
 
 The current implementation priority is:
 
 ```text
-E011-A v1 controlled process-transfer assay
+E011-B live cognition integration
         ↓
-implement the frozen generated task / CognitiveState / EXPAND(target)+STOP policy
+load one exact recorded E011-A policy artifact
         ↓
-run the preregistered training + untouched transfer gates
+construct legitimate live CognitiveState
         ↓
-classify success/failure honestly
+cognition.py selects learned operation + target
         ↓
-only then E011-B live cognition integration
+one bounded checkpoint
         ↓
-cognition.py → thin runtime → state/trace → Organism UI
+thin runtime sequencing
+        ↓
+OrganismState / trace
+        ↓
+Organism UI
 ```
 
-Do not broaden E011-A, change its hidden-information firewall, tune against final held-out seeds, add solver-derived features, or insert a hand-written preferred-target selector to make the experiment pass.
+Do not retune E011-A v1 against the already-inspected final seeds. A material model/state/action/reward/generator change requires a new experiment revision and fresh untouched final split.
 
-A controlled E011-A result is experimental evidence, not `Integrated`. E011-B is required before the live organism may claim integration.
+Keep the hidden E011 generator/scorer outside production cognition. Runtime and UI must not choose cognitive actions or targets.
 
-Automated tests support the work but do not replace live-organism proof once E011-B begins.
+A controlled E011-A result is `Built` cognitive evidence, not `Integrated`. E011-B must prove the live path before integration is claimed; human live testing is still required for `Verified`.
