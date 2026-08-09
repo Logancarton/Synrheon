@@ -1,8 +1,10 @@
-"""Outcome-driven parameter updates for Synrheon's trainable cognitive policy."""
+"""Outcome-driven parameter updates and recorded learning evidence."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
+from pathlib import Path
 from typing import Sequence
 
 from synrheon.cognition import CandidateEvaluation, LinearCognitivePolicy
@@ -80,3 +82,20 @@ class ReinforceLearner:
                 gradient = advantage * (selected_value - expected[feature_index])
                 gradient = max(-self.gradient_clip, min(self.gradient_clip, gradient))
                 self.policy.weights[feature_index] += self.learning_rate * gradient
+
+
+def load_recorded_learning_metrics(path: Path) -> dict[str, object]:
+    """Load backend-owned experiment evidence without importing the hidden experiment harness."""
+
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    if not isinstance(payload, dict):
+        return {}
+    metrics = payload.get("learning_metrics")
+    if not isinstance(metrics, dict):
+        return {}
+    return dict(metrics)
