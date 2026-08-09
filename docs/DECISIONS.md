@@ -191,3 +191,104 @@ evaluate on unseen world D
 ```
 
 If the policy only works because it remembers concept names, relation labels, exact prompts, or answers from training, the experiment fails.
+
+## D018 — Language Is an Interface Around Cognition, Not the Thought Process Itself
+
+Text tokenization, language encoding, and natural-language generation are perception/expression concerns.
+
+The intended flow is:
+
+```text
+language / observation
+        ↓
+perception / grounding
+        ↓
+CognitiveState
+        ↓
+trainable cognitive process
+        ↓
+state result
+        ↓
+optional language expression
+```
+
+A future language model may contribute interpretation, concept proposal, outside knowledge, simulation, or expression. It must not become the sole owner of Synrheon's persistent state, provenance, memory lineage, or learned cognitive-process history.
+
+## D019 — One Cognitive Micro-Cycle Produces One Observable Checkpoint
+
+The default unit of trainable cognition is a bounded state transition rather than one monolithic hidden reasoning pass.
+
+Conceptually:
+
+```text
+S(t)
+ ↓ choose cognitive action
+bounded operation
+ ↓
+S(t+1) checkpoint
+```
+
+A checkpoint is computational state, not a required wall-clock delay.
+
+This boundary exists so Synrheon can:
+- inspect uncertainty before continuing;
+- redirect when evidence changes;
+- preserve sequence and provenance;
+- assign credit to individual cognitive transitions;
+- stop under a hard compute budget;
+- later compress repeated successful transition sequences into reusable cognitive skills.
+
+## D020 — Separate Cognitive Physics From Learned Cognitive Skill
+
+Synrheon may hard-code the **rules of the nervous system**, but should increasingly learn the **connections and useful thought routes**.
+
+Architecture may explicitly define:
+
+```text
+state schema
+action interface
+provenance
+checkpoint format
+hard compute / safety budget
+training-record format
+outcome / correction interface
+validation and persistence
+```
+
+Training should increasingly determine:
+
+```text
+attention / focus
+concept organization
+path ranking
+cognitive-action selection
+retrieval timing
+comparison strategy
+prediction / revision behavior
+route usefulness
+credit assignment
+stopping preference within the hard ceiling
+```
+
+A production rule that says what thought to have for a particular phrase, relation name, concept, or answer pattern is presumed suspect unless the rule is truly a generic invariant and cannot reasonably be learned.
+
+## D021 — Knowledge Transfer Is the Primary Test of Cognitive Skill
+
+A model that performs well only on the knowledge it was trained with has not demonstrated reusable cognition.
+
+The first trainable-policy experiments must therefore use anti-memorization controls such as:
+
+```text
+held-out concept identities
+opaque / randomized names
+renaming or permutation tests
+no correct answer embedded in policy features
+untrained or random baseline
+no world-specific production branches
+```
+
+Later evaluations should also vary world topology and task composition.
+
+The key question is:
+
+> **Can Synrheon use a learned thinking process on knowledge it did not learn that process from?**
