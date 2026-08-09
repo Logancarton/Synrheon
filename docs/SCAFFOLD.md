@@ -82,8 +82,6 @@ Synrheon/
 
 # Fast Orientation
 
-For a new human or coding-agent session:
-
 ```text
 README.md
     ↓
@@ -110,158 +108,77 @@ affected source files
 relevant tests / live organism
 ```
 
-`docs/PROMPT_TEMPLATES.md` is optional human dispatch help; it is not workflow authority.
-
----
-
-# Root Ownership
-
-## `README.md`
-Project purpose, cognitive vision, and current implementation boundary.
-
-## `AGENTS.md`
-Short AI entry point that directs agents to the steward/workflow/project truth.
-
-## `pyproject.toml`
-Python package, dependency, testing, linting, and type-checking setup.
-
-## `.gitignore`
-Generated/local files Git should not save.
-
----
-
-# Agent Ownership
-
-## `agent/ARCHITECTURE_STEWARD.md`
-How the primary development agent should think: broad-to-narrow, correct ownership, live-organism proof, honest status.
-
-## `.agents/skills/synrheon-development-workflow/SKILL.md`
-Single canonical execution workflow for material Synrheon work.
-
-## `.agents/skills/synrheon-development-workflow/openai.yaml`
-OpenAI/Codex discovery metadata only.
-
-## `.claude/skills/synrheon-development-workflow.md`
-Thin Claude Code adapter pointing back to the canonical skill.
-
 ---
 
 # Documentation Ownership
 
-## `docs/PROJECT_GUIDE.md`
-Plain-English owner's manual. Update when file responsibility or meaningful internal structure changes.
+`docs/PROJECT_GUIDE.md` — plain-English owner's manual.
 
-## `docs/SIGNAL_FLOW.md`
-Current real information flow plus clearly labeled planned flow. Update whenever runtime/UI/owner-to-owner wiring changes.
+`docs/SIGNAL_FLOW.md` — current real information flow plus clearly labeled planned flow.
 
-## `docs/ARCHITECTURE_PLAN.md`
-Future architecture and cognitive dependency order.
+`docs/ARCHITECTURE_PLAN.md` — future architecture and cognitive dependency order.
 
-Current broad order:
+`docs/IMPLEMENTATION_STATUS.md` — what actually exists and works.
 
-```text
-Architecture Stewardship
-↓
-Observable Runtime + Development UI
-↓
-Running Test Organism
-↓
-Cognitive Substrate
-↓
-Computational Time + Experience
-↓
-Memory + Sparse Activation
-↓
-Level 1 → Level 2 → Level 3 Retrieval
-↓
-Scratchpad + Recursive Cognition
-↓
-Problems + Trials + Solutions
-↓
-Learning + Plasticity
-↓
-Consolidation + Abstraction
-↓
-Multi-Layer Training
-↓
-Continuous Autonomous Cognition
-↓
-External Intelligence + Tools
-```
+`docs/CURRENT_STAGE.md` — current active boundary.
 
-A narrow later-stage mechanism may be pulled forward when the current stage fundamentally depends on it; implementation status must still describe that partial truth accurately.
+Current: **Stage 1 — Trainable Cognition Pivot**.
 
-## `docs/IMPLEMENTATION_STATUS.md`
-What is Not Started, Designed, Built, Integrated, or Verified.
+`docs/DECISIONS.md` — durable architecture choices.
 
-`Verified` requires real organism behavior/state/trace evidence, not tests alone.
+`docs/EXPERIMENTS.md` — hypotheses, baselines, observed results, failures, and preregistered tests.
 
-## `docs/CURRENT_STAGE.md`
-Current: **Stage 1 — Cognitive Substrate + First Sparse Activation**.
+`docs/RESEARCH.md` — outside ideas/research only.
 
-## `docs/DECISIONS.md`
-Durable architecture choices already made.
-
-## `docs/EXPERIMENTS.md`
-Hypotheses, baseline, real stimulus/action, expected vs observed behavior, trace/state, interpretation.
-
-## `docs/RESEARCH.md`
-Outside ideas, math, neuroscience, donor mechanisms, prior art, open questions. Research is not implemented truth.
-
-## `docs/PROMPT_TEMPLATES.md`
-Human-facing prompt key for ChatGPT/Codex/Claude, including implementation, diagnosis, research, handoff, and manual Git prompts.
-
-## `docs/SCAFFOLD.md`
-This structural map and ownership key.
+`docs/PROMPT_TEMPLATES.md` — human-facing dispatch prompts.
 
 ---
 
 # Actual Organism Ownership
 
 ## `src/synrheon/runtime.py`
-Thin sequencing/integration layer. May route and sequence owners; must not become the primary cognition owner.
 
-Current textual stimulus handoff:
+Thin sequencing/integration layer.
+
+Current textual stimulus flow:
 
 ```text
-record time / experience / stimulus
-        ↓
-invoke cognition.activate_from_text()
-        ↓
-store returned CognitiveFrame
-        ↓
+record time
+ ↓
+record ordered experience
+ ↓
+record stimulus / trace
+ ↓
 return state
 ```
 
-Runtime does not perform sparse-activation mathematics.
+Runtime does **not** currently invoke a hand-written cognitive policy.
 
 ## `src/synrheon/core.py`
+
 Lowest substrate representations:
 - concepts
 - world relations
 - open-ended organism relations
-- current activation
-- observable activation contributions / cognitive frames
+- activation representation
 - top-level organism state
 
-## `src/synrheon/cognition.py`
-Current-state → next-state cognitive transformation owner.
+Core stores/validates state. It does not choose cognitive routes.
 
-Current first live mechanism:
+## `src/synrheon/cognition.py`
+
+Reserved owner for future current-state → next-state cognitive transformation.
+
+Current status:
 
 ```text
-known lexical cue
-↓
-directed world-relation spread
-↓
-open organism-relation salience
-↓
-decay + inhibition
-↓
-bounded Top-K active region
+trainable cognitive policy owner
+implementation intentionally absent
 ```
 
-This is real cognitive state change. The lexical bridge is not semantic language understanding.
+The previous lexical matching / fixed spreading / decay / inhibition / Top-K mechanism was experimental and has been removed from production.
+
+Future cognition should learn useful state/action transitions rather than rebuild those fixed rules.
 
 ## `src/synrheon/time.py`
 Computational time/sequence owner.
@@ -270,43 +187,37 @@ Computational time/sequence owner.
 Autobiographical events, ordering, and evidence lineage.
 
 ## `src/synrheon/memory.py`
-Future durable retained knowledge/experience. Keep existence, strength, and current activation separate.
+Future durable retained knowledge/experience.
 
 ## `src/synrheon/retrieval.py`
-Future Level 1 → Level 2 → Level 3 relevance/reconstruction owner.
+Future Level 1 → Level 2 → Level 3 retrieval owner.
 
 ## `src/synrheon/scratchpad.py`
-Future limited RAM-like working context.
+Future limited RAM-like working context/checkpoints.
 
 ## `src/synrheon/problem_solving.py`
-Future problem/model/plan/prediction/trial/outcome/failure-attribution/revised-plan/solution/lesson owner.
+Future problem/model/plan/prediction/trial/outcome/revision owner.
 
 ## `src/synrheon/learning.py`
-Future broader prediction error, route usefulness, credit assignment, and adaptation. The narrow arbitrary organism-relation update currently remains with its substrate representation.
+Future prediction error, route usefulness, credit assignment, and trainable cognitive-policy updates.
 
 ## `src/synrheon/consolidation.py`
-Future replay, repeated-pattern detection, strategic compression, evidence lineage.
+Future replay, pattern detection, strategic compression.
 
 ## `src/synrheon/abstraction.py`
-Future useful higher-order representation formation.
+Future higher-order representation formation.
 
 ## `src/synrheon/autonomy.py`
 Future decision whether/why cognition continues without new external input.
 
 ## `src/synrheon/interfaces.py`
-Boundary to user/LLMs/tools/vision/audio/web/code. Validates transport and calls runtime; does not own cognition.
-
-## `src/synrheon/__main__.py`
-Application/developer entry point; delegates to runtime.
-
-## `src/synrheon/__init__.py`
-Package identity/version. Keep small.
+Browser/outside-world transport only.
 
 ---
 
 # UI Ownership
 
-`ui/` is Synrheon's development microscope/control surface.
+`ui/` remains Synrheon's development microscope/control surface.
 
 Current live surfaces:
 
@@ -315,13 +226,13 @@ Start / Step / Continue / Pause
 Chat stimulus
 Internal Thought injection
 Knowledge injection
-Cognitive activation cards
 Experience thread
-Activation contribution paths
 Current state / trace
 ```
 
-The UI must not own cognition. It displays the `CognitiveFrame` returned from Python rather than calculating winners itself.
+The UI must not own cognition.
+
+A future learned cognitive policy may expose explicit checkpoints/state transitions here, but JavaScript must only display backend-owned state.
 
 ---
 
@@ -329,16 +240,16 @@ The UI must not own cognition. It displays the `CognitiveFrame` returned from Py
 
 `tests/` protects discovered behavior/contracts.
 
-Prefer meaningful owner behavior, cross-owner integration, runtime reachability, and live-organism evidence over large numbers of trivial tests.
+Current regression priorities:
+- Stage 0B transport remains connected
+- observed/injected experience provenance remains distinct
+- temporal sequence and links remain correct
+- open-ended organism relation representation stays non-hardcoded
+- invalid knowledge fails safely
+- Chat does not mutate cognitive state through a hand-written thinking policy
+- UI/API still reaches the real runtime
 
-Current sparse-activation regression must prove at least:
-- two unrelated concept networks use the same mechanism
-- open-ended organism relations are not enumerated
-- unrelated concepts are suppressed
-- Top-K bounds activation
-- unknown cues fail safely
-- stored knowledge is not mutated by thinking
-- Chat reaches cognition through runtime/API
+Future trainable-policy tests must prove transfer to unseen knowledge worlds, not merely training-set accuracy.
 
 ---
 
@@ -350,9 +261,6 @@ Current sparse-activation regression must prove at least:
 
 # Script Ownership
 
-## `scripts/synrheon.ps1`
-Main developer command:
-
 ```powershell
 .\scripts\synrheon.ps1 setup
 .\scripts\synrheon.ps1 run
@@ -362,15 +270,6 @@ Main developer command:
 ```
 
 `verify` runs pytest, compileall, `git diff --check`, and Git status. Live cognitive verification still requires observing the organism.
-
-## `scripts/context.ps1`
-Generates a repository/context snapshot for a new AI thread.
-
-## `scripts/run.ps1`
-Run shortcut.
-
-## `scripts/verify.ps1`
-Verification shortcut.
 
 ---
 
@@ -407,25 +306,19 @@ docs/DECISIONS.md
 WHAT WE OBSERVED
 docs/EXPERIMENTS.md
 
-WHAT WE ARE INVESTIGATING
-docs/RESEARCH.md
-
-HUMAN PROMPT DISPATCH
-docs/PROMPT_TEMPLATES.md
-
 WHERE EVERYTHING IS
 docs/SCAFFOLD.md
 
-WHAT OWNS CURRENT ACTIVATION TRANSFORMATION
+FUTURE TRAINABLE THINKING OWNER
 src/synrheon/cognition.py
 
-WHAT OWNS BASIC COGNITIVE STATE
+BASIC COGNITIVE STATE
 src/synrheon/core.py
 
-WHAT SEQUENCES THE ORGANISM
+SEQUENCING
 src/synrheon/runtime.py
 
-WHAT LETS YOU WATCH / CONTROL IT
+OBSERVATION / CONTROL
 ui/
 ```
 

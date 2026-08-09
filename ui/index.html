@@ -54,13 +54,8 @@
     .message.internal { align-self: stretch; max-width: none; background: var(--panel); border: 1px solid var(--line); }
     .event { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
     .event.memory { border-color: #365047; }
-    .event.cognition { border-color: #3d655f; background: #131d1c; }
-    .event.unmatched { border-color: #675a3d; }
     .event-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 5px; }
     .event-name { font-weight: 650; }
-    .winner-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
-    .winner { padding: 5px 8px; border-radius: 999px; background: #1f302e; border: 1px solid #34504c; font-size: 12px; }
-    .path-list { display: grid; gap: 4px; margin-top: 9px; }
     .composer-wrap { position: fixed; left: 240px; right: 320px; bottom: 0; padding: 18px 24px 24px; background: linear-gradient(180deg, rgba(15,17,21,0), rgba(15,17,21,.96) 30%); z-index: 4; }
     .composer { max-width: 860px; margin: 0 auto; background: var(--panel-2); border: 1px solid #364052; border-radius: 18px; padding: 10px; box-shadow: var(--shadow); }
     textarea { width: 100%; min-height: 56px; max-height: 180px; resize: vertical; background: transparent; border: 0; outline: 0; color: var(--text); padding: 8px 10px; }
@@ -102,7 +97,7 @@
         <button id="pauseBtn" class="btn" disabled>Pause</button>
       </div>
       <div class="sidebar-spacer"></div>
-      <div class="tiny">Stage 1 · Sparse Activation<br>Chat now reaches the cognition owner.</div>
+      <div class="tiny">Stage 1 · Trainable Cognition Pivot<br>Hard-wired thinking policy removed.</div>
     </aside>
 
     <main class="main">
@@ -112,7 +107,7 @@
           <button class="tab" data-view="thought">Internal Thought</button>
           <button class="tab" data-view="knowledge">Knowledge</button>
         </div>
-        <div class="stage">stimulus → concepts → relations → sparse winners</div>
+        <div class="stage">stimulus → experience → trainable cognitive policy (next)</div>
       </header>
 
       <section id="chatView" class="view active"><div id="chatFeed" class="feed"></div></section>
@@ -170,7 +165,7 @@
         <div class="composer">
           <textarea id="composerInput" placeholder="Start Synrheon to send a message..." disabled></textarea>
           <div class="composer-actions">
-            <span id="composerHint" class="tiny">External stimulus → cognition</span>
+            <span id="composerHint" class="tiny">External stimulus → observed experience</span>
             <button id="sendBtn" class="btn primary send" disabled>Send</button>
           </div>
         </div>
@@ -194,7 +189,7 @@
   <script>
     let currentView = "chat";
     let state = {
-      session_id:null,status:"off",cycle:0,event_sequence:0,stimuli:[],trace:[],cognitive_frames:[],
+      session_id:null,status:"off",cycle:0,event_sequence:0,stimuli:[],trace:[],
       time:{experience_sequence:0},
       experience_thread:{episode_id:null,events:[]},
       cognitive_substrate:{concepts:[],world_relations:[],self_relations:[],activation:{}}
@@ -252,7 +247,7 @@
       $("addSelfBtn").disabled = !started;
       $("composerWrap").style.display = currentView === "knowledge" ? "none" : "block";
       $("composerInput").placeholder = !started ? "Start Synrheon to send a message..." : currentView === "chat" ? "Message Synrheon..." : "Inject an internal thought...";
-      $("composerHint").textContent = currentView === "chat" ? "External stimulus → observed experience → cognition" : "Injected thought → injected experience → cognition";
+      $("composerHint").textContent = currentView === "chat" ? "External stimulus → observed experience" : "Injected thought → injected experience";
       renderChat();
       renderThought();
     }
@@ -261,23 +256,18 @@
       const feed = $("chatFeed");
       const external = state.stimuli.filter(item => item.kind === "external");
       if (!external.length) {
-        feed.innerHTML = `<div class="empty"><h2>Synrheon Chat</h2><div>Known concepts can now activate and spread through injected relationships. This is cognition-state observation, not language-response generation yet.</div></div>`;
+        feed.innerHTML = `<div class="empty"><h2>Synrheon Chat</h2><div>External messages are recorded as ordered observed experiences. The previous hand-written activation policy has been removed while the trainable cognitive policy is developed.</div></div>`;
         return;
       }
-      const frames = new Map((state.cognitive_frames ?? []).map(frame => [frame.experience_event_id, frame]));
-      feed.innerHTML = external.map(item => {
-        const frame = frames.get(item.experience_event_id);
-        return `<div class="message user">${escapeHtml(item.text)}</div>${frame ? activationCard(frame, true) : ""}`;
-      }).join("");
+      feed.innerHTML = external.map(item => `<div class="message user">${escapeHtml(item.text)}</div>`).join("");
     }
 
     function renderThought() {
       const feed = $("thoughtFeed");
       const experiences = state.experience_thread?.events ?? [];
-      const frames = state.cognitive_frames ?? [];
       const trace = state.trace ?? [];
       if (!experiences.length && !trace.length) {
-        feed.innerHTML = `<div class="empty"><h2>Internal Thought</h2><div>Experience sequence, sparse activation frames, and runtime trace will appear here.</div></div>`;
+        feed.innerHTML = `<div class="empty"><h2>Internal Thought</h2><div>Experience sequence and runtime trace will appear here. A trainable cognitive policy will later add learned internal transitions.</div></div>`;
         return;
       }
 
@@ -291,41 +281,12 @@
         </div>`;
       }).join("");
 
-      const cognitionHtml = frames.map(frame => activationCard(frame, false)).join("");
       const traceHtml = trace.map(item => `<div class="event">
         <div class="event-head"><span class="event-name">${escapeHtml(item.event)}</span><span class="tiny">trace #${item.sequence}</span></div>
         <div>${escapeHtml(item.detail)}</div>
       </div>`).join("");
 
-      feed.innerHTML = memoryHtml + cognitionHtml + traceHtml;
-    }
-
-    function activationCard(frame, compact) {
-      if (frame.status !== "activated") {
-        return `<div class="event cognition unmatched">
-          <div class="event-head"><span class="event-name">Cognitive activation</span><span class="tiny">no known cue</span></div>
-          <div>No known concept matched this stimulus. The experience was retained, and stale activation was cleared.</div>
-        </div>`;
-      }
-
-      const winners = Object.entries(frame.active_concepts ?? {})
-        .map(([concept, value]) => `<span class="winner">${escapeHtml(concept)} ${Number(value).toFixed(3)}</span>`)
-        .join("");
-      const matched = (frame.matched_concept_ids ?? []).map(escapeHtml).join(", ");
-      const pathItems = (frame.contributions ?? [])
-        .filter(item => item.kind === "world" || item.kind === "organism")
-        .slice(-8)
-        .map(item => {
-          const source = item.source_concept_id ?? "cue";
-          const relation = item.relation ? ` —${escapeHtml(item.relation)}→ ` : " → ";
-          const origin = item.origin ? ` · ${escapeHtml(item.origin)}` : "";
-          return `<div class="tiny">r${item.round_index}: ${escapeHtml(source)}${relation}${escapeHtml(item.target_concept_id)} +${Number(item.amount).toFixed(3)}${origin}</div>`;
-        }).join("");
-      return `<div class="event cognition">
-        <div class="event-head"><span class="event-name">Cognitive activation</span><span class="tiny">matched: ${matched}</span></div>
-        <div class="winner-row">${winners}</div>
-        ${compact || !pathItems ? "" : `<div class="path-list">${pathItems}</div>`}
-      </div>`;
+      feed.innerHTML = memoryHtml + traceHtml;
     }
 
     function escapeHtml(value) {
@@ -382,7 +343,7 @@
     });
 
     $("startBtn").addEventListener("click", () => {
-      if (state.status !== "off" && !confirm("Start a fresh Synrheon session? Current session experience and cognitive activation frames will be cleared; injected concept knowledge remains in the current process.")) return;
+      if (state.status !== "off" && !confirm("Start a fresh Synrheon session? Current session experience will be cleared; injected concept knowledge remains in the current process.")) return;
       command("/api/start");
     });
     $("stepBtn").addEventListener("click", () => command("/api/step"));

@@ -22,7 +22,7 @@ browser
 
 The UI controls/injects explicit scaffolding and observes. It does not own cognition.
 
-# 2. Current External Chat → Cognition Flow
+# 2. Current External Chat Flow
 
 ```text
 Chat text
@@ -41,26 +41,14 @@ previous / next event links updated
  ↓
 StimulusRecord links to experience_event_id
  ↓
-runtime invokes cognition.py
+state + trace
  ↓
-activate_from_text(substrate, text, experience_event_id)
- ↓
-generic lexical cue match against existing concept IDs / labels
- ↓
-bounded recurrent sparse activation
- ↓
-CognitiveFrame linked to same experience_event_id
- ↓
-ActivationState replaced with current Top-K winners
- ↓
-snapshot + trace
- ↓
-Chat activation card + Internal Thought + inspector
+UI
 ```
 
-No natural-language reply is generated yet. The visible result is a real cognitive-state transition, not a fabricated chatbot answer.
+The message is retained as experience. No hand-written cognitive policy currently interprets it, spreads activation from it, or manufactures a response.
 
-# 3. Current Internal Thought Injection → Cognition Flow
+# 3. Current Internal Thought Injection Flow
 
 ```text
 Internal Thought text
@@ -75,102 +63,14 @@ ExperienceEvent(origin="injected")
  ↓
 ordered current-episode thread
  ↓
-runtime invokes the same cognition.py mechanism
+state + trace
  ↓
-CognitiveFrame
- ↓
-ActivationState + UI
+UI
 ```
 
 Injected thought remains explicitly injected. It is not self-generated cognition or self-learned knowledge.
 
-# 4. Current Sparse Activation Transformation
-
-Owned by `src/synrheon/cognition.py`.
-
-For each textual experience:
-
-```text
-text
- ↓
-known concept cue(s)
- ↓
-seed activation = 1.0
- ↓
-3 bounded recurrent rounds
-```
-
-Each round performs:
-
-```text
-current activation × decay
-+
-normalized outgoing world-relation support
-+
-organism-relation salience for already-reached concepts
-+
-re-seeded current stimulus concepts
- ↓
-clip to 0..1
- ↓
-activation floor + winner-relative inhibition threshold
- ↓
-Top-K sparse survivors
-```
-
-Initial parameters:
-
-```text
-decay               0.30
-spread gain         0.62
-organism gain       0.35
-inhibition fraction 0.10
-activation floor    0.05
-Top-K               5
-rounds              3
-```
-
-Outgoing world-relation influence is normalized by the source concept's total outgoing confidence. This prevents a high-degree source from sending unlimited total activation merely because it has many edges.
-
-# 5. Current Organism-Relation Contribution
-
-For a concept already reached by the current cue/world spread:
-
-```text
-relation salience = strength × confidence
-```
-
-Injected and learned organism relations are both eligible to contribute, but remain separately stored and separately labeled in the observable contribution path.
-
-The relation type itself is open-ended data. `cognition.py` does not enumerate or special-case relation names.
-
-Organism relations do **not** independently seed unrelated concepts in this first mechanism.
-
-# 6. Current Lexical Cue Boundary
-
-The current text-to-concept bridge is intentionally small:
-
-```text
-normalized text tokens
-       ↓
-match existing concept ID or label phrase
-       ↓
-seed matching concept
-```
-
-This is a temporary lexical bootstrap, not semantic language understanding.
-
-If no known concept matches:
-
-```text
-experience remains recorded
-+
-CognitiveFrame(status="unmatched")
-+
-current activation cleared
-```
-
-# 7. Current Knowledge Injection Flow
+# 4. Current Knowledge Injection Flow
 
 ## Concept
 
@@ -206,7 +106,7 @@ SelfRelation.injected_relations[relation_type]
 
 No production-code list decides which organism relation types are allowed.
 
-# 8. Current Ownership
+# 5. Current Ownership
 
 ```text
 core.py
@@ -214,19 +114,13 @@ core.py
 ├─ WorldRelation
 ├─ OrganismRelation
 ├─ SelfRelation
-├─ ActivationState
-├─ ActivationContribution
-├─ CognitiveFrame
+├─ ActivationState           representation only
 ├─ CognitiveSubstrate
 └─ OrganismState
 
 cognition.py
-├─ ActivationConfig
-├─ generic lexical cue matching
-├─ recurrent world-relation spreading
-├─ organism salience
-├─ inhibition / Top-K competition
-└─ current activation transformation
+└─ reserved owner for future trainable cognitive policy
+   (no hand-written thinking algorithm)
 
 time.py
 ├─ TemporalCoordinate
@@ -236,28 +130,38 @@ experience.py
 ├─ ExperienceEvent
 └─ ExperienceThread
 
-runtime.py     sequence owners / route typed handoffs
+runtime.py     sequence owners / route commands only
 interfaces.py  HTTP / browser transport only
 ui/            explicit injection + observation only
 ```
 
-# 9. Current Self-Learning Mechanism — Built, Not Live Outcome-Integrated
+# 6. Removed Experimental Cognition
 
-`CognitiveSubstrate.learn_self_relation()` accepts an arbitrary relation type and implements:
+The following flow was tried and then deliberately removed from production:
 
 ```text
-learned_new
-=
-learned_old
-+
-(learning_rate × trust)
-×
-(observed_strength - learned_old)
+text
+ ↓
+lexical concept match
+ ↓
+fixed relation spreading
+ ↓
+fixed salience / decay / inhibition
+ ↓
+fixed Top-K winners
 ```
 
-It creates/updates only the learned relation and preserves evidence-event IDs. There is still no live outcome/feedback owner deciding when or why to call it.
+The experiment demonstrated end-to-end state-changing wiring, but its decision mechanics were developer-selected rather than learned. It must not be silently rebuilt inside runtime, retrieval, memory, or UI.
 
-# 10. Current Episode Boundary
+# 7. Current Self-Learning Storage Mechanism — Built, Not Live Outcome-Integrated
+
+`CognitiveSubstrate.learn_self_relation()` accepts an arbitrary relation type and updates only its learned representation while preserving injected/world state and evidence IDs.
+
+This remains a narrow storage update. It does **not** decide which cognitive path to take and is not the trainable thinking policy.
+
+There is still no live outcome/feedback owner deciding when or why to call it.
+
+# 8. Current Episode Boundary
 
 Starting a fresh session:
 
@@ -268,8 +172,6 @@ experience sequence reset
  ↓
 experience thread cleared
  ↓
-cognitive frames cleared
- ↓
 current activation cleared
 ```
 
@@ -277,10 +179,40 @@ Injected concepts/world relations/injected organism relations and learned organi
 
 Process restart still loses all of this because durable persistence is not implemented.
 
-# 11. Planned Retrieval Flow
+# 9. Planned Trainable Cognitive Policy Flow
 
 ```text
-sparse active region
+experience / current state
+        ↓
+CognitiveState representation
+        ↓
+available generic cognitive actions
+        ↓
+trainable policy P(action | state)
+        ↓
+selected cognitive action
+        ↓
+short state transition / path
+        ↓
+checkpoint
+        ↓
+state after
+        ↓
+prediction / outcome / error
+        ↓
+credit assignment
+        ↓
+policy / transition learning
+```
+
+The central requirement is **transfer**: a policy trained on knowledge worlds A/B/C should remain useful in unseen world D without concept-name or answer-specific rules.
+
+# 10. Planned Retrieval Flow
+
+```text
+current cognitive state
+        ↓
+learned decision to retrieve
         ↓
 Level 1 coarse orientation
         ↓
@@ -288,12 +220,12 @@ Level 2 relevant situation / episode / concept region
         ↓
 Level 3 detailed evidence / relationships
         ↓
-scratchpad
-        ↓
-cognition
+checkpoint / next cognitive action
 ```
 
-# 12. Planned Durable Memory Flow
+Retrieval should become one cognitive operation available to the learned policy rather than a response to hard-coded phrases.
+
+# 11. Planned Durable Memory Flow
 
 ```text
 ordered ExperienceEvent thread
@@ -307,34 +239,40 @@ retrieval
 reconstructed sequence / evidence
 ```
 
-# 13. Planned Learned Language / Perception Flow
+# 12. Planned Language / Perception Flow
 
-The current lexical cue matcher should eventually become only one low-cost route inside a richer perception layer:
+Language should not be the cognition owner.
 
 ```text
 text / observation
         ↓
-learned language/perception mechanism
+perception / concept grounding
         ↓
-candidate concepts / senses + confidence
+cognitive state
         ↓
-existing cognition.py sparse activation owner
+trainable cognitive policy
+        ↓
+state result
+        ↓
+optional language expression
 ```
 
-A future LLM/neural encoder may own part of this perception step without erasing Synrheon's explicit state/provenance.
+A neural encoder or LLM may later participate in perception/expression without owning Synrheon's persistent autobiographical state or learned cognitive process.
 
-# 14. Planned Neural Training Flow
+# 13. Planned Training Trace
+
+A useful training unit should preserve at least:
 
 ```text
-explicit experience
-        ↓
-explicit world/injected-organism/learned-organism provenance
-        ↓
-trusted learning trace
-        ↓
-optional neural training
-        ↓
-weights improve
+state before
+candidate cognitive actions
+selected action
+short path / transition
+state after
+prediction
+outcome
+error
+credit
 ```
 
-Training must not erase what was injected, observed, inferred, or learned, nor collapse explicit organism relations into opaque weights.
+Training should reward useful process/outcome evidence, not merely reinforce a path because it happened to be selected.
