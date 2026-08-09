@@ -1,265 +1,408 @@
-# Synrheon Architecture Plan
+# Synrheon Architecture Plan — Revision 5 Build/Test Program
 
-## Ground 0 — Architectural Baseline
+## Current architectural thesis
 
-Ground 0 is the current experimentally reinforced computational process that future Synrheon cognition should implement, challenge, or improve.
+Synrheon is no longer treating the historical HCT-2 pipeline as a production blueprint that must be integrated intact.
+
+The current research question is narrower:
+
+> Can a cognitive system keep broad alternatives recoverable while increasing contextual resolution only where the unresolved question earns more computation?
+
+The current working flow is therefore:
 
 ```text
-VERY LARGE KNOWLEDGE / CANDIDATE FIELD
+question / unresolved state
         ↓
-learned context routing
+legitimate broad candidate field
         ↓
-ordered reversible soft tapering
+select a potentially discriminating context operation
         ↓
-TRACTABLE SERIOUS-CANDIDATE FIELD
+reversible contextual state transition
         ↓
-state-dependent recurrent deliberation
+re-evaluate what remains unresolved
         ↓
-evidence + uncertainty
+optional deeper refinement or optional recurrence if evidence earns it
+        ↓
+evidence sufficiency
         ↓
 COMMIT | ABSTAIN | SEEK EVIDENCE | REOPEN
 ```
 
-Learned pathway resistance is an optional modifier, not a required Ground 0 component. It produced strong earlier synthetic results but was unnecessary in HCT-2.
+This is a research architecture, not a claim that every box is established or live.
 
-Ground 0 is a **research foundation**, not a claim that this path is already live-integrated.
+## Evidence boundary
 
-## Why This Is Ground 0
+Current external-development evidence requires architectural restraint.
 
 ```text
-clock-driven progressive Top-K     failed
-confidence-only narrowing          limited
-stochastic consensus               produced false certainty
-hard irreversible deletion         failed context reversal
-reversible soft taper              reinforced
-learned ordered sparse taper       efficiency advantage reinforced
-state-dependent recurrence         strongly supported by ablation
-explicit abstention / reopening    reinforced
+reversible suppression
+    strong synthetic support; external value still open
+
+single full-context soft taper
+    approximately preserves BM25 on SciFact development
+
+multiple ordered context stages
+    NOT established
+
+current static recurrence
+    discounted on SciFact development
+
+current four hand-designed context channels
+    insufficient residual signal on BM25 errors
+
+current commitment calibration
+    discounted
+
+question-guided contextual divergence
+    untested
+
+trajectory-based recurrence
+    untested
 ```
 
-The purpose of future architecture is no longer to invent a cognitive route from scratch. It is to express, generalize, train, and falsify this reinforced process inside the persistent organism.
+Historical HCT-1/HCT-2 results remain evidence records. They do not force production mechanisms that stronger external tests fail to support.
 
-## Core Architectural Principle
+## Build/Test rule
 
-> **We code the cognitive physics. Synrheon learns the cognitive skill.**
-
-Designed cognitive physics may define:
+Synrheon should now grow through a repeating loop:
 
 ```text
-state and candidate schemas
-valid cognitive operation interfaces
-reversible suppression mechanics
-recurrent transition mechanics
-hard resource / safety ceilings
-checkpoint and provenance formats
-commit / abstain / reopen interfaces
-validation and persistence boundaries
+smallest defensible cognitive invariant
+        ↓
+build reusable production-facing primitive
+        ↓
+use that primitive in a falsifiable experiment
+        ↓
+negative result?
+    yes → simplify / remove assumption
+    no  → earn the next architectural layer
+        ↓
+only then integrate farther into the organism
 ```
 
-Learned cognitive skill should increasingly determine:
+This prevents a separate "research toy" and "production architecture" from drifting apart while also preventing an unvalidated experiment from becoming live cognition merely because code exists.
+
+## Cognitive physics vs cognitive skill
+
+### Designed cognitive physics may define
 
 ```text
+candidate identity and complete-state representation
+reversible suppression semantics
+active vs dormant compute regions
+checkpoint / restore / reopen mechanics
+context-transition provenance
+compute and safety ceilings
+valid evidence / abstain / seek / reopen interfaces
+observable trace boundaries
+```
+
+### Learned or experimentally earned cognitive skill should determine
+
+```text
+which candidate field to retrieve
 which context matters
 which context to evaluate next
-stage order
-stage gain / selectivity
-candidate-region preference
-which cognitive operation + target to choose
-when recurrence is worth more compute
+how strongly to settle
+whether multiple settling stages help
+which region deserves more compute
+whether recurrence adds useful information
 when evidence is sufficient
-when to seek more evidence
-when to reopen broader context
+when to seek evidence
+when to reopen
+when to stop
 ```
 
-## Ground 0 Computational Responsibilities
+The design principle remains:
 
-### Candidate field
+> **We code the cognitive physics. Synrheon must earn or learn the cognitive skill.**
 
-Synrheon needs an explicit or representable field of currently plausible knowledge, memories, hypotheses, goals, or operations. Expensive reasoning should not operate over the whole field by default.
+## Architecture slice 1 — reversible candidate field
 
-### Learned context routing
+Status: **BUILT, NOT LIVE-INTEGRATED**
 
-Context should not be a permanently hand-written sequence. HCT-2 supports learning a useful order as an efficiency mechanism when context is hierarchical and conditional.
-
-### Reversible sparse taper
+Owner:
 
 ```text
-suppressed ≠ deleted
+src/synrheon/contextual_search.py
 ```
 
-A low-activation candidate may become important after new evidence or context change. HCT-1/HCT-2 reversal tests support this over hard deletion.
-
-### Recurrent deliberation
-
-Once the field is small enough, serious candidates may interact through recurrent excitation/inhibition or another state-dependent relational process. HCT-2 showed that removing recurrence reduced good behavior to 45% even though correct-candidate survival remained 100%.
-
-Taper and recurrence therefore remain separate architectural responsibilities.
-
-### Commitment
+The first production-facing primitive now implements:
 
 ```text
-winner ≠ sufficient evidence
+complete broad-field retrieval prior
+complete current activation vector
+active candidate region
+dormant but recoverable candidate state
+carry / reset / residual transition provenance
+reversible checkpoints
+restore
+reactivate
+reopen-all
 ```
 
-Commitment must allow at least:
+Its central invariant is:
+
+```text
+suppressed != deleted
+```
+
+It rejects silent candidate deletion during soft state replacement. It contains no qrels, correct identity, semantic hierarchy, taper equation, recurrence rule, or commitment rule.
+
+The primitive is exported through `cognition.py`, but `runtime.py` does not fabricate a candidate field merely to claim integration.
+
+## Architecture slice 2 — transition isolation through D6
+
+Status: **PREREGISTERED + BUILT; SCIFACT DEVELOPMENT RESULT NOT YET OBSERVED**
+
+Scientific owners:
+
+```text
+docs/D6_PREREGISTRATION.md
+experiments/d6_transition_persistence.py
+tests/test_d6_transition_persistence.py
+```
+
+D6 uses the same reversible candidate-field contract to compare:
+
+```text
+A  BM25 anchor
+B  one full-context soft taper
+C  partial -> full with carried activation
+D  partial -> full with reset
+E  partial -> full with full-minus-partial residual evidence
+```
+
+No recurrence is allowed. No final split is accessible through the D6 interface.
+
+The immediate purpose is not to improve performance. It is to determine whether carried settled state is a major cause of the existing sequential failure.
+
+## Architecture slice 3 — multi-taper necessity
+
+Status: **BLOCKED ON D6**
+
+MT-1 will ask whether more than one context-settled soft taper actually earns a role after transition pathology is controlled.
+
+Primary comparison:
+
+```text
+single soft
+vs
+multiple soft
+vs
+multiple soft + reset
+vs
+scrambled-order multiple soft
+vs
+matched-compute hard stages
+```
+
+Clock-driven Top-K may appear only as a negative control.
+
+Frozen interpretation principle:
+
+> **Hard pruning losing does not establish that multiple soft tapers are necessary.**
+
+If multi-soft ~= single-soft while hard pruning loses reversal recovery, keep reversibility and remove multi-stage necessity from the architecture.
+
+## What should be built now vs withheld
+
+### Build now
+
+Only mechanisms that remain useful under both positive and negative D6 outcomes:
+
+```text
+reversible candidate-state ownership
+context-transition checkpoints
+explicit provenance of carry / reset / residual operations
+raw compute accounting
+observable state boundaries
+experiment-to-production compatible interfaces
+```
+
+### Withhold until evidence earns them
+
+```text
+fixed multi-level context hierarchy
+production multi-taper controller
+production recurrence operator
+learned recurrence resistance as a universal mechanism
+hard-coded semantic context routes
+custom commitment thresholds
+live autonomous Ground 0 loop
+```
+
+This is deliberate. Building these now would optimize implementation toward the preferred theory before MT-1 has had a chance to falsify it.
+
+## Next legitimate production dependency — candidate source
+
+The live organism cannot use contextual search until it has a legitimate broad candidate field.
+
+Today the live system has concepts, relations, current activation storage, ordered experience, provenance, and computational time, but it does not yet have durable memory or learned retrieval.
+
+Therefore the next production dependency is not "turn on tapering." It is to establish a candidate-source interface that can eventually receive candidates from memory/retrieval without knowing the correct answer.
+
+Required contract:
+
+```text
+question / current cognitive need
+        ↓
+candidate source
+        ↓
+opaque candidate IDs + provenance + initial support
+        ↓
+ReversibleCandidateField
+```
+
+The interface may be built before a sophisticated retriever exists, but production tests must use legitimate visible state rather than planted correct identity.
+
+## Question and unresolved-state controller
+
+Revision 5 proposes that context resolution should be controlled by what remains unanswered rather than by a universal stage count.
+
+Future architecture therefore needs an explicit representation of:
+
+```text
+current question
+currently available evidence
+what remains unresolved
+candidate disagreements relevant to that unresolved portion
+possible next context operations
+expected information gain / cost
+```
+
+This owner is **not yet built** because D6/MT-1 may change what a transition should preserve. Do not hard-code an ontology of semantic, temporal, identity, causal, or social levels as a mandatory sequence.
+
+Those may become available context operations; they should not become a universal ladder by assumption.
+
+## Recurrence boundary
+
+Recurrence is now optional, not part of the guaranteed funnel.
+
+A future recurrence owner must earn its role by operating on a question-relative relation such as:
+
+```text
+complementary evidence
+contradiction / support
+causal dependence
+temporal sequence
+trajectory compatibility
+missing-aspect coverage
+```
+
+Generic static lexical similarity is not enough evidence for production recurrence.
+
+A recurrence experiment must compare against a matched no-recurrence condition and measure whether recurrence reduces unresolved uncertainty or improves external behavior enough to justify its cost.
+
+## Commitment boundary
+
+The architectural separation remains valuable:
+
+```text
+winner != knowledge
+```
+
+But the current commitment signal is not externally established.
+
+Production commitment should eventually consume explicit evidence sufficiency, provenance, unresolved alternatives, and calibration evidence. Until a mechanism passes external tests, the architecture should preserve the actions without pretending the policy is solved:
 
 ```text
 COMMIT
 ABSTAIN
-SEEK DISCRIMINATING EVIDENCE
-REOPEN BROADER CONTEXT
+SEEK EVIDENCE
+REOPEN
+CONTINUE DELIBERATION
 ```
 
-### Optional reliability learning
+## Relationship to E011-A
 
-Historical source/pathway reliability may modify evidence flow when a task actually benefits from it. Do not make learned resistance universal by assumption.
+E011-A remains evidence that an operation/target policy can learn transferable preferences from visible state without memorizing candidate identity.
 
-## Relationship to Existing E011 Work
-
-E011-A proved a separate but compatible principle: a model can learn which valid cognitive operation/target to choose from visible state and transfer that preference across unseen and renamed worlds.
-
-Its implementation now lives in:
+Owners:
 
 ```text
 policy.py
 policy_learning.py
 ```
 
-Its `EXPAND(target)` / `STOP` task is narrower than Ground 0, so it is a donor mechanism rather than the architecture itself.
+Its role is donor evidence for learned cognitive routing. It is not the Ground 0 architecture and should not be directly wired into contextual search until the state/action contract being learned is justified.
 
-## Production Ownership Now
-
-The source tree should contain real implementation, not roadmap placeholders.
-
-`state.py`  
-Explicit organism/world state, concepts, relations, activation, stimuli, and trace records.
-
-`cognition.py`  
-Ground 0 cognitive-cycle contract and future production cognition owner. It currently defines observable process checkpoints; the actual HCT mechanism is not yet integrated.
-
-`policy.py`  
-Retained E011-A trainable operation/target policy primitives.
-
-`policy_learning.py`  
-Outcome-driven updates for the retained policy.
-
-`temporal.py`  
-Computational time and event coordinates.
-
-`experience.py`  
-Ordered current-episode autobiographical experience and provenance.
-
-`runtime.py`  
-Thin sequencing only; never owns candidate preference or answer selection.
-
-`dev_server.py`  
-Local browser/API transport only.
-
-`ui/`  
-Observation/control only.
-
-`experiments/`  
-Scientific generators, hidden truth, scoring, and falsification assays only.
-
-A small compatibility export remains in `learning.py` for the frozen E011-A experiment. New code should use `policy_learning.py` directly. `cognition.py` also temporarily re-exports the E011 policy classes so the frozen experiment remains reproducible while the real ownership has moved to `policy.py`.
-
-## Future Capabilities Do Not Get Empty Source Files
-
-Durable memory, retrieval, scratchpad cognition, problem/trial learning, consolidation, abstraction, and autonomy remain planned architecture. Their former placeholder-only source files were removed.
-
-A new source owner should be created only when implementation exists and its responsibility is clear.
+## Production ownership
 
 ```text
-planned capability
-        ↓
-architecture / experiment proves need
-        ↓
-real implementation appears
-        ↓
-source owner earns a file
+state.py
+    explicit organism/world state
+
+cognition.py
+    public Ground 0 contracts and cognitive boundary
+
+contextual_search.py
+    reversible candidate field and context-transition checkpoints
+
+policy.py
+    retained trainable operation/target policy primitives
+
+policy_learning.py
+    outcome-driven policy updates
+
+experience.py
+    ordered current-episode experience + provenance
+
+temporal.py
+    computational time and sequence
+
+runtime.py
+    thin sequencing only
+
+dev_server.py
+    browser/API transport only
+
+experiments/
+    falsification assays, external qrels, hidden evaluation truth, scientific scoring
 ```
 
-## Next Live Architecture Slice
+Hidden evaluation truth must never cross from `experiments/` into production cognition.
 
-Build the smallest observable production path that contains the essential Ground 0 separation:
+## Live integration sequence
+
+Do not integrate an entire presumed architecture at once.
+
+The current dependency order is:
 
 ```text
-live state
-        ↓
-construct legitimate broad candidate field
-        ↓
-select context / operation from visible state
-        ↓
-reversible taper checkpoint
-        ↓
-small recurrent field
-        ↓
-one or more bounded recurrent transitions
-        ↓
-commit / abstain / reopen checkpoint
-        ↓
-runtime sequences handoff
-        ↓
-state / trace
-        ↓
-UI
+1. reversible candidate field                         BUILT
+2. D6 transition isolation                            BUILT / NOT YET RUN
+3. interpret D6                                       PENDING
+4. MT-1 multi-taper falsification                     BLOCKED
+5. legitimate production candidate-source contract    NEXT BUILDABLE DEPENDENCY
+6. question / unresolved-state representation         PENDING EVIDENCE
+7. learned context-operation selection                PENDING SIGNAL
+8. optional recurrence                                MUST EARN ROLE
+9. evidence sufficiency / commitment calibration      MUST EARN ROLE
+10. runtime + UI integration of earned mechanisms     LATER
 ```
 
-The first implementation does not need natural-language semantics or the entire HCT synthetic mechanism. It must preserve the functional contracts and make every stage observable.
+Durable memory, retrieval, scratchpad cognition, problem/trial learning, consolidation, abstraction, and autonomy should receive implementation owners only when real code and a clear responsibility exist.
 
-## Development Dependency Order From Ground 0
+## Scientific development rule
 
-```text
-Ground 0 integration contract
-        ↓
-observable candidate/taper/recurrent/commit checkpoints
-        ↓
-live learned routing
-        ↓
-durable memory
-        ↓
-learned sparse retrieval
-        ↓
-recursive working-state cognition
-        ↓
-problem / trial / revision learning
-        ↓
-consolidation + abstraction
-        ↓
-broader multi-layer training
-        ↓
-autonomous continuation
-        ↓
-external tools / intelligence
-```
-
-The order may change if experiments show a missing prerequisite.
-
-## Scientific Development Rule
-
-Every major mechanism should have:
+Every major mechanism must declare before evidence inspection:
 
 ```text
 hypothesis
-baseline / control
-frozen evaluation boundary
-failure condition
-ablation where possible
-identity/leakage safeguards
-observable production boundary if integrated
+strong baseline
+matched information access
+matched compute where relevant
+success threshold
+failure interpretation
+ablation
+identity / leakage safeguards
+held-out boundary
+raw metrics
 ```
 
-Do not preserve a mechanism because it is elegant. Preserve it because it repeatedly earns a role.
+Negative and unexpected results are research assets. Do not lower a threshold or add a patch merely to preserve the preferred architecture.
 
-## Generalization Ladder
+The objective is not to build the historical Ground 0 diagram.
 
-```text
-Level 0 — training fit
-Level 1 — identity / instance transfer
-Level 2 — structural transfer
-Level 3 — compositional transfer
-```
-
-HCT-1/HCT-2 provide controlled synthetic evidence for structural process properties, not natural-language or real-world general intelligence.
-
-The next scientific extension should attack generality across changed world structures rather than simply enlarge HCT-2.
+> **The objective is to discover which cognitive operations continue to deserve a place in Synrheon, and build only those operations strongly enough that the organism and the experiments can share them.**
