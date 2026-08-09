@@ -7,528 +7,204 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #0f1115;
-      --panel: #151922;
-      --panel-2: #1b202a;
-      --line: #2a3140;
-      --text: #eef2f7;
-      --muted: #9aa5b5;
-      --accent: #8fd3c8;
-      --good: #78c9a7;
-      --warn: #e1b56f;
-      --quiet: #657083;
-      --shadow: 0 16px 50px rgba(0,0,0,.28);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bg:#0f1115; --panel:#151922; --panel2:#1b202a; --line:#2a3140;
+      --text:#eef2f7; --muted:#9aa5b5; --accent:#8fd3c8; --good:#78c9a7;
+      --warn:#e1b56f; --quiet:#657083; --bad:#d98484;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
-    button, textarea, input { font: inherit; }
-    button { color: inherit; }
-    .app { min-height: 100vh; display: grid; grid-template-columns: 240px minmax(0, 1fr) 320px; }
-    .sidebar, .inspector { background: #11151c; border-color: var(--line); border-style: solid; }
-    .sidebar { border-width: 0 1px 0 0; padding: 22px 16px; display: flex; flex-direction: column; gap: 18px; }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 750; letter-spacing: .2px; }
-    .mark { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(145deg, #263443, #1c2932); border: 1px solid #344351; color: var(--accent); }
-    .status-card { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
-    .status-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
-    .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #5c6470; box-shadow: 0 0 0 4px rgba(255,255,255,.03); }
-    .status-dot.running { background: var(--accent); }
-    .status-dot.paused { background: var(--warn); }
-    .tiny { color: var(--muted); font-size: 12px; line-height: 1.45; }
-    .controls { display: grid; gap: 8px; }
-    .btn { border: 1px solid var(--line); background: var(--panel-2); border-radius: 11px; padding: 10px 12px; cursor: pointer; transition: .15s ease; }
-    .btn:hover:not(:disabled) { transform: translateY(-1px); border-color: #3a4556; }
-    .btn.primary { background: var(--accent); color: #0f1717; border-color: transparent; font-weight: 700; }
-    .btn:disabled { opacity: .42; cursor: not-allowed; }
-    .sidebar-spacer { flex: 1; }
-    .main { min-width: 0; display: flex; flex-direction: column; }
-    .topbar { min-height: 66px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: rgba(15,17,21,.88); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 5; }
-    .tabs { display: flex; gap: 6px; background: #11151c; padding: 4px; border-radius: 12px; border: 1px solid var(--line); }
-    .tab { border: 0; background: transparent; padding: 8px 12px; border-radius: 9px; cursor: pointer; color: var(--muted); }
-    .tab.active { background: var(--panel-2); color: var(--text); }
-    .stage { color: var(--muted); font-size: 13px; }
-    .view { display: none; flex: 1; min-height: 0; }
-    .view.active { display: flex; flex-direction: column; }
-    .feed { width: min(860px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 140px; display: flex; flex-direction: column; gap: 16px; }
-    .organism-feed { width: min(980px, calc(100% - 32px)); padding-bottom: 48px; }
-    .empty { margin: auto; max-width: 560px; text-align: center; color: var(--muted); padding: 60px 20px; }
-    .empty h2 { color: var(--text); margin-bottom: 8px; font-size: 22px; }
-    .message { max-width: 78%; padding: 13px 15px; border-radius: 16px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
-    .message.user { align-self: flex-end; background: #26313c; }
-    .message.internal { align-self: stretch; max-width: none; background: var(--panel); border: 1px solid var(--line); }
-    .event { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
-    .event.memory { border-color: #365047; }
-    .event-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 5px; }
-    .event-name { font-weight: 650; }
-    .composer-wrap { position: fixed; left: 240px; right: 320px; bottom: 0; padding: 18px 24px 24px; background: linear-gradient(180deg, rgba(15,17,21,0), rgba(15,17,21,.96) 30%); z-index: 4; }
-    .composer { max-width: 860px; margin: 0 auto; background: var(--panel-2); border: 1px solid #364052; border-radius: 18px; padding: 10px; box-shadow: var(--shadow); }
-    textarea { width: 100%; min-height: 56px; max-height: 180px; resize: vertical; background: transparent; border: 0; outline: 0; color: var(--text); padding: 8px 10px; }
-    .composer-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 4px 2px; }
-    .send { border-radius: 10px; padding: 8px 13px; }
-    .inspector { border-width: 0 0 0 1px; padding: 22px 16px; overflow: auto; }
-    .inspector h3 { margin: 0 0 14px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-    .metric { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(42,49,64,.65); }
-    .metric span:first-child { color: var(--muted); }
-    .state-json { margin-top: 16px; padding: 12px; border-radius: 12px; background: #0c0f14; border: 1px solid var(--line); overflow: auto; font-size: 11px; line-height: 1.5; color: #b7c1ce; max-height: 48vh; }
-    .knowledge-grid { display: grid; gap: 16px; }
-    .knowledge-card, .overview-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
-    .knowledge-card h3, .overview-card h3 { margin: 0 0 6px; }
-    .knowledge-card p, .overview-card p { margin: 0 0 14px; color: var(--muted); font-size: 13px; line-height: 1.55; }
-    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .fields.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .field { display: grid; gap: 6px; }
-    .field label { color: var(--muted); font-size: 12px; }
-    .field input { width: 100%; color: var(--text); background: #0f131a; border: 1px solid var(--line); border-radius: 9px; padding: 9px 10px; outline: none; }
-    .field input:focus { border-color: #425063; }
-    .knowledge-actions { margin-top: 12px; display: flex; justify-content: flex-end; }
-    .error { position: fixed; top: 78px; left: 50%; transform: translateX(-50%); background: #3a2023; border: 1px solid #6d343a; color: #ffd8dc; padding: 10px 14px; border-radius: 10px; z-index: 20; display: none; }
-
-    .overview-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; padding: 4px 2px 6px; }
-    .overview-head h1 { margin: 0 0 7px; font-size: 28px; line-height: 1.15; }
-    .overview-head p { margin: 0; color: var(--muted); max-width: 680px; line-height: 1.55; }
-    .truth-badge { flex: 0 0 auto; padding: 8px 10px; border: 1px solid #365047; background: rgba(120,201,167,.08); color: var(--good); border-radius: 999px; font-size: 12px; font-weight: 700; }
-    .overview-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 16px; }
-    .card-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-    .card-title-row h3 { margin: 0; }
-    .status-pill { border-radius: 999px; padding: 5px 8px; font-size: 11px; font-weight: 700; border: 1px solid var(--line); color: var(--muted); }
-    .status-pill.verified, .status-pill.integrated { color: var(--good); border-color: #365047; background: rgba(120,201,167,.07); }
-    .status-pill.built { color: #a9d5cc; border-color: #344c4c; background: rgba(143,211,200,.06); }
-    .status-pill.designed { color: var(--warn); border-color: #5b4931; background: rgba(225,181,111,.06); }
-    .status-pill.not-started { color: var(--quiet); }
-    .stage-list { display: grid; gap: 8px; }
-    .stage-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid rgba(42,49,64,.58); }
-    .stage-row:last-child { border-bottom: 0; }
-    .stage-name { font-weight: 650; font-size: 13px; }
-    .stage-detail { margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.4; }
-    .growth-hero { padding: 14px; background: #10151b; border: 1px solid #2c3845; border-radius: 13px; margin-bottom: 13px; }
-    .growth-kicker { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
-    .growth-value { margin-top: 6px; font-size: 19px; font-weight: 750; }
-    .growth-value.pending { color: var(--warn); }
-    .growth-value.positive { color: var(--good); }
-    .growth-metrics { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
-    .growth-metric { padding: 10px 11px; border-radius: 11px; background: #11161d; border: 1px solid rgba(42,49,64,.8); }
-    .growth-metric span { display: block; color: var(--muted); font-size: 11px; }
-    .growth-metric strong { display: block; margin-top: 4px; font-size: 14px; }
-    .capability-list { display: grid; gap: 8px; margin-top: 4px; }
-    .capability { display: flex; gap: 9px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid rgba(42,49,64,.48); }
-    .capability:last-child { border-bottom: 0; }
-    .capability-mark { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; font-size: 11px; border: 1px solid var(--line); color: var(--muted); }
-    .capability-mark.live { color: var(--good); border-color: #365047; }
-    .capability-mark.future { color: var(--quiet); }
-    .capability-copy strong { display: block; font-size: 13px; }
-    .capability-copy span { display: block; color: var(--muted); font-size: 11px; line-height: 1.4; margin-top: 2px; }
-    .live-strip { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
-    .live-stat { padding: 12px; background: #11161d; border: 1px solid var(--line); border-radius: 12px; }
-    .live-stat span { display: block; color: var(--muted); font-size: 11px; }
-    .live-stat strong { display: block; margin-top: 5px; font-size: 19px; }
-    .evidence-note { margin-top: 12px; padding: 11px 12px; border-left: 3px solid var(--warn); background: rgba(225,181,111,.05); color: #d8c6a8; font-size: 12px; line-height: 1.5; }
-
-    @media (max-width: 1180px) { .overview-grid { grid-template-columns: 1fr; } }
-    @media (max-width: 1050px) { .app { grid-template-columns: 210px minmax(0,1fr); } .inspector { display: none; } .composer-wrap { left: 210px; right: 0; } }
-    @media (max-width: 720px) {
-      .app { grid-template-columns: 1fr; }
-      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: 12px; }
-      .controls { grid-template-columns: repeat(4, 1fr); }
-      .status-card, .sidebar-spacer, .sidebar .tiny { display: none; }
-      .composer-wrap { left: 0; right: 0; padding: 12px; }
-      .topbar { padding: 8px 12px; min-height: 72px; overflow-x: auto; }
-      .tabs { min-width: max-content; }
-      .stage { display: none; }
-      .fields, .fields.three, .growth-metrics, .live-strip { grid-template-columns: 1fr; }
-      .overview-head { flex-direction: column; }
-    }
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:var(--bg);color:var(--text)}
+    button,textarea,input{font:inherit} button{color:inherit}.app{min-height:100vh;display:grid;grid-template-columns:240px minmax(0,1fr) 320px}
+    .sidebar,.inspector{background:#11151c;border-color:var(--line);border-style:solid}.sidebar{border-width:0 1px 0 0;padding:22px 16px;display:flex;flex-direction:column;gap:18px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:750}.mark{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#263443,#1c2932);border:1px solid #344351;color:var(--accent)}
+    .status-card,.card{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.status-row,.row-between{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .status-dot{width:9px;height:9px;border-radius:50%;background:#5c6470}.status-dot.running{background:var(--accent)}.status-dot.paused{background:var(--warn)}
+    .tiny{color:var(--muted);font-size:12px;line-height:1.45}.controls{display:grid;gap:8px}.btn{border:1px solid var(--line);background:var(--panel2);border-radius:11px;padding:10px 12px;cursor:pointer}.btn:hover:not(:disabled){border-color:#435065}.btn.primary{background:var(--accent);color:#0f1717;border-color:transparent;font-weight:700}.btn:disabled{opacity:.42;cursor:not-allowed}.sidebar-spacer{flex:1}
+    .main{min-width:0;display:flex;flex-direction:column}.topbar{min-height:66px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(15,17,21,.9);position:sticky;top:0;z-index:5}.tabs{display:flex;gap:6px;background:#11151c;padding:4px;border-radius:12px;border:1px solid var(--line)}.tab{border:0;background:transparent;padding:8px 12px;border-radius:9px;cursor:pointer;color:var(--muted)}.tab.active{background:var(--panel2);color:var(--text)}.stage{color:var(--muted);font-size:13px}
+    .view{display:none;flex:1;min-height:0}.view.active{display:flex;flex-direction:column}.feed{width:min(900px,calc(100% - 32px));margin:0 auto;padding:32px 0 140px;display:flex;flex-direction:column;gap:16px}.organism-feed{width:min(1080px,calc(100% - 32px));padding-bottom:48px}.empty{margin:auto;max-width:560px;text-align:center;color:var(--muted);padding:60px 20px}.empty h2{color:var(--text);margin-bottom:8px}
+    .message{max-width:78%;padding:13px 15px;border-radius:16px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}.message.user{align-self:flex-end;background:#26313c}.event{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.event.memory{border-color:#365047}.event-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:5px}.event-name{font-weight:650}
+    .composer-wrap{position:fixed;left:240px;right:320px;bottom:0;padding:18px 24px 24px;background:linear-gradient(180deg,rgba(15,17,21,0),rgba(15,17,21,.96) 30%);z-index:4}.composer{max-width:860px;margin:0 auto;background:var(--panel2);border:1px solid #364052;border-radius:18px;padding:10px}.composer textarea{width:100%;min-height:56px;max-height:180px;resize:vertical;background:transparent;border:0;outline:0;color:var(--text);padding:8px 10px}.composer-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 4px 2px}
+    .inspector{border-width:0 0 0 1px;padding:22px 16px;overflow:auto}.inspector h3{margin:0 0 14px;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.metric{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(42,49,64,.65)}.metric span:first-child{color:var(--muted)}.state-json{margin-top:16px;padding:12px;border-radius:12px;background:#0c0f14;border:1px solid var(--line);overflow:auto;font-size:11px;line-height:1.5;color:#b7c1ce;max-height:48vh}
+    .knowledge-grid{display:grid;gap:16px}.knowledge-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}.knowledge-card h3{margin:0 0 6px}.knowledge-card p{margin:0 0 14px;color:var(--muted);font-size:13px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}.field{display:grid;gap:6px}.field label{color:var(--muted);font-size:12px}.field input{width:100%;color:var(--text);background:#0f131a;border:1px solid var(--line);border-radius:9px;padding:9px 10px}.knowledge-actions{margin-top:12px;display:flex;justify-content:flex-end}
+    .error{position:fixed;top:78px;left:50%;transform:translateX(-50%);background:#3a2023;border:1px solid #6d343a;color:#ffd8dc;padding:10px 14px;border-radius:10px;z-index:20;display:none}
+    .hero{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.hero h1{margin:0 0 8px;font-size:28px}.hero p{margin:0;color:var(--muted);line-height:1.55;max-width:760px}.truth{padding:8px 10px;border:1px solid #365047;border-radius:999px;color:var(--good);font-size:12px;font-weight:700;white-space:nowrap}
+    .stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.stat{padding:12px;background:#11161d;border:1px solid var(--line);border-radius:12px}.stat span{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;margin-top:5px;font-size:18px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.gridWide{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}.card h3{margin:0}.card p{color:var(--muted);font-size:13px;line-height:1.5;margin:7px 0 12px}.pill{padding:5px 8px;border-radius:999px;border:1px solid var(--line);font-size:11px;font-weight:700;color:var(--muted)}.pill.good{color:var(--good);border-color:#365047}.pill.warn{color:var(--warn);border-color:#5b4931}.pill.quiet{color:var(--quiet)}
+    .stage-list,.evidence-list,.entity-list{display:grid;gap:8px}.stage-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(42,49,64,.55)}.stage-row:last-child{border-bottom:0}.stage-name{font-weight:650;font-size:13px}.stage-detail{color:var(--muted);font-size:11px;line-height:1.4;margin-top:3px}
+    .evidence-item,.entity{padding:10px 11px;border:1px solid rgba(42,49,64,.8);border-radius:11px;background:#11161d}.evidence-item strong,.entity strong{font-size:13px}.evidence-item span,.entity span{display:block;color:var(--muted);font-size:11px;line-height:1.45;margin-top:3px}.origin{display:inline-block!important;margin:0 6px 0 0!important;padding:2px 6px;border-radius:999px;border:1px solid var(--line);font-size:10px!important}.origin.observed{color:var(--good);border-color:#365047}.origin.injected{color:var(--warn);border-color:#5b4931}.origin.learned{color:#a8b8ff;border-color:#3b456b}
+    .growth-hero{padding:14px;background:#10151b;border:1px solid #2c3845;border-radius:13px}.growth-kicker{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.growth-value{margin-top:6px;font-size:19px;font-weight:750;color:var(--warn)}.growth-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.growth-metric{padding:10px 11px;border-radius:11px;background:#11161d;border:1px solid rgba(42,49,64,.8)}.growth-metric span{display:block;color:var(--muted);font-size:11px}.growth-metric strong{display:block;margin-top:4px;font-size:14px}.note{margin-top:12px;padding:11px 12px;border-left:3px solid var(--warn);background:rgba(225,181,111,.05);color:#d8c6a8;font-size:12px;line-height:1.5}.section-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:2px 0 8px}.empty-mini{color:var(--muted);font-size:12px;padding:12px;border:1px dashed var(--line);border-radius:10px}.relation-arrow{color:var(--accent)}
+    @media(max-width:1250px){.stats{grid-template-columns:repeat(3,1fr)}.grid2,.gridWide{grid-template-columns:1fr}}
+    @media(max-width:1050px){.app{grid-template-columns:210px minmax(0,1fr)}.inspector{display:none}.composer-wrap{left:210px;right:0}}
+    @media(max-width:720px){.app{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--line);padding:12px}.controls{grid-template-columns:repeat(4,1fr)}.status-card,.sidebar-spacer,.sidebar .tiny{display:none}.composer-wrap{left:0;right:0;padding:12px}.topbar{padding:8px 12px;overflow-x:auto}.tabs{min-width:max-content}.stage{display:none}.fields,.fields.three,.stats,.growth-metrics{grid-template-columns:1fr}.hero{flex-direction:column}}
   </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand"><div class="mark">S</div><div>Synrheon</div></div>
-      <div class="status-card">
-        <div class="status-row"><strong id="statusText">Offline</strong><span id="statusDot" class="status-dot"></span></div>
-        <div id="sessionText" class="tiny" style="margin-top:8px;">No live session</div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="mark">S</div><div>Synrheon</div></div>
+    <div class="status-card"><div class="status-row"><strong id="statusText">Offline</strong><span id="statusDot" class="status-dot"></span></div><div id="sessionText" class="tiny" style="margin-top:8px">No live session</div></div>
+    <div class="controls">
+      <button id="startBtn" class="btn primary">Start Synrheon</button>
+      <button id="stepBtn" class="btn" disabled>Think One Step</button>
+      <button id="continueBtn" class="btn" disabled>Continue</button>
+      <button id="pauseBtn" class="btn" disabled>Pause</button>
+    </div>
+    <div class="sidebar-spacer"></div>
+    <div class="tiny">Stage 1 · Trainable Cognition Pivot<br>Live evidence comes from backend-owned state.</div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="tabs">
+        <button class="tab active" data-view="organism">Organism</button>
+        <button class="tab" data-view="chat">Chat</button>
+        <button class="tab" data-view="thought">Internal Thought</button>
+        <button class="tab" data-view="knowledge">Knowledge</button>
       </div>
-      <div class="controls">
-        <button id="startBtn" class="btn primary">Start Synrheon</button>
-        <button id="stepBtn" class="btn" disabled>Think One Step</button>
-        <button id="continueBtn" class="btn" disabled>Continue</button>
-        <button id="pauseBtn" class="btn" disabled>Pause</button>
-      </div>
-      <div class="sidebar-spacer"></div>
-      <div class="tiny">Stage 1 · Trainable Cognition Pivot<br>Next cognition gate: E011.</div>
-    </aside>
+      <div class="stage">integrated stage · live evidence · cognitive growth</div>
+    </header>
 
-    <main class="main">
-      <header class="topbar">
-        <div class="tabs">
-          <button class="tab active" data-view="organism">Organism</button>
-          <button class="tab" data-view="chat">Chat</button>
-          <button class="tab" data-view="thought">Internal Thought</button>
-          <button class="tab" data-view="knowledge">Knowledge</button>
+    <section id="organismView" class="view active">
+      <div class="feed organism-feed">
+        <div class="hero">
+          <div><h1>Synrheon Organism</h1><p>This is a live inspection surface. It shows what is integrated, the real state those stages currently own, and measurable learning only when the backend actually produces evidence for it.</p></div>
+          <div class="truth">Backend-owned truth</div>
         </div>
-        <div class="stage">what is live · what is learned · what improves next</div>
-      </header>
 
-      <section id="organismView" class="view active">
-        <div class="feed organism-feed">
-          <div class="overview-head">
-            <div>
-              <h1>Synrheon Organism</h1>
-              <p>This view separates what is actually integrated from what is only designed, and it will surface measurable cognitive growth as learning becomes real.</p>
-            </div>
-            <div class="truth-badge">Implemented truth only</div>
-          </div>
+        <div class="stats">
+          <div class="stat"><span>Runtime</span><strong id="overviewRuntime">Offline</strong></div>
+          <div class="stat"><span>Cycles</span><strong id="overviewCycles">0</strong></div>
+          <div class="stat"><span>Experiences</span><strong id="overviewExperiences">0</strong></div>
+          <div class="stat"><span>Concepts</span><strong id="overviewConcepts">0</strong></div>
+          <div class="stat"><span>World relations</span><strong id="overviewWorldRelations">0</strong></div>
+          <div class="stat"><span>Active concepts</span><strong id="overviewActive">0</strong></div>
+        </div>
 
-          <div class="live-strip">
-            <div class="live-stat"><span>Runtime</span><strong id="overviewRuntime">Offline</strong></div>
-            <div class="live-stat"><span>Experiences this session</span><strong id="overviewExperiences">0</strong></div>
-            <div class="live-stat"><span>Known concepts</span><strong id="overviewConcepts">0</strong></div>
-            <div class="live-stat"><span>Current activation</span><strong id="overviewActive">0</strong></div>
-          </div>
-
-          <div class="overview-grid">
-            <div class="overview-card">
-              <div class="card-title-row">
-                <h3>Integrated Cognitive System</h3>
-                <span class="status-pill designed">Stage 1 pivot</span>
-              </div>
-              <p>These labels describe current repository truth. “Designed” does not mean Synrheon can do it yet.</p>
-              <div class="stage-list">
-                <div class="stage-row">
-                  <div><div class="stage-name">Stage 0B · Observable Runtime + UI</div><div class="stage-detail">Start, Step, Continue, Pause, browser/API/runtime state and trace.</div></div>
-                  <span class="status-pill verified">Verified</span>
-                </div>
-                <div class="stage-row">
-                  <div><div class="stage-name">Stage 1 · Cognitive Substrate</div><div class="stage-detail">Concepts, world relations, open-ended organism relations, activation representation.</div></div>
-                  <span class="status-pill built">Built</span>
-                </div>
-                <div class="stage-row">
-                  <div><div class="stage-name">Stage 2 · Computational Time + Experience</div><div class="stage-detail">Ordered current-episode experience with temporal coordinates and provenance.</div></div>
-                  <span class="status-pill integrated">Integrated</span>
-                </div>
-                <div class="stage-row">
-                  <div><div class="stage-name">Stage 1P · Trainable Cognitive Policy</div><div class="stage-detail">State → operation + target → checkpoint architecture; model not built yet.</div></div>
-                  <span class="status-pill designed">Designed</span>
-                </div>
-                <div class="stage-row">
-                  <div><div class="stage-name">Stage 3B · Durable Memory</div><div class="stage-detail">Cross-process autobiographical retention and learned memory routing.</div></div>
-                  <span class="status-pill not-started">Not started</span>
-                </div>
-                <div class="stage-row">
-                  <div><div class="stage-name">Stage 4 · Learned Retrieval</div><div class="stage-detail">Level 1 → Level 2 → Level 3 retrieval chosen when useful.</div></div>
-                  <span class="status-pill not-started">Not started</span>
-                </div>
-                <div class="stage-row">
-                  <div><div class="stage-name">Stage 5 · Recursive Cognition</div><div class="stage-detail">Useful multi-step internal cognition through bounded checkpoints.</div></div>
-                  <span class="status-pill not-started">Not started</span>
-                </div>
-                <div class="stage-row">
-                  <div><div class="stage-name">Stage 7 · Learning + Plasticity</div><div class="stage-detail">Outcome/error/credit changes future cognitive behavior.</div></div>
-                  <span class="status-pill not-started">Not started</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="overview-card">
-              <div class="card-title-row">
-                <h3>Cognitive Growth</h3>
-                <span class="status-pill designed">E011 next</span>
-              </div>
-              <p>This is where Synrheon must prove that training creates reusable cognitive improvement rather than prettier output or training-set memorization.</p>
-              <div class="growth-hero">
-                <div class="growth-kicker">Current evidence of getting smarter</div>
-                <div class="growth-value pending">Not measurable yet</div>
-                <div class="tiny" style="margin-top:7px;">No trainable cognitive policy is currently integrated, so the UI intentionally shows no artificial improvement score.</div>
-              </div>
-              <div class="growth-metrics">
-                <div class="growth-metric"><span>Training improvement</span><strong>Not measured</strong></div>
-                <div class="growth-metric"><span>Unseen knowledge transfer</span><strong>Not measured</strong></div>
-                <div class="growth-metric"><span>Concept-renaming robustness</span><strong>Not measured</strong></div>
-                <div class="growth-metric"><span>Cognitive efficiency</span><strong>Not measured</strong></div>
-              </div>
-              <div class="evidence-note">E011 is the next gate: learn a cognitive process on generated worlds, then prove that improvement survives unfamiliar concepts and later unfamiliar structure.</div>
+        <div class="gridWide">
+          <div class="card">
+            <div class="row-between"><h3>Integrated Stages</h3><span class="pill warn">Stage 1 pivot</span></div>
+            <p>The status is architectural truth; the evidence below is calculated from the live state returned by Synrheon.</p>
+            <div class="stage-list">
+              <div class="stage-row"><div><div class="stage-name">Stage 0B · Observable Runtime + UI</div><div class="stage-detail" id="stage0Evidence">Waiting for a live session.</div></div><span class="pill good">Verified</span></div>
+              <div class="stage-row"><div><div class="stage-name">Stage 1 · Cognitive Substrate</div><div class="stage-detail" id="stage1Evidence">No substrate content in the current process yet.</div></div><span class="pill good">Built</span></div>
+              <div class="stage-row"><div><div class="stage-name">Stage 2 · Computational Time + Experience</div><div class="stage-detail" id="stage2Evidence">No experience events in the current episode yet.</div></div><span class="pill good">Integrated</span></div>
+              <div class="stage-row"><div><div class="stage-name">Stage 1P · Trainable Cognitive Policy</div><div class="stage-detail">State → operation + target → checkpoint is designed; no trainable policy is live yet.</div></div><span class="pill warn">Designed</span></div>
+              <div class="stage-row"><div><div class="stage-name">Stage 3B · Durable Memory</div><div class="stage-detail">Cross-process memory is not implemented.</div></div><span class="pill quiet">Not started</span></div>
+              <div class="stage-row"><div><div class="stage-name">Stage 4 · Learned Retrieval</div><div class="stage-detail">Learned retrieval is not implemented.</div></div><span class="pill quiet">Not started</span></div>
+              <div class="stage-row"><div><div class="stage-name">Stage 5 · Recursive Cognition</div><div class="stage-detail">Recursive cognitive transitions are not implemented.</div></div><span class="pill quiet">Not started</span></div>
+              <div class="stage-row"><div><div class="stage-name">Stage 7 · Learning + Plasticity</div><div class="stage-detail">No live outcome/credit learning owner is updating cognition yet.</div></div><span class="pill quiet">Not started</span></div>
             </div>
           </div>
 
-          <div class="overview-grid">
-            <div class="overview-card">
-              <div class="card-title-row"><h3>What Synrheon Can Do Now</h3><span class="status-pill integrated">Live foundation</span></div>
-              <div class="capability-list">
-                <div class="capability"><div class="capability-mark live">✓</div><div class="capability-copy"><strong>Experience events in sequence</strong><span>External Chat becomes observed experience; Internal Thought remains explicitly injected.</span></div></div>
-                <div class="capability"><div class="capability-mark live">✓</div><div class="capability-copy"><strong>Maintain computational time</strong><span>Current-episode order, timestamps, elapsed time, and previous/next links remain observable.</span></div></div>
-                <div class="capability"><div class="capability-mark live">✓</div><div class="capability-copy"><strong>Hold explicit cognitive substrate</strong><span>Concepts, world relations, organism-relative relations, provenance, and activation storage exist separately.</span></div></div>
-                <div class="capability"><div class="capability-mark live">✓</div><div class="capability-copy"><strong>Expose the organism</strong><span>Runtime state and trace can be inspected while the live process runs.</span></div></div>
-              </div>
+          <div class="card">
+            <div class="row-between"><h3>Cognitive Growth</h3><span class="pill warn">E011 next</span></div>
+            <p id="growthIntro">Synrheon must prove improvement on unfamiliar information, not just training data.</p>
+            <div class="growth-hero">
+              <div class="growth-kicker">Current evidence of getting smarter</div>
+              <div id="growthVerdict" class="growth-value">Not measurable yet</div>
+              <div id="growthDetail" class="tiny" style="margin-top:7px">No trainable cognitive policy is integrated, so no artificial smartness score is shown.</div>
             </div>
-
-            <div class="overview-card">
-              <div class="card-title-row"><h3>What Must Become Smarter</h3><span class="status-pill designed">Not claimed yet</span></div>
-              <div class="capability-list">
-                <div class="capability"><div class="capability-mark future">○</div><div class="capability-copy"><strong>Choose useful cognitive operations and targets</strong><span>The trainable policy must learn this rather than Python deciding the route.</span></div></div>
-                <div class="capability"><div class="capability-mark future">○</div><div class="capability-copy"><strong>Improve from outcomes</strong><span>Later success, failure, correction, prediction error, and credit must alter future cognition.</span></div></div>
-                <div class="capability"><div class="capability-mark future">○</div><div class="capability-copy"><strong>Transfer improvement</strong><span>Better behavior must survive unfamiliar identities, structure, and eventually novel combinations.</span></div></div>
-                <div class="capability"><div class="capability-mark future">○</div><div class="capability-copy"><strong>Use less wasted cognition</strong><span>Improvement should include efficient sparse thought, not exhaustive search.</span></div></div>
-              </div>
+            <div class="growth-metrics">
+              <div class="growth-metric"><span>Training improvement</span><strong id="growthTraining">Not measured</strong></div>
+              <div class="growth-metric"><span>Unseen transfer</span><strong id="growthTransfer">Not measured</strong></div>
+              <div class="growth-metric"><span>Renaming robustness</span><strong id="growthRename">Not measured</strong></div>
+              <div class="growth-metric"><span>Cognitive efficiency</span><strong id="growthEfficiency">Not measured</strong></div>
             </div>
+            <div class="note">This panel is already wired to accept backend <code>learning_metrics</code> or <code>cognitive_evaluation</code> data later. Until that exists, it refuses to pretend that infrastructure growth equals cognitive growth.</div>
           </div>
         </div>
-      </section>
 
-      <section id="chatView" class="view"><div id="chatFeed" class="feed"></div></section>
-      <section id="thoughtView" class="view"><div id="thoughtFeed" class="feed"></div></section>
-      <section id="knowledgeView" class="view">
-        <div class="feed">
-          <div class="knowledge-grid">
-            <div class="knowledge-card">
-              <h3>Inject Concept</h3>
-              <p>Create an explicit concept identity. This is scaffolding, not something Synrheon claims to have learned.</p>
-              <div class="fields">
-                <div class="field"><label>Concept ID</label><input id="conceptId" placeholder="daisy"></div>
-                <div class="field"><label>Label</label><input id="conceptLabel" placeholder="Daisy"></div>
-              </div>
-              <div class="knowledge-actions"><button id="addConceptBtn" class="btn primary" disabled>Add concept</button></div>
-            </div>
+        <div class="grid2">
+          <div class="card">
+            <div class="row-between"><h3>Live Experience Thread</h3><span id="experienceProofPill" class="pill quiet">No events</span></div>
+            <p>Actual current-episode events, in computational order, with observed vs injected provenance preserved.</p>
+            <div id="liveExperiences" class="evidence-list"><div class="empty-mini">Start Synrheon and use Chat or Internal Thought.</div></div>
+          </div>
 
-            <div class="knowledge-card">
-              <h3>Inject World Relation</h3>
-              <p>Generic world knowledge stays separate from Synrheon-relative knowledge.</p>
-              <div class="fields three">
-                <div class="field"><label>Source concept ID</label><input id="worldSource" placeholder="daisy"></div>
-                <div class="field"><label>Relation</label><input id="worldRelation" placeholder="IS_A"></div>
-                <div class="field"><label>Target concept ID</label><input id="worldTarget" placeholder="dog"></div>
-              </div>
-              <div class="fields" style="margin-top:10px;">
-                <div class="field"><label>Confidence 0–1</label><input id="worldConfidence" type="number" min="0" max="1" step="0.05" value="1"></div>
-              </div>
-              <div class="knowledge-actions"><button id="addWorldBtn" class="btn primary" disabled>Add world relation</button></div>
-            </div>
-
-            <div class="knowledge-card">
-              <h3>Inject Self Relation</h3>
-              <p>Relation types are open-ended data. Injected relations remain separate from anything Synrheon later learns herself.</p>
-              <div class="fields three">
-                <div class="field"><label>Concept ID</label><input id="selfConcept" placeholder="dog"></div>
-                <div class="field"><label>Relation type</label><input id="selfRelationType" placeholder="personally_relevant_to_self"></div>
-                <div class="field"><label>Strength 0–1</label><input id="selfStrength" type="number" min="0" max="1" step="0.05" value="0.5"></div>
-              </div>
-              <div class="fields" style="margin-top:10px;">
-                <div class="field"><label>Confidence 0–1</label><input id="selfConfidence" type="number" min="0" max="1" step="0.05" value="1"></div>
-              </div>
-              <div class="knowledge-actions"><button id="addSelfBtn" class="btn primary" disabled>Add self relation</button></div>
-            </div>
-
-            <div class="knowledge-card">
-              <h3>Current Cognitive Substrate</h3>
-              <pre id="substrateJson" class="state-json">{}</pre>
-            </div>
+          <div class="card">
+            <div class="row-between"><h3>Live Cognitive Substrate</h3><span id="substrateProofPill" class="pill quiet">Empty</span></div>
+            <p>Actual concepts, relations, organism-relative state, and activation currently owned by the backend.</p>
+            <div class="section-label">Concepts</div><div id="liveConcepts" class="entity-list"><div class="empty-mini">No concepts injected.</div></div>
+            <div class="section-label" style="margin-top:14px">World relations</div><div id="liveWorldRelations" class="entity-list"><div class="empty-mini">No world relations injected.</div></div>
           </div>
         </div>
-      </section>
 
-      <div id="composerWrap" class="composer-wrap" style="display:none;">
-        <div class="composer">
-          <textarea id="composerInput" placeholder="Start Synrheon to send a message..." disabled></textarea>
-          <div class="composer-actions">
-            <span id="composerHint" class="tiny">External stimulus → observed experience</span>
-            <button id="sendBtn" class="btn primary send" disabled>Send</button>
+        <div class="grid2">
+          <div class="card">
+            <div class="row-between"><h3>Organism-Relative Knowledge</h3><span id="selfProofPill" class="pill quiet">None</span></div>
+            <p>This makes the injected-versus-learned distinction visible instead of hiding it inside JSON.</p>
+            <div id="liveSelfRelations" class="entity-list"><div class="empty-mini">No organism-relative relations stored.</div></div>
+          </div>
+
+          <div class="card">
+            <div class="row-between"><h3>Current Activation</h3><span id="activationProofPill" class="pill quiet">0 active</span></div>
+            <p>Activation is state only. Since the hand-written cognitive policy was removed, this should remain empty unless a legitimate owner explicitly changes it.</p>
+            <div id="liveActivation" class="entity-list"><div class="empty-mini">No active concepts.</div></div>
           </div>
         </div>
       </div>
-    </main>
+    </section>
 
-    <aside class="inspector">
-      <h3>Organism State</h3>
-      <div class="metric"><span>Status</span><strong id="metricStatus">off</strong></div>
-      <div class="metric"><span>Cycle</span><strong id="metricCycle">0</strong></div>
-      <div class="metric"><span>Trace Events</span><strong id="metricEvents">0</strong></div>
-      <div class="metric"><span>Experiences</span><strong id="metricExperiences">0</strong></div>
-      <div class="metric"><span>Concepts</span><strong id="metricConcepts">0</strong></div>
-      <div class="metric"><span>Active Concepts</span><strong id="metricActive">0</strong></div>
-      <pre id="stateJson" class="state-json">{}</pre>
-    </aside>
-  </div>
+    <section id="chatView" class="view"><div id="chatFeed" class="feed"></div></section>
+    <section id="thoughtView" class="view"><div id="thoughtFeed" class="feed"></div></section>
+    <section id="knowledgeView" class="view">
+      <div class="feed"><div class="knowledge-grid">
+        <div class="knowledge-card"><h3>Inject Concept</h3><p>Create an explicit concept identity. This is scaffolding, not something Synrheon claims to have learned.</p><div class="fields"><div class="field"><label>Concept ID</label><input id="conceptId" placeholder="daisy"></div><div class="field"><label>Label</label><input id="conceptLabel" placeholder="Daisy"></div></div><div class="knowledge-actions"><button id="addConceptBtn" class="btn primary" disabled>Add concept</button></div></div>
+        <div class="knowledge-card"><h3>Inject World Relation</h3><p>Generic world knowledge stays separate from Synrheon-relative knowledge.</p><div class="fields three"><div class="field"><label>Source concept ID</label><input id="worldSource" placeholder="daisy"></div><div class="field"><label>Relation</label><input id="worldRelation" placeholder="IS_A"></div><div class="field"><label>Target concept ID</label><input id="worldTarget" placeholder="dog"></div></div><div class="fields" style="margin-top:10px"><div class="field"><label>Confidence 0–1</label><input id="worldConfidence" type="number" min="0" max="1" step="0.05" value="1"></div></div><div class="knowledge-actions"><button id="addWorldBtn" class="btn primary" disabled>Add world relation</button></div></div>
+        <div class="knowledge-card"><h3>Inject Self Relation</h3><p>Relation types are open-ended data. Injected relations remain separate from anything Synrheon later learns herself.</p><div class="fields three"><div class="field"><label>Concept ID</label><input id="selfConcept" placeholder="dog"></div><div class="field"><label>Relation type</label><input id="selfRelationType" placeholder="personally_relevant_to_self"></div><div class="field"><label>Strength 0–1</label><input id="selfStrength" type="number" min="0" max="1" step="0.05" value="0.5"></div></div><div class="fields" style="margin-top:10px"><div class="field"><label>Confidence 0–1</label><input id="selfConfidence" type="number" min="0" max="1" step="0.05" value="1"></div></div><div class="knowledge-actions"><button id="addSelfBtn" class="btn primary" disabled>Add self relation</button></div></div>
+        <div class="knowledge-card"><h3>Current Cognitive Substrate</h3><pre id="substrateJson" class="state-json">{}</pre></div>
+      </div></div>
+    </section>
 
-  <div id="errorToast" class="error"></div>
+    <div id="composerWrap" class="composer-wrap" style="display:none"><div class="composer"><textarea id="composerInput" placeholder="Start Synrheon to send a message..." disabled></textarea><div class="composer-actions"><span id="composerHint" class="tiny">External stimulus → observed experience</span><button id="sendBtn" class="btn primary" disabled>Send</button></div></div></div>
+  </main>
 
-  <script>
-    let currentView = "organism";
-    let state = {
-      session_id:null,status:"off",cycle:0,event_sequence:0,stimuli:[],trace:[],
-      time:{experience_sequence:0},
-      experience_thread:{episode_id:null,events:[]},
-      cognitive_substrate:{concepts:[],world_relations:[],self_relations:[],activation:{}}
-    };
-    const $ = (id) => document.getElementById(id);
+  <aside class="inspector">
+    <h3>Organism State</h3>
+    <div class="metric"><span>Status</span><strong id="metricStatus">off</strong></div><div class="metric"><span>Cycle</span><strong id="metricCycle">0</strong></div><div class="metric"><span>Trace Events</span><strong id="metricEvents">0</strong></div><div class="metric"><span>Experiences</span><strong id="metricExperiences">0</strong></div><div class="metric"><span>Concepts</span><strong id="metricConcepts">0</strong></div><div class="metric"><span>Active Concepts</span><strong id="metricActive">0</strong></div>
+    <pre id="stateJson" class="state-json">{}</pre>
+  </aside>
+</div>
+<div id="errorToast" class="error"></div>
 
-    async function api(path, options = {}) {
-      const response = await fetch(path, {headers: {"Content-Type": "application/json"}, ...options});
-      const data = await response.json();
-      if (!response.ok || !data.ok) throw new Error(data.error || "Synrheon request failed.");
-      if (data.state) { state = data.state; render(); }
-      return data;
-    }
+<script>
+  let currentView="organism";
+  let state={session_id:null,status:"off",cycle:0,event_sequence:0,stimuli:[],trace:[],time:{experience_sequence:0},experience_thread:{episode_id:null,events:[]},cognitive_substrate:{concepts:[],world_relations:[],self_relations:[],activation:{}}};
+  const $=id=>document.getElementById(id);
+  async function api(path,options={}){const response=await fetch(path,{headers:{"Content-Type":"application/json"},...options});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"Synrheon request failed.");if(data.state){state=data.state;render()}return data}
+  async function refreshState(){try{await api("/api/state")}catch(error){showError("Backend connection lost.")}}
+  async function command(path,body={}){try{await api(path,{method:"POST",body:JSON.stringify(body)});return true}catch(error){showError(error.message);return false}}
+  function showError(message){const toast=$("errorToast");toast.textContent=message;toast.style.display="block";clearTimeout(showError.timer);showError.timer=setTimeout(()=>toast.style.display="none",3000)}
+  function esc(value){const div=document.createElement("div");div.textContent=value??"";return div.innerHTML}
+  function pct(value){if(value===null||value===undefined||Number.isNaN(Number(value)))return "Not measured";const n=Number(value);return `${n<=1?(n*100).toFixed(1):n.toFixed(1)}%`}
 
-    async function refreshState() {
-      try { await api("/api/state"); } catch (error) { showError("Backend connection lost."); }
-    }
+  function render(){
+    const s=state.cognitive_substrate??{};const experiences=state.experience_thread?.events??[];const concepts=s.concepts??[];const world=s.world_relations??[];const self=s.self_relations??[];const activation=s.activation??{};
+    const statusLabel=state.status==="off"?"Offline":state.status==="running"?"Running":"Paused";
+    $("statusText").textContent=statusLabel;$("statusDot").className=`status-dot ${state.status}`;$("sessionText").textContent=state.session_id?`Session ${state.session_id.slice(0,8)}`:"No live session";
+    $("metricStatus").textContent=state.status;$("metricCycle").textContent=state.cycle;$("metricEvents").textContent=state.event_sequence;$("metricExperiences").textContent=experiences.length;$("metricConcepts").textContent=concepts.length;$("metricActive").textContent=Object.keys(activation).length;$("stateJson").textContent=JSON.stringify(state,null,2);$("substrateJson").textContent=JSON.stringify(s,null,2);
+    $("overviewRuntime").textContent=statusLabel;$("overviewCycles").textContent=state.cycle;$("overviewExperiences").textContent=experiences.length;$("overviewConcepts").textContent=concepts.length;$("overviewWorldRelations").textContent=world.length;$("overviewActive").textContent=Object.keys(activation).length;
+    $("stage0Evidence").textContent=state.session_id?`Live session ${state.session_id.slice(0,8)} · cycle ${state.cycle} · ${state.event_sequence} trace/state events.`:"Waiting for a live session.";
+    $("stage1Evidence").textContent=`Live state: ${concepts.length} concepts · ${world.length} world relations · ${self.length} concept-level organism relation records · ${Object.keys(activation).length} active concepts.`;
+    $("stage2Evidence").textContent=experiences.length?`Episode ${state.experience_thread?.episode_id?.slice(0,8)??"—"} contains ${experiences.length} ordered experience events; latest sequence ${experiences.at(-1)?.time?.sequence??0}.`:"No experience events in the current episode yet.";
+    renderLiveExperiences(experiences);renderConcepts(concepts);renderWorldRelations(world);renderSelfRelations(self);renderActivation(activation);renderGrowth();renderChat();renderThought();
+    const started=state.status!=="off";$("startBtn").textContent=started?"Restart Session":"Start Synrheon";$("stepBtn").disabled=state.status!=="paused";$("continueBtn").disabled=state.status!=="paused";$("pauseBtn").disabled=state.status!=="running";$("composerInput").disabled=!started;$("sendBtn").disabled=!started;$("addConceptBtn").disabled=!started;$("addWorldBtn").disabled=!started;$("addSelfBtn").disabled=!started;$("composerWrap").style.display=currentView==="chat"||currentView==="thought"?"block":"none";$("composerInput").placeholder=!started?"Start Synrheon to send a message...":currentView==="chat"?"Message Synrheon...":"Inject an internal thought...";$("composerHint").textContent=currentView==="chat"?"External stimulus → observed experience":"Injected thought → injected experience";
+  }
 
-    async function command(path, body = {}) {
-      try { await api(path, {method:"POST", body: JSON.stringify(body)}); return true; }
-      catch (error) { showError(error.message); return false; }
-    }
-
-    function showError(message) {
-      const toast = $("errorToast");
-      toast.textContent = message;
-      toast.style.display = "block";
-      clearTimeout(showError.timer);
-      showError.timer = setTimeout(() => toast.style.display = "none", 3000);
-    }
-
-    function render() {
-      const statusLabel = state.status === "off" ? "Offline" : state.status === "running" ? "Running" : "Paused";
-      $("statusText").textContent = statusLabel;
-      $("statusDot").className = `status-dot ${state.status}`;
-      $("sessionText").textContent = state.session_id ? `Session ${state.session_id.slice(0,8)}` : "No live session";
-      $("metricStatus").textContent = state.status;
-      $("metricCycle").textContent = state.cycle;
-      $("metricEvents").textContent = state.event_sequence;
-      $("metricExperiences").textContent = state.experience_thread?.events?.length ?? 0;
-      $("metricConcepts").textContent = state.cognitive_substrate?.concepts?.length ?? 0;
-      $("metricActive").textContent = Object.keys(state.cognitive_substrate?.activation ?? {}).length;
-      $("stateJson").textContent = JSON.stringify(state, null, 2);
-      $("substrateJson").textContent = JSON.stringify(state.cognitive_substrate ?? {}, null, 2);
-
-      $("overviewRuntime").textContent = statusLabel;
-      $("overviewExperiences").textContent = state.experience_thread?.events?.length ?? 0;
-      $("overviewConcepts").textContent = state.cognitive_substrate?.concepts?.length ?? 0;
-      $("overviewActive").textContent = Object.keys(state.cognitive_substrate?.activation ?? {}).length;
-
-      const started = state.status !== "off";
-      $("startBtn").textContent = started ? "Restart Session" : "Start Synrheon";
-      $("stepBtn").disabled = state.status !== "paused";
-      $("continueBtn").disabled = state.status !== "paused";
-      $("pauseBtn").disabled = state.status !== "running";
-      $("composerInput").disabled = !started;
-      $("sendBtn").disabled = !started;
-      $("addConceptBtn").disabled = !started;
-      $("addWorldBtn").disabled = !started;
-      $("addSelfBtn").disabled = !started;
-      $("composerWrap").style.display = currentView === "chat" || currentView === "thought" ? "block" : "none";
-      $("composerInput").placeholder = !started ? "Start Synrheon to send a message..." : currentView === "chat" ? "Message Synrheon..." : "Inject an internal thought...";
-      $("composerHint").textContent = currentView === "chat" ? "External stimulus → observed experience" : "Injected thought → injected experience";
-      renderChat();
-      renderThought();
-    }
-
-    function renderChat() {
-      const feed = $("chatFeed");
-      const external = state.stimuli.filter(item => item.kind === "external");
-      if (!external.length) {
-        feed.innerHTML = `<div class="empty"><h2>Synrheon Chat</h2><div>External messages are recorded as ordered observed experiences. The previous hand-written activation policy has been removed while the trainable cognitive policy is developed.</div></div>`;
-        return;
-      }
-      feed.innerHTML = external.map(item => `<div class="message user">${escapeHtml(item.text)}</div>`).join("");
-    }
-
-    function renderThought() {
-      const feed = $("thoughtFeed");
-      const experiences = state.experience_thread?.events ?? [];
-      const trace = state.trace ?? [];
-      if (!experiences.length && !trace.length) {
-        feed.innerHTML = `<div class="empty"><h2>Internal Thought</h2><div>Experience sequence and runtime trace will appear here. A trainable cognitive policy will later add learned internal transitions.</div></div>`;
-        return;
-      }
-
-      const memoryHtml = experiences.map(item => {
-        const previous = item.previous_event_id ? item.previous_event_id.slice(0,8) : "start";
-        const next = item.next_event_id ? item.next_event_id.slice(0,8) : "—";
-        return `<div class="event memory">
-          <div class="event-head"><span class="event-name">Experience #${item.time.sequence} · ${escapeHtml(item.origin)}</span><span class="tiny">${escapeHtml(item.kind)}</span></div>
-          <div>${escapeHtml(item.text)}</div>
-          <div class="tiny" style="margin-top:7px;">previous ${previous} · next ${next} · ${item.time.elapsed_seconds.toFixed(3)}s into episode</div>
-        </div>`;
-      }).join("");
-
-      const traceHtml = trace.map(item => `<div class="event">
-        <div class="event-head"><span class="event-name">${escapeHtml(item.event)}</span><span class="tiny">trace #${item.sequence}</span></div>
-        <div>${escapeHtml(item.detail)}</div>
-      </div>`).join("");
-
-      feed.innerHTML = memoryHtml + traceHtml;
-    }
-
-    function escapeHtml(value) {
-      const div = document.createElement("div");
-      div.textContent = value ?? "";
-      return div.innerHTML;
-    }
-
-    async function sendComposer() {
-      const input = $("composerInput");
-      const text = input.value.trim();
-      if (!text) return;
-      const path = currentView === "chat" ? "/api/stimulus" : "/api/thought";
-      if (await command(path, {text})) {
-        input.value = "";
-        input.focus();
-      }
-    }
-
-    async function addConcept() {
-      if (await command("/api/concept", {concept_id:$("conceptId").value.trim(), label:$("conceptLabel").value.trim()})) {
-        $("conceptId").value = "";
-        $("conceptLabel").value = "";
-      }
-    }
-
-    async function addWorldRelation() {
-      await command("/api/world-relation", {
-        source_concept_id:$("worldSource").value.trim(),
-        relation:$("worldRelation").value.trim(),
-        target_concept_id:$("worldTarget").value.trim(),
-        confidence:Number($("worldConfidence").value)
-      });
-    }
-
-    async function addSelfRelation() {
-      await command("/api/self-relation", {
-        concept_id:$("selfConcept").value.trim(),
-        relation_type:$("selfRelationType").value.trim(),
-        strength:Number($("selfStrength").value),
-        confidence:Number($("selfConfidence").value)
-      });
-    }
-
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.addEventListener("click", () => {
-        currentView = tab.dataset.view;
-        document.querySelectorAll(".tab").forEach(item => item.classList.toggle("active", item === tab));
-        $("organismView").classList.toggle("active", currentView === "organism");
-        $("chatView").classList.toggle("active", currentView === "chat");
-        $("thoughtView").classList.toggle("active", currentView === "thought");
-        $("knowledgeView").classList.toggle("active", currentView === "knowledge");
-        render();
-      });
-    });
-
-    $("startBtn").addEventListener("click", () => {
-      if (state.status !== "off" && !confirm("Start a fresh Synrheon session? Current session experience will be cleared; injected concept knowledge remains in the current process.")) return;
-      command("/api/start");
-    });
-    $("stepBtn").addEventListener("click", () => command("/api/step"));
-    $("continueBtn").addEventListener("click", () => command("/api/continue"));
-    $("pauseBtn").addEventListener("click", () => command("/api/pause"));
-    $("sendBtn").addEventListener("click", sendComposer);
-    $("composerInput").addEventListener("keydown", event => {
-      if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); sendComposer(); }
-    });
-    $("addConceptBtn").addEventListener("click", addConcept);
-    $("addWorldBtn").addEventListener("click", addWorldRelation);
-    $("addSelfBtn").addEventListener("click", addSelfRelation);
-
-    render();
-    refreshState();
-    setInterval(refreshState, 600);
-  </script>
+  function renderLiveExperiences(items){const target=$("liveExperiences");if(!items.length){target.innerHTML='<div class="empty-mini">Start Synrheon and use Chat or Internal Thought.</div>';$("experienceProofPill").textContent="No events";$("experienceProofPill").className="pill quiet";return}$("experienceProofPill").textContent=`${items.length} ordered`;$("experienceProofPill").className="pill good";target.innerHTML=items.slice(-6).reverse().map(item=>`<div class="evidence-item"><strong><span class="origin ${esc(item.origin)}">${esc(item.origin)}</span>Experience #${item.time?.sequence??"?"}</strong><span>${esc(item.text)}</span><span>${Number(item.time?.elapsed_seconds??0).toFixed(3)}s into episode · previous ${item.previous_event_id?esc(item.previous_event_id.slice(0,8)):"start"} · next ${item.next_event_id?esc(item.next_event_id.slice(0,8)):"—"}</span></div>`).join("")}
+  function renderConcepts(items){const target=$("liveConcepts");target.innerHTML=items.length?items.map(c=>`<div class="entity"><strong>${esc(c.label)}</strong><span>ID ${esc(c.concept_id)}${c.world_vector?.length?` · vector ${c.world_vector.length} dims`:""}</span></div>`).join(""):'<div class="empty-mini">No concepts injected.</div>';$("substrateProofPill").textContent=items.length?`${items.length} concepts`:"Empty";$("substrateProofPill").className=items.length?"pill good":"pill quiet"}
+  function renderWorldRelations(items){const target=$("liveWorldRelations");target.innerHTML=items.length?items.map(r=>`<div class="entity"><strong>${esc(r.source_concept_id)} <span class="relation-arrow">${esc(r.relation)}</span> ${esc(r.target_concept_id)}</strong><span><span class="origin ${esc(r.origin)}">${esc(r.origin)}</span>confidence ${Number(r.confidence??0).toFixed(2)} · evidence ${(r.evidence_event_ids??[]).length}</span></div>`).join(""):'<div class="empty-mini">No world relations injected.</div>'}
+  function renderSelfRelations(items){const rows=[];for(const record of items){for(const r of record.injected??[])rows.push({concept:record.concept_id,...r});for(const r of record.learned??[])rows.push({concept:record.concept_id,...r})}const target=$("liveSelfRelations");target.innerHTML=rows.length?rows.map(r=>`<div class="entity"><strong>${esc(r.concept)} · ${esc(r.relation_type)}</strong><span><span class="origin ${esc(r.origin)}">${esc(r.origin)}</span>strength ${Number(r.strength??0).toFixed(2)} · confidence ${Number(r.confidence??0).toFixed(2)} · evidence ${(r.evidence_event_ids??[]).length}</span></div>`).join(""):'<div class="empty-mini">No organism-relative relations stored.</div>';$("selfProofPill").textContent=rows.length?`${rows.length} relations`:"None";$("selfProofPill").className=rows.length?"pill good":"pill quiet"}
+  function renderActivation(values){const entries=Object.entries(values);$("liveActivation").innerHTML=entries.length?entries.sort((a,b)=>b[1]-a[1]).map(([id,value])=>`<div class="entity"><strong>${esc(id)}</strong><span>activation ${Number(value).toFixed(3)}</span></div>`).join(""):'<div class="empty-mini">No active concepts.</div>';$("activationProofPill").textContent=`${entries.length} active`;$("activationProofPill").className=entries.length?"pill good":"pill quiet"}
+  function renderGrowth(){const metrics=state.learning_metrics??state.cognitive_evaluation??state.cognitive_growth??null;if(!metrics){$("growthVerdict").textContent="Not measurable yet";$("growthDetail").textContent="No trainable cognitive policy is integrated, so no artificial smartness score is shown.";$("growthTraining").textContent="Not measured";$("growthTransfer").textContent="Not measured";$("growthRename").textContent="Not measured";$("growthEfficiency").textContent="Not measured";return}const training=metrics.training_improvement??metrics.training_success??metrics.training;const transfer=metrics.held_out_success??metrics.unseen_transfer??metrics.transfer;const rename=metrics.renamed_success??metrics.renaming_robustness??metrics.rename;const efficiency=metrics.efficiency_improvement??metrics.cognitive_efficiency??metrics.efficiency;$("growthVerdict").textContent=metrics.verdict??metrics.summary??"Learning evidence available";$("growthVerdict").style.color="var(--good)";$("growthDetail").textContent=metrics.detail??"These values are coming from backend-owned evaluation data.";$("growthTraining").textContent=pct(training);$("growthTransfer").textContent=pct(transfer);$("growthRename").textContent=pct(rename);$("growthEfficiency").textContent=pct(efficiency)}
+  function renderChat(){const feed=$("chatFeed");const external=(state.stimuli??[]).filter(item=>item.kind==="external");feed.innerHTML=external.length?external.map(item=>`<div class="message user">${esc(item.text)}</div>`).join(""):'<div class="empty"><h2>Synrheon Chat</h2><div>External messages become ordered observed experiences. No fake cognitive response is generated while the trainable policy is absent.</div></div>'}
+  function renderThought(){const feed=$("thoughtFeed");const experiences=state.experience_thread?.events??[];const trace=state.trace??[];if(!experiences.length&&!trace.length){feed.innerHTML='<div class="empty"><h2>Internal Thought</h2><div>Experience sequence and runtime trace will appear here. Explicit internal injections remain marked as injected.</div></div>';return}const exp=experiences.map(item=>`<div class="event memory"><div class="event-head"><span class="event-name">Experience #${item.time?.sequence??"?"} · ${esc(item.origin)}</span><span class="tiny">${esc(item.kind)}</span></div><div>${esc(item.text)}</div></div>`).join("");const tr=trace.map(item=>`<div class="event"><div class="event-head"><span class="event-name">${esc(item.event)}</span><span class="tiny">trace #${item.sequence}</span></div><div>${esc(item.detail)}</div></div>`).join("");feed.innerHTML=exp+tr}
+  async function sendComposer(){const input=$("composerInput"),text=input.value.trim();if(!text)return;const path=currentView==="chat"?"/api/stimulus":"/api/thought";if(await command(path,{text})){input.value="";input.focus()}}
+  async function addConcept(){if(await command("/api/concept",{concept_id:$("conceptId").value.trim(),label:$("conceptLabel").value.trim()})){$("conceptId").value="";$("conceptLabel").value=""}}
+  async function addWorldRelation(){await command("/api/world-relation",{source_concept_id:$("worldSource").value.trim(),relation:$("worldRelation").value.trim(),target_concept_id:$("worldTarget").value.trim(),confidence:Number($("worldConfidence").value)})}
+  async function addSelfRelation(){await command("/api/self-relation",{concept_id:$("selfConcept").value.trim(),relation_type:$("selfRelationType").value.trim(),strength:Number($("selfStrength").value),confidence:Number($("selfConfidence").value)})}
+  document.querySelectorAll(".tab").forEach(tab=>tab.addEventListener("click",()=>{currentView=tab.dataset.view;document.querySelectorAll(".tab").forEach(item=>item.classList.toggle("active",item===tab));$("organismView").classList.toggle("active",currentView==="organism");$("chatView").classList.toggle("active",currentView==="chat");$("thoughtView").classList.toggle("active",currentView==="thought");$("knowledgeView").classList.toggle("active",currentView==="knowledge");render()}));
+  $("startBtn").addEventListener("click",()=>{if(state.status!=="off"&&!confirm("Start a fresh Synrheon session? Current session experience will be cleared; injected concept knowledge remains in the current process."))return;command("/api/start")});$("stepBtn").addEventListener("click",()=>command("/api/step"));$("continueBtn").addEventListener("click",()=>command("/api/continue"));$("pauseBtn").addEventListener("click",()=>command("/api/pause"));$("sendBtn").addEventListener("click",sendComposer);$("composerInput").addEventListener("keydown",event=>{if(event.key==="Enter"&&!event.shiftKey){event.preventDefault();sendComposer()}});$("addConceptBtn").addEventListener("click",addConcept);$("addWorldBtn").addEventListener("click",addWorldRelation);$("addSelfBtn").addEventListener("click",addSelfRelation);
+  render();refreshState();setInterval(refreshState,600);
+</script>
 </body>
 </html>
