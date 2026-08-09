@@ -96,6 +96,7 @@ safe validation and failure behavior
 which concepts / regions deserve attention
 which path is worth exploring
 which cognitive action should happen next
+what target / scope that action uses
 when retrieval is useful
 what evidence should be compared
 what prediction is reasonable
@@ -115,13 +116,13 @@ The target is a **trainable cognitive policy** that operates through short obser
 ```text
 S0 — current cognitive state
  ↓
-choose one cognitive action
+choose one cognitive action + target
  ↓
 perform a bounded transition
  ↓
 S1 — checkpoint
  ↓
-inspect uncertainty / evidence / prediction
+inspect uncertainty / evidence / prediction / expected value
  ↓
 choose next action
  ↓
@@ -150,7 +151,7 @@ REVISE
 STOP
 ```
 
-These are **operations**, not answers or domain knowledge. The vocabulary is experimental and may later be learned, expanded, compressed, or replaced if evidence supports it.
+These are **operation families**, not answers or domain knowledge. A useful action may also need a target or scope. The vocabulary is experimental and may later be learned, expanded, compressed, parameterized further, or replaced if evidence supports it.
 
 Production code must not contain rules such as:
 
@@ -160,7 +161,14 @@ if relation == IS_A → EXPAND
 if concept == Daisy → follow dog
 ```
 
-The useful sequencing of cognitive actions is the thing to be learned.
+It also must not hide the route in target selection, such as:
+
+```text
+model selects RETRIEVE
+Python always chooses the correct memory target
+```
+
+The useful operation **and its meaningful target/scope** are the cognitive decision to be learned.
 
 ## Training Record Contract
 
@@ -168,14 +176,17 @@ One useful training trace should preserve at least:
 
 ```text
 state_before
-available_actions
+available_actions_and_targets
 selected_action
 short_transition_or_path
 state_after
-prediction
+predicted_state_after
+expected_value
 observed_outcome
+compute_cost
 error_or_correction
 credit_assignment
+alternative_action_estimates
 ```
 
 Selection alone is **not** evidence that a path was useful. Synrheon must not reinforce a route merely because it chose that route.
@@ -218,10 +229,10 @@ The next implementation should be the smallest trainable vertical slice capable 
 
 > **Can a model learn a reusable cognitive-action policy that transfers to an unseen knowledge world?**
 
-Training should use several small worlds with different content. Evaluation must include a held-out world with unseen concepts and preferably a different arrangement of relations.
+The main curriculum should be generated from deterministic seeded world/task templates rather than a few hand-written examples. Evaluation must include a held-out world with unseen concepts, with later gates changing topology and task composition.
 
 ```text
-training worlds A / B / C
+generated training worlds A / B / C
         ↓
 learn cognitive-action policy
         ↓
@@ -243,30 +254,75 @@ no production world-specific branches
 untrained/random baseline
 ```
 
-A stronger follow-up should also vary world topology so the policy cannot simply memorize one graph shape.
+## Policy, Transition, and Value Boundary
+
+The design keeps three questions distinct:
+
+```text
+P(a | S)       What should I do?
+F(S,a) → S'    What do I expect it to change?
+V(S,a)         Is it worth doing from here?
+```
+
+The first model may implement these incrementally, but the architecture should not confuse prediction of the next state with usefulness of an action.
+
+## Cognitive Cost Requirement
+
+E011 must measure not only task success but also cognitive resource use:
+
+```text
+steps
+invalid actions
+redundant actions
+retrieval / expansion count
+budget consumed
+```
+
+A model that succeeds only by exhaustively checking everything has not demonstrated useful sparse cognition.
+
+## Generalization Ladder
+
+Results must be classified by the strongest demonstrated level:
+
+```text
+Level 0 — Training memorization
+Level 1 — Identity transfer
+Level 2 — Structural transfer
+Level 3 — Compositional transfer
+```
+
+Level 1 means unseen/renamed identities with comparable structure. Level 2 requires changed topology or relation arrangement. Level 3 requires novel combinations of knowledge, structure, and cognitive demands.
+
+Do not describe a Level-1 result as unrestricted “learned how to think.”
 
 ## First-Pass Success Criteria
 
-The trainable slice is promising only if:
+The first E011 gate is promising only if:
 
 1. model parameters actually change through training;
 2. training decision quality improves;
-3. held-out-world performance exceeds an untrained/random baseline;
+3. held-out Level-1 performance exceeds an untrained/random baseline;
 4. renaming concepts does not materially destroy the strategy;
 5. the policy produces more than one useful cognitive action when the task requires several steps;
 6. intermediate checkpoints remain observable;
 7. training preserves outcome/error/credit evidence;
 8. runtime only sequences the policy and does not contain the learned reasoning logic;
-9. no answer-, concept-, relation-, or phrase-specific production branch is required.
+9. no answer-, concept-, relation-, or phrase-specific production branch is required;
+10. action targets are not secretly selected by hand-written code;
+11. cognitive resource cost is measured;
+12. success is classified at the demonstrated generalization level rather than overstated.
 
 ## What Is Still Missing
 
 - trainable `CognitiveState` feature representation
-- generic cognitive-action representation
-- state → action policy
+- parameterized cognitive-action representation
+- state → action/target policy
 - short transition/checkpoint loop
 - transition / next-state prediction
+- expected cognitive value estimate
 - prediction-error / credit assignment
+- counterfactual/alternative-action credit support
+- generated world/task curriculum
 - transfer-training harness
 - learned concept organization / routing
 - semantic language grounding
@@ -285,6 +341,6 @@ The design rule going forward is:
 ```text
 hard-code representations, interfaces, budgets, provenance, and learning boundaries
 
-learn concept organization, cognitive routing, action selection, transition usefulness,
-and eventually the process that turns one cognitive state into the next
+learn concept organization, cognitive routing, action/target selection, transition usefulness,
+expected cognitive value, and eventually the process that turns one cognitive state into the next
 ```
