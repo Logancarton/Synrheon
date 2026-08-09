@@ -20,57 +20,42 @@ This document records implemented truth, not future intention.
 |---|---|---|---|---|
 | 0A | Architecture Stewardship | Designed | Infrastructure | Agent + canonical development workflow |
 | 0B | Observable Runtime + Development UI | Verified | Infrastructure | Connected browser/API/runtime/state path; live browser verification |
-| 1 | Cognitive Substrate + activation handoff | Integrated | Cognitive improvement | Concepts/world/open organism relations/current activation plus Chat/Internal Thought routed through cognition owner |
-| 2 | Computational Time + Experience | Integrated | Supporting cognition | Current-episode timestamp, elapsed time, sequence, provenance, previous/next links live; partial Stage 2 |
-| 3A | Sparse Activation slice | Integrated | Cognitive improvement | Generic lexical seed → directed relation spread → organism salience → competition/Top-K is reached by live stimulus path |
-| 3B | Durable Memory | Not Started | Cognitive improvement | Current experience/activation is still process-local |
+| 1 | Cognitive Substrate | Built | Supporting cognition | Concepts, world relations, open-ended organism relations, activation representation |
+| 1P | Trainable Cognitive Policy | Designed | Cognitive improvement | Architecture pivot defined; production thinking policy intentionally not implemented yet |
+| 2 | Computational Time + Experience | Integrated | Supporting cognition | Current-episode timestamp, elapsed time, sequence, provenance, previous/next links live |
+| 3A | Hand-written Sparse Activation experiment | Removed / superseded | Experimental cognition | Lexical matching, fixed spreading, decay, inhibition, Top-K, and fixed recurrence removed from production |
+| 3B | Durable Memory | Not Started | Cognitive improvement | Current experience remains process-local |
 | 4 | Level 1→2→3 Retrieval | Not Started | Cognitive improvement | |
 | 5 | Scratchpad + Recursive Loop | Not Started | Cognitive improvement | |
 | 6 | Problems + Trials + Solutions | Not Started | Cognitive improvement | |
-| 7 | Learning + Plasticity | Not Started | Cognitive improvement | Narrow organism-relation update exists, but live outcome credit assignment does not |
+| 7 | Learning + Plasticity | Not Started | Cognitive improvement | Narrow organism-relation storage update exists; no live outcome credit assignment |
 | 8 | Consolidation + Abstraction | Not Started | Cognitive improvement | |
 | 9 | Multi-Layer Training | Not Started | Cognitive improvement | |
 | 10 | Continuous Autonomous Cognition | Not Started | Cognitive improvement | |
 | 11 | External Intelligence + Tools | Not Started | Supporting cognition | |
 
-## Current Cognitive Activation Truth
+## Current Cognition Truth
 
 ```text
-Generic concept ID/label lexical cue matching          Integrated
+Hand-written lexical concept matching                 Removed
+Hand-written relation spreading                       Removed
+Fixed spread/decay/salience gains                      Removed
+Fixed recurrence count                                Removed
+Winner-relative inhibition heuristic                  Removed
+Fixed Top-K cognitive policy                          Removed
+Cognitive activation frames from that heuristic       Removed
+Chat → ordered observed experience                    Integrated
+Internal Thought → ordered injected experience        Integrated
+Cognition.py owner retained for trainable policy      Designed
+Trainable state → action → next-state policy          Not Started
+Transfer training on unseen knowledge worlds          Not Started
 Semantic language understanding                       Not Started
-Directed world-relation spreading                      Integrated
-Outgoing fan-out normalization                         Integrated
-Open-ended organism-relation salience                  Integrated
-Organism salience limited to already-reached concepts  Integrated
-Activation decay                                       Integrated
-Winner-relative inhibition threshold                   Integrated
-Bounded Top-K sparse active region                     Integrated
-Observable cognitive activation frames                 Integrated
-Chat → cognition owner                                 Integrated
-Internal Thought injection → cognition owner           Integrated
-Natural-language response generation                   Not Started
-Retrieval from durable memory                          Not Started
-Autonomous recursive thought                           Not Started
+Natural-language response generation                  Not Started
+Durable retrieval                                     Not Started
+Autonomous recursive thought                          Not Started
 ```
 
-The first activation configuration is general mechanism data, not stimulus-specific rules:
-
-```text
-seed strength       1.00
-decay               0.30
-spread gain         0.62
-organism gain       0.35
-inhibition fraction 0.10
-activation floor    0.05
-Top-K               5
-recurrent rounds    3
-```
-
-These are initial hyperparameters to test and learn from later. They are not semantic facts.
-
-The lexical matcher is a temporary bootstrap. It only recognizes concept IDs/labels that already exist in the injected substrate and should not be described as language understanding.
-
-An unmatched stimulus still becomes observed/injected experience, produces an observable `unmatched` cognitive frame, and clears stale activation rather than pretending it understood the text.
+The important pivot is intentional: the runtime no longer mutates activation merely because a text string happens to match a concept label or because a fixed graph rule says where activation should spread.
 
 ## Stage 1 Representation Truth
 
@@ -82,26 +67,14 @@ Injected/learned organism-relation separation         Built
 Arbitrary relation type stored as data                Built
 Explicit concept/world/injected-self injection        Integrated
 Free-form organism relation UI/API path               Integrated
-Confidence-weighted learned-relation update           Built
+Confidence-weighted learned-relation storage update   Built
 Learned evidence lineage                              Built
+ActivationState representation                        Built
 Automatic relation discovery from live experience     Not Started
 Automatic self-learning from live outcomes            Not Started
-ActivationState representation                        Integrated
 ```
 
-The learned-relation update remains:
-
-```text
-learned_new
-=
-learned_old
-+
-(learning_rate × trust)
-×
-(observed_strength - learned_old)
-```
-
-It changes only the learned relation collection for that arbitrary relation type. It does not mutate injected organism relations or world knowledge.
+The existing learned organism-relation update remains a narrow provenance-preserving storage mechanism; it is **not** a routing/thinking policy.
 
 ## Current Temporal / Experience Foundation
 
@@ -114,29 +87,12 @@ Observed vs injected provenance                    Integrated
 Previous / next event links                        Integrated
 Experience event linked from stimulus              Integrated
 Internal Thought thread visualization              Integrated
-Cognitive frame linked to experience               Integrated
 Durable cross-process memory                       Not Started
 Day membership / temporal context                  Not Started
 Recent trajectory model                            Not Started
 ```
 
 The current thread is autobiographical **current-process experience**, not durable memory.
-
-## Candidate Verification Evidence
-
-The Stage 1 sparse-activation candidate was exercised in an isolated local reconstruction of the exact candidate Python sources because direct GitHub cloning is unavailable in the execution sandbox.
-
-Results:
-
-```text
-Focused activation preview     Passed
-Runtime live-path preview      Passed
-HTTP/API integration preview   Passed
-Current test suite             12/12 passed
-Python compileall              Passed
-```
-
-Human live browser/state inspection is still required before the new cognitive behavior is called **Verified**.
 
 ## Stage 0B Component Truth
 
@@ -150,4 +106,4 @@ In-memory session state + trace                    Verified
 Human live-browser inspection                      Verified
 ```
 
-`Think One Step` and `Continue` still advance harness cycles only. The new cognition currently runs when a textual external/internal experience arrives; this is not autonomous continuation.
+`Think One Step` and `Continue` still advance harness cycles only. They do not yet invoke a trainable cognitive policy.
