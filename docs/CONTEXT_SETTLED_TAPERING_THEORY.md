@@ -7,19 +7,19 @@
 
 ## Abstract
 
-This paper develops a hippocampal-inspired inference theory in which a very large knowledge field is not collapsed in a single pruning step. Information instead passes through multiple soft contextual tapers. Each taper must settle on a coherent context before forwarding a compressed but reversible representation to the next stage. Expensive state-dependent recurrent inference is reserved for a much smaller field of serious competing hypotheses.
+This paper develops a hippocampal-inspired inference theory in which a very large knowledge field is not collapsed in a single pruning step. Information instead passes through multiple soft contextual tapers. Each taper settles on a coherent context before forwarding a compressed but reversible representation to the next stage. Expensive state-dependent recurrent inference is then reserved for a much smaller field of serious competing hypotheses.
 
-The theory retains the experimentally supported learned-resistance term, in which historically misleading evidence pathways acquire higher resistance and historically reliable pathways lower resistance. Existing Synrheon assays provide preliminary support for learned structural resistance and state-dependent recurrence, while falsifying clock-driven progressive Top-K pruning in the tested relational family. Later confidence-gating and stochastic-consensus assays further showed that a stable winner is not sufficient evidence for truth or commitment.
+The theory retains the previously tested learned-resistance term, in which historically misleading evidence pathways acquire higher resistance and historically reliable pathways lower resistance. Existing Synrheon assays provide preliminary support for learned structural resistance and for state-dependent recurrence, while falsifying clock-driven progressive Top-K pruning in the tested relational family. Later confidence-gating and stochastic-consensus assays further showed that a stable winner is not sufficient evidence for truth or commitment.
 
-The central revision in this version is that contextual tapering is no longer treated as a hand-authored routing policy. The mathematical taper operation may be designed cognitive physics, but the reliability, ordering, gain, and eventual selection of contextual operations should increasingly be learned from outcomes and transferred across candidate identities. The proposed architecture therefore separates four computational questions: what cognitive operation should occur, what broad knowledge should remain active, how serious alternatives interact recurrently, and whether the evidence is sufficient to commit.
+The central revision in this version is that contextual tapering is no longer treated as a hand-authored routing policy. The mathematical taper operation may be designed cognitive physics, but contextual reliability, stage ordering, gain, and eventual selection of contextual operations should increasingly be learned from outcomes and transferred across candidate identities. The proposed architecture therefore separates four computational questions: what cognitive operation should occur, what broad knowledge should remain active, how serious alternatives interact recurrently, and whether the evidence is sufficient to commit.
 
-The staged contextual-taper system remains a hypothesis. The next experiment is a direct full-system falsification assay using large nested candidate fields, transferable learned contextual weighting, reversible soft suppression, learned-resistance recurrence, calibrated abstention, context reversal, and matched hard/generic/no-taper controls.
+The staged contextual-taper system remains a hypothesis. The new HCT-1 experiment is a direct full-system falsification assay using large nested candidate fields, transferable learned contextual weighting, reversible soft suppression, learned-resistance recurrence, calibrated abstention, context reversal, and matched hard/generic/no-taper controls.
 
 ---
 
 ## 1. Research Question and Thesis
 
-The central thesis is that useful inference over a very large learned knowledge field benefits from separating four functions that are often collapsed into one scoring process:
+The central thesis is that inference over a very large learned knowledge field may benefit from separating four functions that are often collapsed into one scoring process:
 
 1. **Cognitive-operation selection** — deciding what kind of mental operation should occur next.
 2. **Contextual tapering** — reducing irrelevant breadth without deleting recoverable alternatives.
@@ -82,7 +82,7 @@ Renaming retention           100.0%
 
 This supports a limited proposition: outcome-driven pathway reliability can transfer independently of candidate labels in the tested synthetic family.
 
-It does not yet establish mathematical novelty or superiority to ordinary learned weights, attention, gating, or other conventional mechanisms.
+It does not establish mathematical novelty or superiority to ordinary learned weights, attention, gating, or other conventional mechanisms.
 
 ---
 
@@ -118,8 +118,6 @@ This supports state-dependent recurrence in the tested relational family and str
 
 The original architecture narrowed the field because recurrent cycles elapsed. This was harmful. Useful candidates were removed before their relational support had time to circulate.
 
-The lesson is:
-
 > **Elapsed computation is not evidence that a candidate should disappear.**
 
 ### 5.2 Confidence-gated narrowing
@@ -129,8 +127,6 @@ A later confidence/stability gate preserved accuracy but either failed to activa
 ### 5.3 Stochastic consensus
 
 Repeated perturbed recurrent trials produced false certainty in deliberately unresolved worlds. In the tested assay, unresolved-close worlds committed approximately 78% of the time, despite a requirement of at most 50%.
-
-The lesson is:
 
 > **A stable or frequently repeated winner can reflect a stable structural bias rather than sufficient evidence.**
 
@@ -204,15 +200,11 @@ when to reopen broader context
 when to stop
 ```
 
-The immediate experiment does not yet learn arbitrary semantic representations. It uses anonymous context channels and asks whether reliability/order over those channels can be learned from training outcomes and transferred to unseen candidate identities.
-
-This is intentionally narrower than the long-term architecture.
+The immediate HCT-1 experiment does not yet learn arbitrary semantic representations or a fully state-conditioned action policy. It uses anonymous context channels and asks whether reliability/order over those channels can be learned from training outcomes and transferred to unseen candidate identities. This is intentionally narrower than the long-term architecture.
 
 ---
 
 ## 8. Full Architecture Hypothesis
-
-The proposed signal flow is:
 
 ```text
 VERY LARGE LEARNED KNOWLEDGE FIELD
@@ -244,14 +236,14 @@ evidence + uncertainty accumulation
         +--> REOPEN BROADER CONTEXT
 ```
 
-The four computational questions are therefore:
+The four computational questions are:
 
 ```text
 Policy:
 What mental operation should I perform?
 
 Taper:
-What portion of the knowledge field should remain metabolically active?
+What portion of the knowledge field should remain active?
 
 Recurrence:
 How do serious alternatives change one another's support?
@@ -266,7 +258,7 @@ Do I know enough to act?
 
 ### HCT-1 — Learned Contextual Taper + Recurrent Deliberation
 
-> **A transferable learned contextual-routing layer controlling multiple reversible soft taper stages will reduce a large nested candidate field before learned-resistance recurrent deliberation, while preserving final accuracy, retaining real ambiguity, and permitting context-driven reactivation better than matched hard pruning at a lower active-state cost than full-field recurrence.**
+> **A transferable learned contextual-routing layer controlling multiple reversible soft taper stages will reduce a large nested candidate field before learned-resistance recurrent deliberation, while preserving final accuracy, retaining real ambiguity, and permitting context-driven reactivation better than matched hard pruning.**
 
 The hypothesis is explicitly discounted if a simpler matched mechanism performs as well or better.
 
@@ -278,9 +270,11 @@ Learned context reliability/order should transfer across opaque candidate renami
 
 The correct candidate should survive the contextual cascade into expensive recurrence at a high rate, including misleading-early cases.
 
-### HCT-1C — Compute
+### HCT-1C — Expensive recurrent compute
 
-The cascade should send substantially fewer candidates into recurrent deliberation than no-taper full-field recurrence.
+The cascade should send substantially fewer candidates into expensive recurrent deliberation than no-taper full-field recurrence.
+
+This is intentionally **not** the same as claiming lower total wall-clock compute. HCT-1 v1 separately reports taper candidate-evaluations and recurrent candidate-cycles. A total compute claim requires a justified cost model for the two operations.
 
 ### HCT-1D — Reversibility
 
@@ -292,7 +286,7 @@ Genuinely unresolved-close worlds should usually remain uncommitted rather than 
 
 ### HCT-1F — Context specificity
 
-A cascade using distinct learned contextual functions should be compared against a matched generic soft taper. If the generic control equals or exceeds the context-specific cascade on accuracy, reactivation, and compute, the stronger context-specific claim is weakened.
+A cascade using distinct learned contextual functions should be compared against a matched generic soft taper. If the generic control equals or exceeds the context-specific cascade on behavior and reactivation, the stronger context-specific claim is weakened.
 
 ### HCT-1G — Recurrence and resistance remain separable
 
@@ -300,11 +294,11 @@ Downstream recurrence and learned evidence resistance must remain separately abl
 
 ---
 
-## 10. Required Full-System Experiment
+## 10. HCT-1 v1 Full-System Experiment
 
-The first HCT-1 assay uses synthetic worlds containing **hundreds of opaque candidates** organized into nested context families.
+The first HCT-1 assay uses synthetic worlds containing **256 opaque candidates** organized into nested context families. The recurrent field is capped at 12 serious candidates after tapering.
 
-World regimes must include:
+World regimes include:
 
 ```text
 clear context
@@ -314,75 +308,93 @@ genuinely unresolved close calls
 context reversal after initial suppression
 ```
 
-The correct candidate must not be identified by its name. Candidate names can be regenerated independently without changing the underlying world.
+### Information firewall
 
-### Training boundary
+The generator is allowed to know hidden truth in order to create a scoreable synthetic world. Before held-out inference begins it materializes:
 
-Training may reveal the outcome after an episode and may use that outcome to learn anonymous evidence-channel resistance and contextual-channel utility/order.
+```text
+opaque candidates
+anonymous evidence channels
+context-path features
+explicit excitation relations
+explicit inhibition relations
+current context cue
+```
+
+Held-out inference receives those generated structures. The recurrent solver consumes the explicit relation field and does **not** consult `correct_index` when updating activations.
+
+The hidden correct index may be used only for:
+
+```text
+training outcome updates after an episode
+post-inference scoring
+reactivation/survival measurement
+```
 
 Held-out inference must not receive:
 
 ```text
-correct candidate identity
+correct candidate identity as a feature
 correct route
-hidden answer index as a feature
-future context reversal
+hidden answer index as a routing signal
+future context reversal before it occurs
 solver output
 candidate name embedding
 world seed as a predictive feature
 ```
 
-### Matched controls
+Candidate names can be regenerated independently without changing evidence, context, or relation structure.
 
-The assay compares at least:
+### Matched controls
 
 ```text
 1. no taper + full-field recurrence
-2. one hard global Top-K taper + identical downstream recurrence
-3. one/repeated generic soft taper + identical downstream recurrence
+2. hard global Top-K + identical downstream recurrence
+3. generic soft taper + identical downstream recurrence
 4. learned context-specific cascaded soft tapers + identical downstream recurrence
 ```
 
-Later revisions should separately ablate learned resistance and recurrence.
+Later versions should separately ablate learned resistance and recurrence.
 
 ### Measurements
-
-Record:
 
 ```text
 final correct rate
 correct-or-abstain behavior
 commit rate
-committed accuracy
 unresolved-world commitment rate
 correct-candidate survival into recurrence
-active-state operations
-candidate count entering expensive recurrence
+recurrent candidate-cycles
+taper candidate-evaluations
+post-taper active proxy
 context-reversal suppression cases
 reactivation success after context reversal
 candidate-renaming retention
 per-world-type results
 ```
 
+The experiment deliberately keeps **recurrent candidate-cycles** separate from **taper candidate-evaluations**. HCT-1 v1 only claims that the taper can reduce the field entering expensive recurrence. It does not claim total compute superiority without a calibrated cost model.
+
 ---
 
 ## 11. Predeclared HCT-1 v1 Interpretation Gate
 
-The first implementation uses a versioned gate. Thresholds are experiment configuration, not permanent cognitive constants.
-
 The HCT-1 v1 mechanism is **reinforced** only if all of the following hold on untouched held-out worlds:
 
 1. context-specific cascade correct-or-abstain behavior is at least 85%;
-2. correct-candidate survival into recurrence is at least 90% on non-reversal final contexts;
+2. correct-candidate survival into final recurrence is at least 90%;
 3. unresolved-close commitment rate is at most 25%;
-4. context-reversal reactivation succeeds in at least 75% of cases where the correct candidate was absent from the initial recurrent field;
-5. hard Top-K reactivation is at least 20 percentage points worse than reversible contextual tapering on those suppressed reversal cases;
-6. context-specific cascade active-state cost is at most 50% of no-taper full-field recurrent cost;
-7. candidate renaming retains at least 97% of context-specific cascade behavior;
-8. the generic soft control does not beat the context-specific cascade by more than 3 percentage points on correct-or-abstain behavior;
-9. no candidate identity or hidden answer feature enters the learned parameterization.
+4. at least 5 held-out context-reversal worlds actually suppress the correct candidate from the initial recurrent field, so reactivation is genuinely exercised;
+5. context-reversal reactivation succeeds in at least 75% of those suppressed cases;
+6. hard Top-K reactivation is at least 20 percentage points worse than reversible contextual tapering on suppressed reversal cases;
+7. context-specific cascade recurrent candidate-cycle cost is at most 50% of no-taper full-field recurrent candidate-cycle cost;
+8. candidate renaming retains at least 97% of context-specific cascade behavior;
+9. the generic soft control does not beat the context-specific cascade by more than 3 percentage points on correct-or-abstain behavior;
+10. no candidate identity or hidden answer signal enters held-out routing or recurrent state updates.
 
-If the assay fails, the failed criterion is evidence against the corresponding part of HCT-1. Thresholds must not be lowered after inspecting the held-out result. A material mechanism change creates a new experiment version.
+If the reversal mechanism is not exercised enough to satisfy criterion 4, the assay is **inconclusive**, not reinforced.
+
+If any other frozen criterion fails, the corresponding part of HCT-1 is discounted. Thresholds must not be lowered after inspecting the held-out result. A material mechanism change creates a new experiment version and should receive a new untouched held-out split.
 
 ---
 
@@ -401,24 +413,24 @@ The current Synrheon evidence does **not** establish:
 
 The current evidence supports a narrower research direction: learned pathway resistance can transfer structural reliability in a synthetic family, state-dependent recurrence can matter when candidate interactions change later evidence, and automatic hard narrowing can destroy useful support.
 
-HCT-1 asks whether a learned, reversible contextual front end can make that recurrent mechanism scalable without recreating brittle hand-written routing.
+HCT-1 asks whether a learned, reversible contextual front end can make that recurrent mechanism more tractable without recreating brittle hand-written routing.
 
 ---
 
-## 13. Continuation Protocol
+## 13. Experimental Sequence and Continuation Protocol
 
 Repository: `Logancarton/Synrheon`  
 Research branch: `experiment/hippocampal-sparse-settling`
 
-Existing experimental sequence:
+Existing sequence:
 
 ```text
-hippocampal_settling.py
-hippocampal_learning.py
-hippocampal_equivalence.py
-hippocampal_stateful_recurrence.py
-hippocampal_confidence_gated.py
-hippocampal_consensus_trials.py
+experiments/hippocampal_settling.py
+experiments/hippocampal_learning.py
+experiments/hippocampal_equivalence.py
+experiments/hippocampal_stateful_recurrence.py
+experiments/hippocampal_confidence_gated.py
+experiments/hippocampal_consensus_trials.py
 ```
 
 HCT-1 implementation:
@@ -428,7 +440,7 @@ experiments/hippocampal_contextual_taper_full_system.py
 tests/test_hippocampal_contextual_taper_full_system.py
 ```
 
-The failed stochastic-consensus threshold should not be tuned further as the default next step. The next scientific target is the full contextual-taper falsification assay.
+The failed stochastic-consensus threshold should not be tuned further as the default next step. The next scientific target is the HCT-1 full-system contextual-taper falsification assay.
 
 ---
 
