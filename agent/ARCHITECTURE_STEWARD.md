@@ -6,27 +6,29 @@
 https://github.com/Logancarton/Synrheon
 ```
 
-Repository full name: `Logancarton/Synrheon`
+Repository: `Logancarton/Synrheon`
 
 Default branch: `main`
 
 Do not ask the user which repository Synrheon belongs in.
 
-When working locally, verify `origin` points to the canonical repository before pushing. If no `origin` exists and the tree is clearly Synrheon, add it. If `origin` points elsewhere, stop before push and report the mismatch rather than silently replacing it.
+When working locally, verify `origin` points to the canonical repository before pushing. If no origin exists and the tree is clearly Synrheon, add it. If origin points elsewhere, stop before push and report the mismatch.
 
-## Primary Development Principle
+# Primary Development Principle
 
-Synrheon is developed bottom-up with observable state and explicit ownership.
+Synrheon is developed bottom-up with explicit ownership, explicit state, controlled learning evidence, and observable live behavior.
 
-Stage 0B — the runtime/UI organism — already exists and is **Verified**. Do not treat runtime/UI construction as the current first priority anymore.
+Stage 0B — the runtime/UI organism — is **Verified**.
 
-The active scientific target is now **E011-A v1**, a fully preregistered controlled process-transfer assay. Its purpose is to test whether a small learned policy can acquire reusable bounded cognitive search behavior without hidden-answer leakage or developer-selected target routing.
+E011-A v1 — the first controlled trainable-cognition experiment — is now **Built** and its frozen five-seed Level-1 numeric gate passed.
 
-A controlled experiment may be built and evaluated before live runtime integration when isolation is necessary to answer the causal research question. Such a result is **experimental evidence only**.
+That is genuine controlled cognitive evidence, but it is not live integration.
 
-It becomes `Integrated` only through **E011-B**, where the real live path reaches the learned owner:
+The active target is now **E011-B — Live Organism Integration**:
 
 ```text
+recorded E011-A artifact
+        ↓
 legitimate live CognitiveState
         ↓
 cognition.py
@@ -34,54 +36,48 @@ learned operation + target
         ↓
 bounded checkpoint
         ↓
-thin runtime
+thin runtime sequencing
         ↓
 OrganismState / trace
         ↓
 Organism UI
 ```
 
-The UI is a microscope for cognition. It must not become the owner of cognition or scientific scoring truth.
+The hidden E011 generator/scorer remains outside production cognition.
 
-## Startup Sequence
+# Startup Sequence
 
 Before material work, read and reconcile:
 
 ```text
 README.md
-        ↓
 docs/SCAFFOLD.md
-        ↓
 docs/ARCHITECTURE_PLAN.md
-        ↓
 docs/IMPLEMENTATION_STATUS.md
-        ↓
 docs/CURRENT_STAGE.md
-        ↓
 docs/EXPERIMENTS.md
-        ↓
 docs/SIGNAL_FLOW.md
 ```
 
-Read `docs/PROJECT_GUIDE.md` for the human-readable project map and keep it synchronized when meaningful responsibility or structure changes.
+Read `docs/PROJECT_GUIDE.md` for the human-readable project map.
 
-Then load and follow:
+Then follow:
 
 ```text
 .agents/skills/synrheon-development-workflow/SKILL.md
 ```
 
-Only after current truth is understood should implementation begin.
+Only after the affected ownership/signal path is understood should implementation begin.
 
-## Status Vocabulary
+# Status Vocabulary
 
 Use:
 
 - **Not Started** — no meaningful implementation exists.
-- **Designed** — architecture/experiment contract exists, but functional implementation does not.
-- **Built** — mechanism exists and works in isolation.
-- **Integrated** — the real Synrheon runtime reaches and uses it.
-- **Verified** — intended live behavior has been demonstrated through the running organism with relevant state/trace inspected.
+- **Designed** — architecture/experiment contract is defined.
+- **Built** — mechanism exists and works in isolation/controlled assay.
+- **Integrated** — the live runtime reaches and uses it.
+- **Verified** — intended live behavior was demonstrated through the running organism with relevant state/trace inspected.
 
 Keep cognitive effect separate:
 
@@ -89,141 +85,157 @@ Keep cognitive effect separate:
 - **Supporting cognition**
 - **Cognitive improvement**
 
-A successful controlled E011-A model may represent experimental cognitive improvement, but it is not `Integrated` until E011-B.
+A controlled E011-A result may be real cognitive improvement while remaining only `Built`.
 
-## Broad-to-Narrow Review
+# Broad-to-Narrow Review
 
-For each proposed change identify:
+For every proposed behavior or repair, identify:
 
-1. Cognitive objective.
-2. Current bottleneck.
-3. Affected owners/state/signal path.
-4. Candidate mechanisms.
-5. System effects.
-6. Failure modes.
-7. Correct owner or coordinated owners.
-8. The observation that would prove or falsify the mechanism.
+1. **Cognitive objective** — what capability should Synrheon gain?
+2. **Current bottleneck** — what mechanism prevents it?
+3. **Affected signal path** — which state/owners/runtime/UI/learning paths are involved?
+4. **Information boundary** — what may the mechanism know, and what must stay hidden?
+5. **Correct owner** — where does the decision actually belong?
+6. **Runtime role** — what should runtime only sequence/route?
+7. **Failure modes** — what would create brittleness, hidden leakage, or duplicate authority?
+8. **Evidence** — what controlled/live result would prove or falsify it?
 
-Prefer changes that improve an underlying mechanism and solve a class of problems.
+Do not start with:
 
-Do not begin with:
 - stimulus-specific patches;
-- hardcoded phrase recognition;
-- world-specific routes;
+- phrase-specific rules;
 - arbitrary score changes;
 - scripted answers;
-- test-only production behavior;
-- UI-side cognitive shortcuts.
+- test-only behavior;
+- UI-side cognitive shortcuts;
+- hand-written target selectors.
 
-## E011-A v1 Frozen Scientific Contract
+Prefer changes that improve the underlying process.
 
-Before E011-A implementation, treat `docs/EXPERIMENTS.md` as binding experiment truth.
+# E011-A Frozen Evidence Boundary
 
-The first problem family is:
+The recorded result is:
 
 ```text
-bounded partial graph discovery
-10–14 opaque nodes
-1 visible start
-1 hidden goal marker
-unique shortest route 3–5 edges
-2–4 distractor branches
-0–2 cross/back edges
-10-action hard budget
+data/e011a_v1_evidence.json
 ```
 
-The first action vocabulary is exactly:
+The controlled hidden harness is:
 
 ```text
-EXPAND(target)
-STOP
+experiments/e011a.py
 ```
 
-The environment may enumerate valid action-target candidates. It must not choose which target is cognitively preferable.
-
-Policy-visible state is limited to revealed information. It must never receive:
+Production policy/learning owners are:
 
 ```text
-unrevealed graph structure
+src/synrheon/cognition.py
+src/synrheon/learning.py
+```
+
+Do not retune E011-A v1 against the already-inspected final seeds.
+
+A material model/state/action/reward/generator change requires a new experiment version and fresh untouched final split.
+
+The policy must never receive:
+
+```text
+unrevealed graph
 hidden goal location
 shortest path
 shortest-path distance
-on-solution-path labels
+on-solution-path truth
 correct next action / target
 future frontier
-solver/scorer output
-world seed as predictive input
+solver / scorer output
+world seed as a clue
 ```
 
-Frozen world/model seeds are:
+# E011-B Architecture Gate
 
-```text
-train                    1000–4999
-development validation   5000–5999
-final Level-1 held-out   10000–10999
-paired renaming          20000–20999
-future Level-2           30000–30999
-model seeds              11, 22, 33, 44, 55
-```
+E011-B must integrate the **learned policy**, not the benchmark environment.
 
-Do not tune against the final held-out split. Once final results are inspected, a material model/feature/reward/generator change requires a new experiment revision and fresh untouched final split.
+Before coding, identify a legitimate live state source that can produce the policy-visible state without hidden benchmark truth.
 
-Do not move pass thresholds after seeing the result.
+Do not:
 
-## E011-A Failure Discipline
+- import `experiments.e011a` into runtime;
+- generate a hidden benchmark world in production;
+- put model ranking logic in runtime;
+- let UI choose targets;
+- use a compatibility shim that hides a wrong owner;
+- pretend static controlled metrics mean the policy is live.
 
-Classify failure before changing the mechanism:
+E011-B must prove:
 
-```text
-failed learning
-memorization / overfit
-identity shortcut
-structural overfit
-inefficient cognition
-insufficient / misleading representation
-answer leakage
-```
+1. one exact recorded policy artifact loads;
+2. live state reaches `cognition.py`;
+3. `cognition.py` selects operation + target;
+4. one bounded state transition/checkpoint occurs;
+5. runtime only sequences;
+6. state/trace expose the action/checkpoint;
+7. UI can show the live mechanism separately from historical learning evidence;
+8. malformed state fails safely;
+9. unrelated state is not mutated;
+10. hidden experiment truth never enters production cognition.
 
-If multiple small models fit training but fail untouched transfer, if renaming repeatedly collapses, if gains require near-total budget use, or if success requires solver-derived features, stop local tuning and revisit the state/action/task architecture.
+# Runtime Principle
 
-Never make the benchmark pass by adding:
-- distance-to-goal;
-- on-solution-path labels;
-- correct-action hints;
-- a hidden target router;
-- special branches for known seeds/worlds.
-
-## Runtime Principle
-
-`src/synrheon/runtime.py` is the thin live integration layer.
+`src/synrheon/runtime.py` is a thin active integration layer.
 
 Runtime may:
-- start/stop/pause/step the organism;
+
 - sequence owners;
 - route typed handoffs;
-- accept stimuli;
-- invoke a learned cognition owner during E011-B;
-- expose observable state;
-- return outcomes/feedback.
+- invoke live mechanisms;
+- return outcomes/feedback;
+- expose state/trace.
 
 Runtime must not:
-- become the primary cognition owner;
-- choose preferred E011 targets;
-- duplicate learning, memory, retrieval, abstraction, or autonomy;
-- contain hidden experiment solver logic.
 
-## UI Principle
+- own cognition;
+- rank candidate actions/targets;
+- duplicate memory/retrieval/learning;
+- contain large experiment mechanisms;
+- contain hidden solver truth.
 
-The Organism UI should show:
-- what stage is actually integrated;
-- what state/evidence that stage owns right now;
-- later backend-owned learning/generalization history.
+# UI Principle
 
-It must not manufacture cognition or calculate the scientific result itself.
+The UI is a microscope and behavioral lab.
 
-## Documentation Synchronization
+It should show:
 
-After meaningful work, update only affected truth owners:
+```text
+what is integrated
++
+what the integrated mechanism is doing now
++
+backend-owned evidence of learning/generalization over time
+```
+
+Controlled E011-A metrics may appear as historical growth evidence.
+
+They must remain clearly separate from E011-B live cognition status.
+
+The UI must not choose actions or calculate the scientific pass gate.
+
+# Tests
+
+Prefer a small number of high-value behavioral tests proving:
+
+- the intended owner is reached;
+- valid input yields intended behavior;
+- malformed/mismatched input fails safely;
+- unrelated state is not mutated;
+- feedback reaches the correct owner;
+- no duplicate subsystem or hidden shortcut exists;
+- live integration reaches the real runtime when `Integrated` is claimed.
+
+Automated tests do not independently grant `Verified`.
+
+# Documentation Synchronization
+
+After meaningful work, update only affected truth:
 
 - `docs/IMPLEMENTATION_STATUS.md`
 - `docs/CURRENT_STAGE.md`
@@ -234,26 +246,41 @@ After meaningful work, update only affected truth owners:
 - `docs/SIGNAL_FLOW.md`
 - `docs/PROJECT_GUIDE.md`
 
-Documentation must describe observed and implemented truth, not hoped-for behavior.
+Documentation must describe implemented/tested truth, not hoped-for cognition.
 
-## Definition of Architectural Success
+# Git Safety
 
-Before calling a stage complete, confirm:
+Never use:
 
-```text
-correct owner
-+
-no duplicate cognitive authority
-+
-no hidden answer leakage
-+
-real behavior/evidence
-+
-honest status
-+
-reproducible experiment or live stimulus
-+
-thin runtime when integration occurs
-+
-UI/trace observation when live
+```powershell
+git add .
+git clean
+git reset --hard
 ```
+
+Prefer:
+
+```powershell
+git status --short -- Synrheon
+git diff --check -- Synrheon
+git diff -- Synrheon
+```
+
+Stage every changed file explicitly.
+
+After relevant gates pass, create a focused reversible commit and push the active branch unless explicitly told not to.
+
+# Completion Review
+
+Before declaring a stage complete, confirm:
+
+- behavior is in the correct owner;
+- runtime remains thin;
+- hidden experiment truth is quarantined;
+- live path reaches the mechanism if integration is claimed;
+- tests prove behavior, not structure only;
+- UI remains observational;
+- no parallel subsystem exists;
+- no world-specific route was added;
+- cognitive maturity is described accurately;
+- docs match implemented truth.
