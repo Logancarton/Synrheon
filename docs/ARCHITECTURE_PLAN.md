@@ -4,9 +4,11 @@
 
 Synrheon is developed bottom-up. Stage 0B established the verified running organism; later cognition must be exercised through that live path.
 
-The current architectural hypothesis is now stronger:
+The current architectural hypothesis is:
 
 > **Do not primarily hand-code which cognitive path Synrheon should take. Build explicit state/process boundaries, then train the policy that chooses and evaluates short cognitive transitions.**
+
+The goal is not to remove all designed structure. Synrheon still needs explicit representations, provenance, budgets, training boundaries, safe validation, and owner separation. The change is that useful cognitive routing should increasingly be **learned from outcomes**, not encoded as permanent domain rules.
 
 ## Cognitive Dependency Order
 
@@ -76,35 +78,195 @@ Those experimental heuristics were removed after demonstrating the live wiring.
 
 ## Stage 1P — Trainable Cognitive Policy
 
-The next experimental vertical slice should learn **how to think** over knowledge rather than memorize the knowledge itself.
+The first trainable cognition slice should learn **how to perform cognitive work over explicit state** rather than memorize the world being used for training.
 
-A training unit should look conceptually like:
+### Cognitive micro-cycle
+
+The fundamental unit is one bounded transition:
 
 ```text
-state before
-+
-available cognitive actions
+S(t)
+ +
+available cognitive operations
         ↓
-select action
+policy selects a(t)
         ↓
-short transition / path
+execute one bounded cognitive operation
         ↓
-checkpoint
+S(t+1) checkpoint
         ↓
-state after
-        ↓
-prediction / outcome / error
-        ↓
-credit assignment
+continue / redirect / stop
 ```
 
-Initial cognitive actions may be represented generically, but their usefulness and sequencing should be learned rather than bound to stimulus phrases.
+A checkpoint is an inspectable internal-state boundary. It is not a forced real-time delay.
 
-Candidate operations may include functions such as focus, expand, retrieve, compare, check evidence, check sequence, predict, revise, and stop. These are an experimental action vocabulary, not world knowledge or answer rules.
+### Initial cognitive operations
 
-### Required Transfer Experiment
+The first experiment may expose a small operation vocabulary:
 
-Training must use multiple small unrelated knowledge worlds, then evaluate on a held-out world whose concept names and relationships were never used in training.
+```text
+FOCUS
+EXPAND
+RETRIEVE
+COMPARE
+CHECK_SEQUENCE
+CHECK_EVIDENCE
+PREDICT
+REVISE
+STOP
+```
+
+These operations define **what kinds of mental work are possible**, not when they should be used. The sequencing policy should be learned.
+
+The initial vocabulary is experimental. Later systems may learn finer operations, compose primitives, compress repeated action sequences into higher-level skills, or replace discrete actions with a continuous action representation.
+
+### Trainable policy
+
+The central policy is conceptually:
+
+```text
+P(cognitive_action | CognitiveState)
+```
+
+The policy input should describe the current cognitive problem/state, not leak the correct answer.
+
+### Transition model
+
+A second useful learned component predicts what a cognitive action is expected to accomplish:
+
+```text
+predicted S(t+1) = F(S(t), a(t))
+```
+
+The difference between predicted and observed next state becomes learning evidence rather than merely another score chosen by the developer.
+
+### Training trace
+
+Each trace should preserve:
+
+```text
+state_before
+available_actions
+selected_action
+transition / short path
+state_after
+prediction
+outcome
+error / correction
+credit
+```
+
+The training system must distinguish:
+
+```text
+path selected
+≠
+path useful
+```
+
+A route receives reinforcement only when later evidence supports its usefulness.
+
+## What Is Designed vs Learned
+
+### Designed cognitive physics
+
+Architecture may explicitly define:
+
+```text
+state schema
+action interface
+provenance
+checkpoint recording
+maximum cognitive budget
+safe stopping ceiling
+training-record schema
+outcome / correction interfaces
+parameter persistence
+validation and failure behavior
+```
+
+### Learned cognitive skill
+
+Training should increasingly own:
+
+```text
+attention / focus
+concept organization
+candidate-path ranking
+cognitive-action selection
+retrieval timing
+comparison strategy
+prediction strategy
+revision strategy
+route usefulness
+credit assignment
+stopping preference within the hard safety ceiling
+```
+
+This distinction should be reviewed whenever new cognition is proposed. A new production `if/then` rule that says **what thought to have** is a warning sign.
+
+## Concept Training
+
+Concepts are not merely words. The architecture should allow concept representations to become trainable while preserving explicit identities and provenance-bearing evidence outside neural weights.
+
+Potential learned concept information includes:
+
+```text
+similarity
+functional role
+context compatibility
+predictive usefulness
+relation patterns
+organism relevance
+cross-modal grounding
+```
+
+Concept learning must not make the neural representation the sole authority for factual provenance.
+
+## Organization / Routing Training
+
+A separate training target should learn which regions of state are useful together.
+
+Instead of hard-coding:
+
+```text
+relation X always spreads to target Y with gain Z
+```
+
+Synrheon should eventually learn:
+
+```text
+when this current state resembles prior useful situations,
+which candidate region or transition deserves compute next?
+```
+
+This is where sparse cognition can emerge from learned route selection rather than a permanent spreading formula.
+
+## Language Boundary
+
+Language is not the cognition owner.
+
+```text
+text / observation
+        ↓
+perception / grounding
+        ↓
+concept/state representation
+        ↓
+trainable cognitive process
+        ↓
+state result
+        ↓
+optional language expression
+```
+
+Tokenization may be part of the input adapter. It should not dictate the thought process.
+
+A future LLM may participate in perception, concept proposal, outside knowledge, simulation, or expression, but Synrheon's persistent state, provenance, cognitive-process traces, and learning effects remain explicit owners.
+
+## Required Transfer Experiment
+
+The first model experiment must test **process transfer** rather than answer accuracy alone.
 
 ```text
 worlds A / B / C
@@ -116,7 +278,38 @@ unseen world D
 useful cognitive-action sequence
 ```
 
-Success means transfer exceeds an untrained/random baseline and does not collapse when concept names are changed.
+### Anti-memorization controls
+
+At minimum:
+
+```text
+held-out concept identities
+randomized / opaque concept names
+concept-name permutation evaluation
+no correct answer embedded in policy features
+no production world-specific branches
+untrained/random baseline
+```
+
+A stronger second evaluation should vary graph/world topology so success cannot come from memorizing one structural template.
+
+### Meaningful pass condition
+
+The experiment is promising only if the learned policy:
+
+```text
+improves with training
++
+beats baseline on unseen content
++
+survives concept renaming
++
+performs useful multi-step action sequences
++
+produces inspectable checkpoints
+```
+
+If it only becomes better at the training worlds, it learned content or shortcuts rather than a reusable cognitive skill.
 
 ## Stage 2 — Computational Time + Experience
 
@@ -135,6 +328,19 @@ The current thread is process-local, not durable memory.
 
 These events should become evidence and training context for later cognitive transitions.
 
+Future temporal state should also expose:
+
+```text
+before / after
+relative recency
+episode boundaries
+day membership
+elapsed intervals
+recent trajectory
+```
+
+without requiring cognition to search all prior experience uniformly.
+
 ## Stage 3 — Durable Memory + Learned Sparse Routing
 
 Keep separate:
@@ -145,11 +351,13 @@ memory exists
 memory strength
 ≠
 current activation
+≠
+route usefulness
 ```
 
-Sparse routing should increasingly emerge from learned cognitive policy/state transition behavior rather than a permanent developer-selected graph propagation formula.
+Sparse routing should increasingly emerge from learned cognitive policy/state-transition behavior rather than a permanent developer-selected graph propagation formula.
 
-The architecture may still use mathematical constraints such as bounded compute, normalization, or capacity limits, but those constraints must not secretly encode domain-specific reasoning paths.
+The architecture may still use mathematical constraints such as bounded compute, normalization, capacity limits, and explicit memory tiers, but those constraints must not secretly encode domain-specific reasoning paths.
 
 ## Stage 4 — Level 1 → Level 2 → Level 3 Retrieval
 
@@ -163,6 +371,8 @@ LEVEL 3 — detailed evidence / relationships / reconstruction
 
 Retrieval becomes a cognitive operation the learned policy can choose when useful.
 
+The levels constrain search cost; they should not dictate the answer.
+
 ## Stage 5 — Scratchpad + Recursive Cognitive Loop
 
 Initial RAM organization remains:
@@ -174,6 +384,8 @@ LAST DAY          — up to 3
 ```
 
 The scratchpad should expose state to the learned policy and support short checkpointed transitions rather than a monolithic hidden thought chain.
+
+Repeated useful micro-cycles may eventually become compressed cognitive skills.
 
 ## Stage 6 — Problems + Trials + Solutions
 
@@ -190,7 +402,7 @@ Failed attempts remain evidence. A selected path must not be reinforced merely b
 
 Learning should modify cognitive-action selection, route usefulness, prediction reliability, failure attribution, memory access, and organism-relative learned state based on outcomes and credit assignment.
 
-A generic update loop is:
+Generic loop:
 
 ```text
 prediction
@@ -203,7 +415,17 @@ which transition/action contributed?
  ↓
 credit / blame
  ↓
-policy changes
+policy / transition model changes
+```
+
+Different learning rates may eventually apply across timescales:
+
+```text
+immediate activation / working state
+short-term route adaptation
+episode-level usefulness
+longer consolidation / abstraction
+strategic neural training
 ```
 
 ## Stage 8 — Consolidation + Abstraction
@@ -214,17 +436,21 @@ raw events → episodes → patterns → concepts → abstractions
 
 Higher layers must preserve lineage to lower-level evidence.
 
+A repeated successful cognitive sequence may also become a reusable higher-level cognitive skill, but compression must preserve the ability to inspect its evidence and failure conditions.
+
 ## Stage 9 — Multi-Layer Training
 
 Potential trainable targets include:
 
 ```text
 concept representation
+organization / routing
 cognitive-action policy
 state-transition prediction
 retrieval strategy
-prediction
+prediction / revision
 route usefulness
+credit assignment
 abstraction
 ```
 
@@ -238,7 +464,9 @@ Synrheon should eventually produce useful:
 S(t) → action → S(t+1)
 ```
 
-without requiring new external input, while retaining checkpoints, stopping conditions, and anti-fixation controls.
+without requiring new external input, while retaining checkpoints, stopping conditions, resource budgets, and anti-fixation controls.
+
+Autonomy should not be added until the cognitive policy can demonstrate useful bounded transitions under direct stimulation.
 
 ## Stage 11 — External Intelligence + Tools
 
