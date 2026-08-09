@@ -3,15 +3,16 @@
 This module owns the production-facing cognitive-cycle boundary for Synrheon:
 
     broad candidate field
-        -> learned routing / ordered reversible tapering
+        -> question/context selection
+        -> reversible contextual settling
         -> serious-candidate field
-        -> state-dependent recurrent deliberation
+        -> optional state-dependent recurrent deliberation
         -> evidence assessment
         -> commit / abstain / seek evidence / reopen
 
-The HCT synthetic generators and hidden scorers do not belong here. Ground 0 is not
-live-integrated yet; these checkpoint types define an observable production contract
-for the next integration work.
+The HCT synthetic generators, qrels, and hidden scorers do not belong here. Ground 0
+is not live-integrated yet; these types define observable production contracts for the
+next integration work.
 
 The E011-A policy primitives are re-exported temporarily for compatibility with the
 frozen historical experiment. Their implementation now lives in ``synrheon.policy``.
@@ -22,6 +23,11 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Literal
 
+from synrheon.contextual_search import (
+    ContextCheckpoint,
+    ReversibleCandidateField,
+    TransitionMode,
+)
 from synrheon.policy import (
     CandidateEvaluation,
     CognitiveAction,
@@ -89,8 +95,11 @@ __all__ = [
     "CognitiveOperation",
     "CognitivePhase",
     "CognitiveState",
+    "ContextCheckpoint",
     "FEATURE_NAMES",
     "Ground0Checkpoint",
     "LinearCognitivePolicy",
     "RevealedNode",
+    "ReversibleCandidateField",
+    "TransitionMode",
 ]
