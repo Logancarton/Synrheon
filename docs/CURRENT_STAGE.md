@@ -2,167 +2,145 @@
 
 ## Active Stage
 
-**Stage 1 — Cognitive Substrate + First Sparse Activation**
+**Stage 1 — Trainable Cognition Pivot**
 
-Stage 0B — Observable Organism Harness remains **Verified** and is still the live laboratory.
+Stage 0B — Observable Organism Harness remains **Verified** and continues to be the live laboratory.
+
+## Why the Pivot Happened
+
+The first sparse-activation experiment proved that Chat could reach a real state-changing owner, but the mechanism still depended on developer-selected cognition rules:
+
+```text
+lexical concept matching
+fixed spreading gain
+fixed decay
+fixed organism salience gain
+fixed inhibition threshold
+fixed Top-K
+fixed recurrence rounds
+```
+
+Those rules were useful scaffolding, but keeping them would turn Synrheon into a hand-designed graph reasoner rather than a system that learns **how to think**.
+
+The production implementation has therefore removed that policy instead of extending it.
 
 ## Current Live Boundary
 
-Synrheon now has four separable substrate layers:
+The live organism still preserves:
 
 ```text
-Layer 1 — Concept Identity
-Layer 2 — World Relations
-Layer 3 — Current Activation / Situation
-Layer 4 — Open-Ended Organism Relations
+Chat / Internal Thought
+        ↓
+interfaces.py
+        ↓
+runtime.py
+        ↓
+computational time
+        ↓
+ordered ExperienceEvent
+        ↓
+StimulusRecord + provenance + trace
+        ↓
+state / UI
 ```
 
-And the candidate live stimulus path is now:
+Knowledge scaffolding also remains live:
 
 ```text
-Chat / Internal Thought text
-        ↓
-ordered experience
-        ↓
-generic known-concept lexical cueing
-        ↓
-cognition.py
-        ↓
-directed world-relation spread
-        +
-organism-relative salience
-        +
-decay
-        -
-competition
-        ↓
-Top-K sparse active region
-        ↓
-observable cognitive frame
-        ↓
-Chat + Internal Thought + raw state
+concepts
+world relations
+open-ended organism relations
+activation representation
 ```
 
-This is the first implemented state transformation that changes which concepts are cognitively active based on current input and relationship structure.
+But **no hand-written thinking policy currently turns a stimulus into activation winners.**
 
-## Important Non-Hardcoded Boundary
+## What Was Removed
 
-The production mechanism does **not** contain rules for Daisy, dog, violin, walk, or any specific organism relation name.
-
-Concept cues are matched generically against already-existing concept IDs/labels. World relations are traversed from stored data. Organism relation types remain arbitrary strings stored as data.
-
-A second unrelated concept network therefore uses the same activation algorithm as the first.
-
-## Current Activation Mechanics
-
-The first bounded recurrence uses:
+The following are no longer production cognition:
 
 ```text
-seed known concepts
-      ↓
-retain a decayed fraction of current activation
-      +
-normalized directed world-relation spread
-      +
-open-ended organism salience on already-reached concepts
-      ↓
-clip to valid activation range
-      ↓
-winner-relative inhibition threshold
-      ↓
+concept-label lexical matcher
+relation traversal policy
+spread = 0.62
+decay = 0.30
+organism gain = 0.35
+inhibition fraction = 0.10
+activation floor = 0.05
 Top-K = 5
+three recurrent rounds
 ```
 
-Initial recurrence count: **3 rounds per textual experience**.
+No `CognitiveFrame` is manufactured from those heuristics now.
 
-These are starting hyperparameters, not claimed optimal values.
+## What `cognition.py` Owns Now
 
-## What Organism Relations Do Right Now
+`cognition.py` remains the correct owner for future next-state cognitive transformation, but it intentionally contains no hand-written routing algorithm.
 
-Organism relation names are intentionally not interpreted by a fixed ontology.
-
-For an already-reached concept, any injected or learned organism relation contributes generic personal salience based on:
+The target is a **trainable cognitive policy** that learns transformations such as:
 
 ```text
-strength × confidence
+state before
++
+available cognitive actions
+        ↓
+select cognitive action
+        ↓
+short transition / path
+        ↓
+checkpoint
+        ↓
+state after
+        ↓
+prediction / outcome / error / credit
 ```
 
-This can make a personally relevant concept more competitive without globally activating unrelated personal concepts.
+The core question is not “Can the model memorize an answer?”
 
-Later cognition can learn context-specific meanings/valence for relation types. That is not implemented yet.
+It is:
 
-## Current Text Understanding Boundary
+> Can a learned cognitive process transfer to concepts and knowledge worlds it never saw during training?
 
-The lexical cue layer is deliberately minimal:
+## Immediate Experimental Target
+
+The next experiment should train on several tiny unrelated knowledge worlds and evaluate on a held-out world with new concept names and relations.
+
+Pass/fail should focus on transfer:
 
 ```text
-"Daisy" → existing concept ID/label `daisy`
+training worlds A/B/C
+        ↓
+learn cognitive process
+        ↓
+unseen world D
+        ↓
+select useful cognitive operations better than baseline
 ```
 
-It is case-insensitive and supports generic multi-token concept labels, but it is **not semantic language understanding**.
-
-If no known concept matches:
-- the experience is still recorded
-- a cognitive frame reports `unmatched`
-- stale activation is cleared
-- Synrheon does not pretend it understood the text
-
-## Sequencing Foundation
-
-Every Chat/Internal Thought event still receives:
-- episode ID
-- timestamp
-- monotonic experience sequence
-- elapsed episode time
-- previous/next links
-- observed vs injected provenance
-
-The cognitive frame is linked back to the same experience event ID.
-
-This thread is still in-memory only and does not survive process restart.
-
-## Candidate Evidence
-
-```text
-Focused activation preview     Passed
-Runtime live-path preview      Passed
-HTTP/API integration preview   Passed
-Current test suite             12/12 passed
-Python compileall              Passed
-```
-
-Human browser/state inspection remains required before this candidate is called **Verified**.
+The model should not receive world-specific answers or concept-name shortcuts.
 
 ## What Is Still Missing
 
-There is still no implemented:
-
-- semantic language understanding / learned encoder
-- automatic concept creation from unknown language
-- automatic discovery/naming of organism relation types
-- durable memory across restart
+- trainable `CognitiveState` representation
+- generic cognitive-action representation
+- state → action policy
+- short transition/checkpoint loop
+- prediction-error / credit assignment
+- transfer-training harness
+- semantic language understanding
+- durable memory
 - Level 1 → Level 2 → Level 3 retrieval
-- context-specific interpretation of organism relation meanings
-- outcome-driven live self-learning
-- natural-language response generation
-- scratchpad recursion
-- problem solving
+- response generation
+- recursive scratchpad cognition
 - autonomous continuation
 
-## Immediate Next Boundary After Live Verification
+## Guardrail
 
-Do **not** add a fake response generator.
+Do not rebuild the removed heuristic under new names.
 
-Once the user verifies that Chat visibly changes the intended sparse activation state, the next architectural decision should be whether to deepen:
-
-```text
-language → concept/sense perception
-```
-
-or
+The design rule going forward is:
 
 ```text
-active concepts → temporal/durable retrieval
+hard-code the learning/process boundaries
+learn the cognitive routing and useful transitions
 ```
-
-based on what the live stimulus tests reveal.
