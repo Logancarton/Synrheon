@@ -1,547 +1,253 @@
 # Synrheon Project Guide — Plain English
 
-This is the human-readable owner's manual for Synrheon. It explains what actually exists, what each important file owns, and what the next live step is.
+This is the short human-readable owner's manual for Synrheon.
 
 Always separate:
 
 ```text
+Research evidence
 Designed
 Built
 Integrated
 Verified
 ```
 
-# The Mental Model
+A mechanism can be scientifically promising without being live in the organism.
 
-Synrheon is not being built by adding more hard-written rules for what thought should happen next.
+# Ground 0
 
-The direction is:
+Ground 0 is the current experimentally reinforced cognitive process that future Synrheon architecture should implement, challenge, or improve.
 
 ```text
-explicit state
-    ↓
-trainable cognitive policy
-    ↓
-choose one useful operation + target
-    ↓
-bounded state change
-    ↓
-checkpoint
-    ↓
-learn from what happened
+large candidate / knowledge field
+        ↓
+learned context routing
+        ↓
+ordered reversible soft tapering
+        ↓
+small serious-candidate field
+        ↓
+state-dependent recurrence
+        ↓
+evidence / uncertainty
+        ↓
+commit | abstain | seek evidence | reopen
 ```
 
-A useful shorthand is:
+Plain English:
 
-> **We code the cognitive physics. Synrheon learns the cognitive skill.**
+1. Do not reason deeply over everything Synrheon knows.
+2. Use context to progressively narrow what deserves serious attention.
+3. Suppress weak candidates without permanently deleting them.
+4. Let the remaining serious alternatives interact recurrently.
+5. A first-place candidate is not automatically knowledge.
+6. If evidence is inadequate, abstain or gather more evidence.
+7. If context changes, reopen previously suppressed possibilities.
 
-# Where The Project Stands Now
+Learned pathway resistance remains optional. Earlier assays found it useful, but HCT-2 showed it was not required in that task family.
+
+The full scientific record lives in `CONTEXT_SETTLED_TAPERING_THEORY.md`.
+
+# Why We Believe Ground 0 Is Worth Building
+
+Several earlier ideas failed or were insufficient:
 
 ```text
-Stage 0B   Observable runtime + UI          Verified
-Stage 1    Cognitive substrate              Built
-Stage 2    Time + ordered experience        Integrated
-E011-A     First trainable cognition assay  Built; Level-1 numeric gate passed
-E011-B     Live policy integration          Not built yet
+clock-driven Top-K narrowing       failed badly
+confidence-only narrowing          limited savings
+stochastic consensus               false certainty
+hard deletion                      failed under reversal
 ```
 
-The important change is that `cognition.py` is no longer empty.
+HCT-1 then showed that reversible soft narrowing could preserve uncertainty and restore candidates when context changed.
 
-Synrheon now has a small trainable cognitive policy that was trained and tested in a controlled generated environment.
+HCT-2 tested the stronger ordered-context idea on 300 final held-out worlds and passed every frozen criterion.
 
-That policy is **not yet being called by Chat or the live runtime**.
-
-# What E011-A Actually Learned
-
-The first problem was deliberately simple and anonymous.
-
-Each generated world contains:
+Key HCT-2 result:
 
 ```text
-10–14 anonymous nodes
-1 visible start
-1 hidden goal
-1 shortest route 3–5 edges long
-2–4 distracting branches
-sometimes cross/back connections
-10 cognitive actions maximum
+learned-order good behavior          100%
+correct-candidate survival           100%
+unresolved commitment                  0%
+reversal reactivation                100%
+renaming retention                   100%
+recurrent load vs full field         3.125%
+context evaluation vs generic soft   7.14%
+learned-order efficiency advantage   5.49%
 ```
 
-Synrheon is allowed only:
+The recurrence ablation was especially valuable:
 
 ```text
-EXPAND(target)
-STOP
+correct candidate survived tapering  100%
+good behavior without recurrence      45%
 ```
 
-`EXPAND(target)` means: choose one currently visible frontier node and spend one cognitive step revealing its local outgoing structure.
+So tapering preserved the useful field, while recurrence performed important downstream relational work.
 
-`STOP` means: end the episode. It succeeds only after the goal has actually become visible.
+# What Exists in the Live Organism
 
-The software may tell the model which actions/targets are valid.
-
-The software does **not** tell it which valid target is best.
-
-# What The Policy Is Allowed To See
-
-Only already-revealed information:
+Current live foundations remain:
 
 ```text
-current checkpoint
-remaining budget
-revealed nodes
-revealed edges
-known depth from start
-which nodes are expanded
-which nodes remain frontier candidates
-reveal order
-whether a revealed node is the goal
-available valid actions + targets
-previous action summary
+observable runtime + development UI     Verified
+cognitive substrate                     Built
+computational time                      Integrated
+ordered experience + provenance         Integrated
 ```
 
-# What The Policy Is Never Allowed To See
+Current live flow:
 
 ```text
-hidden nodes
-hidden edges
-hidden goal location
-shortest route
-shortest-path distance
-correct-route flags
-correct next action
-correct next target
-future frontier
-solver/scorer output
-world seed as a clue
-```
-
-This is the anti-cheating wall.
-
-# The Controlled Result
-
-The evidence is saved in:
-
-```text
-data/e011a_v1_evidence.json
-```
-
-Five frozen model seeds were trained and evaluated.
-
-Recorded result:
-
-```text
-training success, median          81.0%
-held-out unseen-world success     79.8%
-random-valid baseline              6.1%
-matched untrained, median          0.0%
-renamed-world success             79.8%
-renaming retention               100.0%
-mean budget use                   78.02%
-success cost / brute force        57.18%
-```
-
-The policy also succeeded on unseen tasks whose shortest route required 3, 4, and 5 edges.
-
-That means the first controlled result supports:
-
-```text
-Level 1 — identity / instance transfer
-```
-
-It does **not** yet prove:
-
-```text
-Level 2 changed-structure transfer
-Level 3 compositional transfer
-language understanding
-durable memory
-full reasoning
-autonomy
-```
-
-# Why Renaming Matters
-
-The node names are anonymous handles only.
-
-They are deliberately not part of the learned feature vector.
-
-So when the same held-out worlds were independently renamed, performance remained:
-
-```text
-79.8% → 79.8%
-```
-
-That is evidence the policy did not simply memorize node names.
-
-# What The Model Appears To Have Learned
-
-The model does not learn the hidden route directly.
-
-It learns a preference over visible cognitive-state features such as:
-
-```text
-candidate depth
-candidate recency
-current frontier size
-remaining compute budget
-checkpoint progress
-whether STOP is being considered after a revealed goal
-```
-
-Training changes the weights controlling those preferences from almost-useless initial behavior into a much more effective bounded-search policy.
-
-# File-by-File Ownership
-
-## `src/synrheon/cognition.py`
-
-**Plain English:** the owner of the first trainable thinking choice.
-
-Current important pieces:
-
-### `RevealedNode`
-
-One policy-visible region/candidate.
-
-Stores only legitimate revealed facts:
-
-```text
-opaque handle
-depth
-expanded?
-reveal order
-frontier?
-is goal? only after reveal
-```
-
-### `CognitiveAction`
-
-One operation plus its target.
-
-Current E011-A actions:
-
-```text
-EXPAND(target)
-STOP
-```
-
-It validates that EXPAND has a target and STOP does not.
-
-### `CognitiveState`
-
-One explicit checkpoint presented to the policy.
-
-Contains:
-
-```text
-checkpoint index
-remaining budget
-hard budget
-revealed nodes
-revealed edges
-previous action
-```
-
-It cannot contain the hidden experiment answer because those fields do not exist in this representation.
-
-### `LinearCognitivePolicy`
-
-The first small trainable policy.
-
-It:
-
-```text
-receives CognitiveState
-    ↓
-enumerates valid actions
-    ↓
-builds visible-state feature vectors
-    ↓
-scores every valid operation + target
-    ↓
-chooses one
-```
-
-The target handle is used to execute the choice, but the handle string itself is not a learned feature.
-
-The policy can serialize/load its weights and calculate a parameter checksum.
-
-## `src/synrheon/learning.py`
-
-**Plain English:** the first owner that changes the cognitive policy because of outcomes.
-
-### `PolicyDecisionTrace`
-
-Keeps the candidates and which one was selected for a learning step.
-
-### `ReinforceLearner`
-
-Uses discounted outcome/cost evidence to adjust the policy weights.
-
-Conceptually:
-
-```text
-choice
- ↓
-what happened afterward?
- ↓
-success / failure / wasted compute
- ↓
-credit or blame
- ↓
-weights change
- ↓
-future choices change
-```
-
-It does not receive the hidden shortest path or hidden goal location.
-
-## `experiments/e011a.py`
-
-**Plain English:** the controlled scientific laboratory, not production cognition.
-
-It owns:
-
-```text
-generated hidden graph worlds
-hidden goal/route truth
-revealed-state environment
-training episodes
-random baseline
-untrained baseline
-trained evaluation
-renaming evaluation
-cognitive-cost scoring
-frozen pass-gate calculation
-```
-
-This file is intentionally outside `src/synrheon` so hidden experiment truth cannot quietly become production cognition.
-
-## `data/e011a_v1_evidence.json`
-
-**Plain English:** the receipt for the experiment.
-
-It records:
-
-```text
-all five model seeds
-model IDs
-parent IDs
-parameter checksums
-learned weights
-training results
-held-out results
-renaming results
-cognitive cost
-training configuration
-source commit
-frozen gate outcome
-```
-
-## `tests/test_e011_trainable_cognition.py`
-
-Protects the most important scientific contracts:
-
-```text
-opaque identity is not a policy feature
-generator stays inside frozen size/depth family
-action/target validation works
-quick five-seed assay learns + transfers + survives renaming
-```
-
-# The Existing Live Organism
-
-## `src/synrheon/core.py`
-
-Owns explicit organism state:
-
-```text
-Concept
-WorldRelation
-OrganismRelation
-SelfRelation
-ActivationState
-CognitiveSubstrate
-OrganismState
-```
-
-It stores/validates state. It does not decide which cognitive route to take.
-
-## `src/synrheon/time.py`
-
-Owns event sequence, absolute time, elapsed episode time, and episode identity.
-
-## `src/synrheon/experience.py`
-
-Owns the current ordered autobiographical event thread.
-
-External Chat is `observed`.
-
-Internal Thought injection is `injected`.
-
-This is not durable memory across restart.
-
-## `src/synrheon/runtime.py`
-
-**Plain English:** traffic controller.
-
-Current live flow is still:
-
-```text
-Chat / Internal Thought
+Chat / injected developer thought
         ↓
 runtime
         ↓
-time + experience
+time + ordered experience
         ↓
-state / trace
+organism state / trace
         ↓
 UI
 ```
 
-The runtime does **not** call the new E011-A policy yet.
+Ground 0 cognition is **not yet live-integrated**.
 
-That is the next stage, E011-B.
+# What E011-A Still Contributes
 
-Runtime may sequence cognition later, but it must not choose the cognitive action or target itself.
+E011-A predates Ground 0 but remains useful evidence.
 
-## `src/synrheon/interfaces.py`
+It showed that a small policy could learn which valid cognitive action/target to choose from visible state and transfer that preference across unseen and renamed worlds.
 
+Its first actions were only:
+
+```text
+EXPAND(target)
+STOP
+```
+
+That is not the full Ground 0 process. The important reusable lesson is:
+
+> **The architecture may expose valid cognitive operations, while training learns which operation and target are useful.**
+
+E011-A should therefore be treated as a donor mechanism for learned cognitive routing, not as the final cognition design.
+
+# What Changes Next
+
+The old immediate plan was to wire the narrow E011-A policy directly into the live runtime as E011-B.
+
+Ground 0 changes that assumption.
+
+Before direct integration, the live cognition design should be reconciled with the reinforced process:
+
+```text
+live CognitiveState
+        ↓
+represent broad candidate field
+        ↓
+learned context/order decision
+        ↓
+reversible sparse taper
+        ↓
+small recurrent field
+        ↓
+state-dependent recurrent step(s)
+        ↓
+commit / abstain / reopen checkpoint
+        ↓
+runtime sequences result
+        ↓
+OrganismState / trace / UI
+```
+
+The exact integration should stay small and observable. We should not import the entire synthetic experiment harness into production.
+
+# Designed Cognitive Physics
+
+Production code may define generic rules and safe boundaries such as:
+
+```text
+state schema
+candidate representation
+valid cognitive operations
+reversible suppression interface
+recurrent transition interface
+hard compute ceiling
+checkpoint representation
+provenance
+commit / abstain / reopen interfaces
+```
+
+# Learned Cognitive Skill
+
+Training should increasingly determine:
+
+```text
+what context matters
+what context to inspect next
+how strongly to taper
+which candidate region deserves compute
+which operation + target to choose
+when further recurrence is useful
+when evidence is sufficient
+when broader context should reopen
+```
+
+The rule remains:
+
+> **We code the cognitive physics. Synrheon learns the cognitive skill.**
+
+# Important Owners
+
+`src/synrheon/core.py`  
+Stores explicit organism state, concepts, relations, and activation representation.
+
+`src/synrheon/cognition.py`  
+Owns trainable cognitive choices. Current implementation contains the earlier E011-A policy surface; future Ground 0 cognition belongs here or in clearly separated cognitive owners, not in runtime/UI.
+
+`src/synrheon/learning.py`  
+Owns outcome-driven learning of cognitive skill.
+
+`src/synrheon/time.py`  
+Owns computational time and event coordinates.
+
+`src/synrheon/experience.py`  
+Owns the current ordered experience thread and provenance.
+
+`src/synrheon/runtime.py`  
+Traffic controller only. It sequences cognition but must not secretly decide the cognitive answer or route.
+
+`src/synrheon/interfaces.py`  
 Browser/API transport only.
 
-It translates UI requests into runtime calls.
+`ui/`  
+Development microscope. It displays backend-owned state and evidence; it does not perform cognition.
 
-It does not interpret the stimulus or make cognitive decisions.
+`experiments/`  
+Scientific laboratory. Hidden truth/scorers may exist here for controlled experiments but must not leak into production cognition.
 
-# The UI
+# Scientific Guardrails
 
-`ui/index.html` is Synrheon's development microscope.
+1. Do not tune frozen final results after inspection and keep the same experiment name.
+2. Hidden correct identity must remain outside inference.
+3. Renaming/permutation should continue to test identity shortcuts.
+4. A mechanism that fails an ablation should lose theoretical status rather than be protected.
+5. Ground 0 may be revised if stronger experiments contradict it.
+6. Do not call Ground 0 Integrated until the real live organism uses it.
 
-Current major surfaces:
+# Files to Read First
 
-```text
-Organism
-Chat
-Internal Thought
-Knowledge
-```
-
-The Organism surface can show what is live and backend-owned state.
-
-The next E011-B work should expose:
+For most work:
 
 ```text
-which trained artifact is loaded
-current live CognitiveState
-selected learned operation + target
-resulting checkpoint
-backend-owned E011-A growth evidence
+README.md
+PROJECT_GUIDE.md
+IMPLEMENTATION_STATUS.md
+ARCHITECTURE_PLAN.md
 ```
 
-The UI must display those things, not calculate them itself.
-
-# What Is Not Integrated Yet
-
-Even though E011-A passed, this is still true:
+For scientific reasoning:
 
 ```text
-Chat does not invoke the learned policy
-Think One Step does not invoke the learned policy
-Continue does not invoke the learned policy
-OrganismState has no live learned-policy checkpoint yet
-UI does not yet show a live learned action
+CONTEXT_SETTLED_TAPERING_THEORY.md
+HCT2_PREREGISTRATION.md
 ```
-
-So the correct status is:
-
-```text
-Built experimentally
-NOT Integrated
-NOT live-Verified
-```
-
-# The Next Stage — E011-B
-
-The next correct path is:
-
-```text
-recorded trained artifact
-        ↓
-legitimate live CognitiveState
-        ↓
-cognition.py
-        ↓
-learned operation + target
-        ↓
-bounded transition
-        ↓
-checkpoint
-        ↓
-runtime sequences it
-        ↓
-OrganismState / trace
-        ↓
-UI
-```
-
-The hidden E011 generator/scorer does not belong in that production path.
-
-# Broader Future Architecture
-
-The long-term system still separates:
-
-```text
-P(a | S)
-What should I do next?
-
-F(S,a) → predicted S'
-What do I think this action will change?
-
-V(S,a)
-How useful do I expect this action to be?
-```
-
-E011-A implemented only the first policy slice.
-
-Future work still includes:
-
-```text
-transition prediction
-expected cognitive value
-counterfactual credit
-Level 2 structural transfer
-concept organization
-language grounding
-durable memory
-retrieval
-scratchpad / recursive cognition
-problem trials and revision
-consolidation / abstraction
-autonomy
-```
-
-# Important Guardrail
-
-The final E011-A held-out seeds have already been inspected.
-
-Do not change the model/generator/state/action/reward specifically to improve those same final results and still call it `e011a-v1`.
-
-A material change requires a new experiment revision and fresh untouched final worlds.
-
-# Useful Commands
-
-Run the normal organism using the existing helper.
-
-Run a small E011 scientific regression:
-
-```text
-python -m experiments.e011a --quick
-```
-
-Run the complete frozen assay:
-
-```text
-python -m experiments.e011a
-```
-
-The full assay is controlled experiment work, not live runtime verification.
