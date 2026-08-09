@@ -22,6 +22,7 @@ no recurrence
 no new semantic channels
 no threshold tuning
 no final split
+minimum transition-evaluable queries = 30
 ```
 
 The current branch is:
@@ -114,6 +115,7 @@ B - C > 0
 D - C > 0
 95% paired CI for D - C excludes zero on the positive side
 R_reset >= 0.50
+transition-evaluable queries >= 30
 ```
 
 ### Partial support
@@ -121,6 +123,7 @@ R_reset >= 0.50
 ```text
 B - C > 0
 0.25 <= R_reset < 0.50
+transition-evaluable queries >= 30
 ```
 
 ### Persistence insufficient
@@ -128,11 +131,12 @@ B - C > 0
 ```text
 B - C > 0
 R_reset < 0.25
+transition-evaluable queries >= 30
 ```
 
 ### Inconclusive
 
-Use `INCONCLUSIVE` rather than upgrading the claim if the magnitude criterion appears large but the paired interval for `D - C` includes zero, or if too few queries admit the frozen partial cue for a stable paired interpretation.
+Use `INCONCLUSIVE` rather than upgrading the claim if the magnitude criterion appears large but the paired interval for `D - C` includes zero, or if fewer than 30 queries admit the frozen partial cue.
 
 ### Damage not reproduced
 
