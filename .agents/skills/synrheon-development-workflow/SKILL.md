@@ -1,19 +1,15 @@
 ---
 name: synrheon-development-workflow
-description: Use proactively for Synrheon architecture, UI/runtime organism setup, cognitive implementation, repair, experimentation, live-behavior testing, stage work, learning, memory, retrieval, abstraction, autonomy, or documentation synchronization. Work broad-to-narrow, prove cognition through the running organism, and treat automated tests as regression support rather than the sole proof of behavior.
+description: Use proactively for Synrheon architecture, cognitive implementation, repair, experimentation, live-behavior testing, stage work, learning, memory, retrieval, abstraction, autonomy, UI/runtime integration, or documentation synchronization. Work broad-to-narrow, preserve preregistered experiment boundaries, prove controlled cognition scientifically before live integration when required, and prove Integrated/Verified status through the running organism.
 ---
 
 # Synrheon Development Workflow
 
 This is the canonical repo-local execution workflow for Synrheon.
 
-It owns the procedure for architecture review, implementation, live-organism proof, test support, cleanup, documentation synchronization, Git hygiene, commit, and push.
-
-Tool-specific adapters may translate commands or invocation details, but they must not restate or override this workflow.
+It owns the procedure for architecture review, controlled experimentation, implementation, live-organism integration, test support, documentation synchronization, Git hygiene, commit, and push.
 
 ## Canonical Repository
-
-Always treat the following repository as Synrheon's canonical destination:
 
 ```text
 Repository: https://github.com/Logancarton/Synrheon
@@ -25,15 +21,37 @@ Clone:      https://github.com/Logancarton/Synrheon.git
 Do not ask the user which repository to use.
 
 Before pushing from a local checkout:
-- verify `origin` points to the canonical repository
-- if no origin exists and the working tree is clearly Synrheon, add the canonical repository as `origin`
-- if origin points somewhere else, stop before push and report the mismatch
+- verify `origin` points to the canonical repository;
+- if no origin exists and the tree is clearly Synrheon, add the canonical origin;
+- if origin points elsewhere, stop before push and report the mismatch.
+
+## Current Priority
+
+Stage 0B — the observable runtime/UI organism — already exists and is **Verified**.
+
+The active implementation priority is:
+
+```text
+E011-A v1 controlled process-transfer assay
+        ↓
+implement the frozen scientific contract
+        ↓
+train / validate / untouched transfer / renaming / cost evaluation
+        ↓
+classify outcome honestly
+        ↓
+E011-B live cognition integration only after a suitable artifact exists
+        ↓
+cognition.py → thin runtime → OrganismState/trace → Organism UI
+```
+
+Do not restart runtime/UI foundation work merely because older instructions said it was the first priority.
 
 ## Core Doctrine
 
 Synrheon is not built by accumulating stimulus-specific fixes.
 
-Use this development path:
+Use this path:
 
 ```text
 current project truth
@@ -42,74 +60,48 @@ broad cognitive objective
         ↓
 underlying bottleneck
         ↓
-candidate mechanisms
+correct owner / experiment boundary
         ↓
-architecture decision
+pre-register exact evidence standard
         ↓
-correct owner
+implement the smallest mechanism that tests the hypothesis
         ↓
-pre-registered live experiment
+measure outcome / failure class
         ↓
-implementation
-        ↓
-real runtime wiring
+if promising, integrate through real runtime
         ↓
 UI / trace observation
-        ↓
-outcome
-        ↓
-learning from success or failure
         ↓
 documentation truth
 ```
 
-The goal is not the smallest diff.
+The goal is not the smallest diff. The goal is the smallest coherent change that answers the current cognitive question without duplicate authority or hidden shortcuts.
 
-The goal is the smallest coherent architectural change that improves the organism without introducing duplicate authority.
+## Controlled Experiment vs Live Integration
 
-## Live Organism Comes First
+Two evidence modes are valid, but they prove different things.
 
-Synrheon should obtain a running runtime and development UI before sophisticated cognition is added.
+### Controlled scientific assay
 
-The live UI/runtime is the primary cognitive laboratory.
+Use when isolating a learning mechanism is necessary to answer a causal question.
 
-Automated tests are supporting evidence and regression protection.
+A controlled E011-A result may establish that a learned mechanism works experimentally.
 
-They are not sufficient proof that a cognitive capability works.
+It does **not** grant `Integrated` or `Verified` status.
 
-The first live organism should support, at minimum:
+### Live-organism proof
 
-```text
-Start
-Send Stimulus
-Think One Step
-Continue
-Pause
-Inspect Current State
-Inspect Trace
-```
+Required when claiming the live Synrheon organism reaches and uses the mechanism.
 
-As later systems are built, the same UI should expose:
-- active concepts / activation
-- computational time
-- event sequence
-- memory state
-- Level 1 → Level 2 → Level 3 retrieval
-- scratchpad contents
-- problem / trial / prediction / outcome
-- learning updates
-- consolidation / abstraction
-- autonomous continuation
+`Integrated` requires the real runtime path.
 
-Do not place cognition in the UI to make a demonstration appear successful.
+`Verified` requires observed behavior through the running organism with relevant state/trace inspected.
 
-The UI observes and controls the organism.
-
-The cognitive owners produce the behavior.
+Automated tests support both modes but do not independently grant `Verified`.
 
 ## Project Truth Owners
 
-Read in this order before material work:
+Read before material work:
 
 ```text
 README.md
@@ -122,19 +114,17 @@ docs/IMPLEMENTATION_STATUS.md
         ↓
 docs/CURRENT_STAGE.md
         ↓
-affected production owners
+docs/EXPERIMENTS.md
         ↓
-relevant tests / experiments
+docs/SIGNAL_FLOW.md
+        ↓
+affected production owners / tests
 ```
 
-Also read:
-- `docs/SIGNAL_FLOW.md` whenever runtime wiring, UI handoffs, cognitive-owner sequencing, feedback, or live signal paths are involved
-- `docs/PROJECT_GUIDE.md` when changing a file's meaningful responsibility or internal structure so the human-readable guide can remain accurate
-- `docs/DECISIONS.md` when prior architecture choices constrain the work
-- `docs/EXPERIMENTS.md` when a hypothesis or prior live observation is relevant
-- `docs/RESEARCH.md` only when outside mechanisms or donor ideas are being considered
-
-Do not confuse research notes with implemented truth.
+Also use:
+- `docs/PROJECT_GUIDE.md` for human-readable project truth;
+- `docs/DECISIONS.md` when durable architecture choices constrain work;
+- `docs/RESEARCH.md` only for research evidence, not implementation truth.
 
 ## Status Rules
 
@@ -149,16 +139,13 @@ Verified
 ```
 
 Definitions:
+- `Not Started`: no meaningful implementation;
+- `Designed`: intended mechanism or experiment contract defined;
+- `Built`: implementation exists and works in isolation;
+- `Integrated`: real Synrheon runtime reaches and uses it;
+- `Verified`: intended live behavior demonstrated through the running organism with relevant state/trace inspected.
 
-- `Not Started`: no meaningful implementation.
-- `Designed`: intended mechanism is defined.
-- `Built`: implementation exists and works in isolation.
-- `Integrated`: the real runtime reaches and uses it.
-- `Verified`: the intended behavior has been demonstrated through the running organism and the relevant state/trace was inspected.
-
-Automated tests alone cannot produce `Verified`.
-
-Also classify cognitive effect separately:
+Also classify cognitive effect:
 
 ```text
 Infrastructure
@@ -166,315 +153,388 @@ Supporting cognition
 Cognitive improvement
 ```
 
-This prevents a large amount of engineering work from being misrepresented as smarter cognition.
+Do not call controlled experimental evidence `Integrated`.
 
 # Standard Workflow
 
 ## 0. Confirm project and preserve current work
 
 Before editing:
-- confirm the worktree is Synrheon
-- record current branch and HEAD
-- inspect `git status --short`
-- inspect recent history
-- preserve unrelated or pre-existing dirty work
-- never use destructive cleanup to make the tree appear clean
+- confirm the worktree is Synrheon;
+- record branch and HEAD;
+- inspect `git status --short`;
+- inspect recent history;
+- preserve unrelated dirty work;
+- never use destructive cleanup to make the tree appear clean.
 
-If the local repository does not have the canonical GitHub remote, handle it according to the Canonical Repository section above.
+Never use:
+
+```powershell
+git add .
+git clean
+git reset --hard
+```
+
+Prefer:
+
+```powershell
+git status --short -- Synrheon
+git diff --check -- Synrheon
+git diff -- Synrheon
+```
+
+Stage changed files explicitly.
 
 ## 1. Read current project truth
 
-Read:
-- `README.md`
-- `docs/SCAFFOLD.md`
-- `docs/ARCHITECTURE_PLAN.md`
-- `docs/IMPLEMENTATION_STATUS.md`
-- `docs/CURRENT_STAGE.md`
+Read the project truth owners listed above.
 
-Then inspect only the production owners and tests relevant to the active work.
-
-Update documentation first if the written architecture clearly disagrees with reality.
+If documentation disagrees with reality, reconcile truth before adding cognition.
 
 ## 2. Run the architecture gate
 
-Before choosing code, state:
+Before choosing code, answer:
 
 1. What capability are we trying to create?
-2. Why is it the correct bottom-up capability to address now?
+2. Why is it the correct bottom-up capability now?
 3. What broad bottleneck prevents it?
-4. What candidate mechanisms could solve it?
-5. What later systems will depend on this choice?
-6. What owner or coordinated set of owners should hold it?
-7. What could go wrong?
-8. What live observation would prove or falsify it?
+4. Which owner or coordinated owners should hold it?
+5. What later systems depend on this choice?
+6. What failure modes or shortcuts could fake success?
+7. What observation would prove or falsify it?
 
-If these cannot be answered coherently, do not code yet.
+Do not code if the owner, information boundary, or falsification condition is unclear.
 
-## 3. Pre-register the live experiment
+## 3. Respect the active preregistered experiment
 
-Before editing, define:
+For E011-A v1, `docs/EXPERIMENTS.md` is binding experiment truth.
+
+The first task is:
 
 ```text
-real stimulus or action
-baseline live behavior
-expected post-change behavior
-internal state / trace to inspect
-what must remain unchanged
-what result means failure
+bounded partial graph discovery
+10–14 opaque nodes
+1 visible start
+1 hidden goal marker
+unique shortest route 3–5 edges
+2–4 distractor branches
+0–2 cross/back edges
+10-action hard budget
 ```
 
-Prefer a real UI/runtime stimulus over a synthetic test-only call whenever the organism can already run.
-
-Do not move the success criteria after seeing the result.
-
-## 4. Observe the baseline in the running organism
-
-When a runnable organism exists:
-- start Synrheon through the supported entry point
-- use the UI or runtime control surface
-- apply the pre-registered stimulus
-- inspect the visible output
-- inspect relevant internal state / trace
-- record what actually happened
-
-If the organism cannot yet run, the active work should generally remain focused on the observable runtime/UI foundation unless the user explicitly directs otherwise.
-
-## 5. Inspect the full affected signal path
-
-Before implementation, inspect:
+The first action vocabulary is exactly:
 
 ```text
-input / internal trigger
+EXPAND(target)
+STOP
+```
+
+Do not add broader cognitive actions merely because the architecture may use them later.
+
+The environment may enumerate valid action-target candidates. It must not choose the preferred target.
+
+### E011-A policy firewall
+
+Policy-visible state may contain only revealed information and valid candidate structure.
+
+Never expose:
+
+```text
+unrevealed graph
+hidden goal location
+shortest path
+shortest-path distance
+on-solution-path flags
+correct next action / target
+future frontier
+solver/scorer output
+world seed as predictive input
+```
+
+If hidden truth reaches cognition, invalidate the result and repair the boundary.
+
+### Frozen seed splits
+
+```text
+train                    1000–4999
+development validation   5000–5999
+final Level-1 held-out   10000–10999
+paired renaming          20000–20999
+future Level-2           30000–30999
+model seeds              11, 22, 33, 44, 55
+```
+
+Final held-out data is not a tuning surface.
+
+Once final results are inspected, any material model/state/action/reward/generator change creates a new experiment revision and requires a fresh untouched final split.
+
+Do not move quantitative pass thresholds after seeing results.
+
+## 4. Inspect the full affected signal path
+
+For E011-A inspect:
+
+```text
+generator hidden world
+        ↓
+revealed-state adapter
+        ↓
+CognitiveState
+        ↓
+cognition owner / policy
+        ↓
+operation + target
+        ↓
+bounded transition
+        ↓
+checkpoint / outcome / cost
+        ↓
+learning owner
+        ↓
+model artifact / evaluation history
+```
+
+The hidden scorer belongs outside production cognition.
+
+For E011-B later inspect:
+
+```text
+live state
+        ↓
+cognition.py
+        ↓
+learned action + target
+        ↓
+checkpoint
         ↓
 runtime sequencing
         ↓
-correct cognitive owner
+OrganismState / trace
         ↓
-state transition
-        ↓
-observable trace / UI
-        ↓
-outcome / feedback
+UI
 ```
 
-When later systems exist, also trace any relevant:
-- memory access
-- retrieval cascade
-- scratchpad mutation
-- prediction
-- problem-solving state
-- learning effect
-- consolidation effect
+Runtime stays thin.
 
-Do not solve a local symptom before finding the correct owner.
+## 5. Implement in the correct owner
 
-## 6. Evaluate candidate mechanisms
+Prefer existing owners whenever they can cleanly hold the behavior.
 
-Compare reasonable approaches before coding.
-
-Consider:
-- cognitive generality
-- mathematical adaptability
-- sparse activation compatibility
-- temporal compatibility
-- future trainability
-- memory / retrieval interaction
-- failure containment
-- computational cost
-- interpretability / observability
-- risk of duplicate authority
-
-Use prior Sonara code, papers, repositories, or other systems as research evidence when useful.
-
-Do not transplant old package structures or authority boundaries merely because they already exist.
-
-## 7. Implement in the correct owner
-
-Prefer the existing owner when it can cleanly hold the mechanism.
-
-Create a new production file only when no existing owner can represent the responsibility coherently.
-
-Keep the early codebase understandable:
-- one major cognitive owner per file
-- split into packages only when real complexity justifies it
-- keep runtime thin
-- keep UI observational
-- keep tests outside production
-
-Do not add:
-- phrase-specific cognition
-- fake success flags
-- test-only production branches
-- scripted answers
-- parallel planners
-- parallel memory stores
-- duplicate learning paths
-- UI-side cognitive logic
-
-## 8. Wire through the live runtime and UI
-
-A cognitive mechanism is not Integrated until the real runtime reaches it.
-
-When the mechanism changes internal state, expose the relevant observation through the development UI or trace when practical.
-
-The desired path is:
+Likely E011 responsibilities:
 
 ```text
-mechanism
-   ↓
-correct owner state changes
-   ↓
-runtime reaches owner
-   ↓
-UI / trace exposes result
-   ↓
-real stimulus demonstrates behavior
+cognition.py
+    CognitiveState / action representation / policy inference / bounded cognition-owned transition interface
+
+learning.py
+    outcome/error/credit/parameter-update ownership
+
+experiment support outside production cognition
+    deterministic generated worlds
+    hidden scorer
+    seed splits
+    evaluation harness
 ```
 
-## 9. Run the live organism before declaring success
+Do not put hidden generated truth into production cognition.
 
-Run the same pre-registered stimulus again.
+Create a new production file only when no existing owner can hold the responsibility cleanly.
 
-Inspect:
-- visible behavior
-- current state
-- state transition
-- relevant trace
-- unexpected mutation
-- whether the mechanism generalized beyond a test fixture
+Do not add:
+- phrase-specific cognition;
+- known-world branches;
+- solver-derived policy features;
+- hand-written preferred-target routing;
+- fake success flags;
+- UI-side cognition;
+- parallel planners/learning paths/memory stores.
 
-If the result differs from expectation, diagnose the organism before changing the acceptance criterion.
+## 6. Add the minimum high-value tests
 
-## 10. Add the minimum high-value automated tests
+For E011-A prioritize tests proving:
+- deterministic generator behavior;
+- train/validation/final seed disjointness;
+- hidden truth is absent from policy-visible state;
+- action semantics and 10-step budget are exact;
+- malformed/mismatched action output fails safely;
+- unrelated state is not mutated;
+- model parameters actually change during training;
+- evaluation reports all frozen seeds and baselines;
+- renaming/permutation leaves no identity shortcut;
+- no production world-specific branch is required.
 
-After or alongside live proof, add tests that preserve the discovered contract.
+Avoid large batteries of trivial construction/getter tests.
 
-Prefer a small number of tests proving:
-- valid behavior
-- safe malformed / mismatched behavior
-- correct owner state change
-- live runtime reachability when feasible
-- unrelated state remains unchanged
-- feedback reaches the correct learning owner when relevant
+## 7. Run the controlled E011-A evidence gate
 
-Do not create large batteries of object-construction, getter, or duplicate wording tests.
+Report all frozen model seeds.
 
-Passing tests do not replace the live experiment.
+At minimum compare:
 
-## 11. Diagnose failed work rather than patching around it
+```text
+random-valid policy
+matched untrained model
+trained model
+exhaustive all-reachable cost reference
+```
 
-If the live proof fails:
-- trace the actual state transition
-- identify whether the failure is architecture, wiring, representation, runtime sequencing, or observation
-- repair the same mechanism only when the architecture still appears sound
-- do not add a special-case stimulus patch to make the experiment pass
+Use development validation for iteration.
 
-If the mechanism itself is disproven:
-- remove the failed production path
-- remove implementation-specific tests that no longer represent a real contract
-- preserve useful experimental evidence in `docs/EXPERIMENTS.md`
-- update architecture / decisions honestly
-- leave no partial behavior represented as Integrated or Verified
+Use final held-out worlds only after final configuration is frozen.
 
-A failed experiment is useful evidence.
+Apply the preregistered quantitative thresholds exactly as documented.
+
+## 8. Classify failure before changing code
+
+Use the predefined taxonomy:
+
+```text
+failed learning
+memorization / overfit
+identity shortcut
+structural overfit
+inefficient cognition
+insufficient / misleading representation
+answer leakage
+```
+
+Do not patch a single failed world.
+
+Stop local tuning and revisit architecture when multiple models fit training but fail untouched transfer, renaming repeatedly collapses, gains require nearly all compute, the task cannot distinguish trained from random behavior, or success requires hidden solver-derived features.
+
+A failed experiment is useful evidence and remains documented.
+
+## 9. Preserve model lineage and growth history
+
+Meaningful checkpoints should preserve:
+
+```text
+model_id
+parent_model_id
+experiment / generator / state / action versions
+model architecture id
+model seed
+training split
+configuration hash
+episodes_seen
+checkpoint index
+parameter checksum
+source Git commit
+evaluation summary
+strongest demonstrated generalization level
+```
+
+Preserve immutable evaluation records for training, held-out, renaming, cost, budget, and baselines.
+
+Backend-owned summary metrics may later feed the Organism UI. The UI must not manufacture the result.
+
+## 10. E011-B live integration gate
+
+Only after a suitable E011-A artifact exists, integrate through the real organism.
+
+Required path:
+
+```text
+legitimate live CognitiveState
+        ↓
+cognition.py
+        ↓
+learned operation + target
+        ↓
+bounded checkpoint
+        ↓
+runtime sequences only
+        ↓
+OrganismState / trace
+        ↓
+Organism UI
+```
+
+The generated experiment's hidden graph/scorer/solution must not enter the live production path.
+
+A cognitive mechanism is not `Integrated` until runtime reaches it.
+
+## 11. Run live organism proof before declaring Verified
+
+For E011-B:
+- start Synrheon through the supported entry point;
+- exercise the mechanism through the real path;
+- inspect visible behavior;
+- inspect current state/checkpoints/trace;
+- confirm the Organism UI shows the actual integrated stage and backend-owned growth evidence;
+- confirm unrelated state is not mutated;
+- repeat after any cleanup/integration change that could alter behavior.
+
+Automated tests alone cannot grant `Verified`.
 
 ## 12. Run verification gates
 
-After live behavior is correct:
-- run focused tests
-- run the full active test suite when the change affects broad cognition/runtime/state
-- compile
-- run `git diff --check`
-- inspect the complete Synrheon diff
-- inspect `git status --short`
-- run the live organism again if any cleanup or integration change occurred after the prior live proof
-
-The most important gate remains the actual organism behavior.
+After the relevant controlled/live behavior is correct:
+- run focused tests;
+- run integration tests;
+- run the full active suite when broad state/runtime/cognition changed;
+- run any relevant engine/R4 gate;
+- compile;
+- run `git diff --check`;
+- review the full Synrheon-scoped diff;
+- review Synrheon-scoped status.
 
 ## 13. Synchronize project truth
 
-Update only what changed:
+Update only affected documents:
 
-- `docs/ARCHITECTURE_PLAN.md` — intended architecture
-- `docs/IMPLEMENTATION_STATUS.md` — implemented/live/verified truth
-- `docs/CURRENT_STAGE.md` — active work and immediate next boundary
-- `docs/DECISIONS.md` — durable architectural decisions
-- `docs/EXPERIMENTS.md` — preregistered stimulus, observation, failure/success, interpretation
-- `docs/RESEARCH.md` — research evidence that is not yet adopted architecture
-- `docs/SCAFFOLD.md` — repository structure and ownership map
-- `docs/SIGNAL_FLOW.md` — current real signal path plus clearly labeled planned flow
-- `docs/PROJECT_GUIDE.md` — plain-English explanation of files and meaningful classes/functions/sections for a non-programmer
+- `docs/ARCHITECTURE_PLAN.md`
+- `docs/IMPLEMENTATION_STATUS.md`
+- `docs/CURRENT_STAGE.md`
+- `docs/DECISIONS.md`
+- `docs/EXPERIMENTS.md`
+- `docs/RESEARCH.md`
+- `docs/SCAFFOLD.md`
+- `docs/SIGNAL_FLOW.md`
+- `docs/PROJECT_GUIDE.md`
 
-Do not let documentation claim cognition that the UI/runtime has not demonstrated.
+Do not let documentation claim cognition the experiment or live organism has not demonstrated.
 
 ## 14. Review the whole change as one organism
 
-Before completion, confirm:
-- behavior is in the correct owner
-- runtime remains thin
-- UI remains observational
-- the real path reaches the mechanism
-- no duplicate subsystem exists
-- tests preserve behavior rather than manufacture it
-- documentation matches reality
-- cognitive effect is described honestly
-- no unrelated files are included
+Before completion confirm:
+- behavior is in the correct owner;
+- hidden truth cannot reach the policy;
+- runtime remains thin;
+- UI remains observational;
+- no duplicate subsystem exists;
+- tests prove behavior rather than manufacture it;
+- experiment thresholds were not moved post-result;
+- documentation matches reality;
+- cognitive effect/status is honest;
+- no unrelated files are included.
 
-## 15. Commit and push verified work
+## 15. Commit and push
 
 After the relevant gates pass:
-- stage each intended file explicitly
-- never use `git add .` or `git add -A`
-- create a focused reversible commit
-- push the active branch to the canonical Synrheon repository
+- stage every intended file explicitly;
+- create a focused reversible commit;
+- push the active branch to the canonical repository.
 
-Do not:
-- force push
-- amend without explicit direction
-- rewrite history
-- commit failed or partial work as complete
-- include unrelated files
+Do not force-push, rewrite history, or include unrelated files.
 
 # Definition of Done
 
 A bounded Synrheon change is complete only when:
 
 - [ ] Current project truth was read first.
-- [ ] The architecture gate identified the real bottleneck and owner.
-- [ ] A live experiment was defined before implementation.
-- [ ] Baseline behavior was observed through the running organism when available.
-- [ ] Implementation lives in the correct cognitive owner.
-- [ ] Runtime wiring reaches it.
-- [ ] UI/trace makes the relevant state observable when practical.
-- [ ] The same real stimulus was used after implementation.
-- [ ] The observed organism behavior matches the intended mechanism.
-- [ ] High-value automated tests protect the resulting contract.
-- [ ] Full relevant tests and compilation pass.
+- [ ] The architecture gate identified the correct bottleneck and owner.
+- [ ] The active experiment contract was respected.
+- [ ] Hidden-answer boundaries were audited.
+- [ ] Implementation lives in the correct owner.
+- [ ] High-value behavioral tests protect the contract.
+- [ ] Controlled evidence was run for E011-A when applicable.
+- [ ] Failure was classified rather than patched.
+- [ ] Runtime integration exists before claiming Integrated.
+- [ ] Live organism behavior was observed before claiming Verified.
+- [ ] Full relevant tests/compile/gates pass.
 - [ ] `git diff --check` passes.
-- [ ] Complete diff and status were reviewed.
+- [ ] Complete Synrheon diff/status were reviewed.
 - [ ] Documentation states implemented truth.
-- [ ] Implementation status is not overstated.
-- [ ] Cognitive effect is classified honestly.
-- [ ] Completed verified work is committed and pushed to `Logancarton/Synrheon`.
-
-# Current Priority
-
-Until the observable organism exists, prioritize:
-
-```text
-minimal runtime
-      +
-development UI
-      +
-step / continue / pause controls
-      +
-state / trace visibility
-      ↓
-RUNNING TEST ORGANISM
-```
-
-Only then should deeper cognitive stages be evaluated primarily through that live organism.
-
-This foundation is infrastructure, not cognition.
-
-Its value is that every later cognitive mechanism can be tested as actual behavior rather than inferred from pass/fail assertions.
+- [ ] Cognitive effect is described honestly.
+- [ ] Completed work is committed and pushed to `Logancarton/Synrheon`.
