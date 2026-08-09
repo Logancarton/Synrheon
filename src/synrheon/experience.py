@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 from uuid import uuid4
 
-from synrheon.time import TemporalCoordinate
+from synrheon.temporal import TemporalCoordinate
 
 ExperienceKind = Literal["external", "internal"]
 ExperienceOrigin = Literal["observed", "injected"]
