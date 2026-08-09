@@ -75,11 +75,7 @@ class WorldRelation:
 
 @dataclass(slots=True)
 class OrganismRelation:
-    """One open-ended relationship between Synrheon and a concept.
-
-    The relation type is data. Production code does not define a closed ontology of
-    allowed meanings such as social, trust, preference, or prediction.
-    """
+    """One open-ended relationship between Synrheon and a concept."""
 
     relation_type: str
     strength: float
@@ -155,8 +151,6 @@ class CognitiveSubstrate:
         strength: float,
         confidence: float,
     ) -> OrganismRelation:
-        """Set only injected organism-relative state for an arbitrary relation type."""
-
         self._require_concept(concept_id)
         relation_type = _require_relation_type(relation_type)
         _validate_unit_interval(strength, "Relation strength")
@@ -182,11 +176,7 @@ class CognitiveSubstrate:
         learning_rate: float,
         evidence_event_id: str,
     ) -> OrganismRelation:
-        """Update only a self-learned arbitrary relation from trusted evidence.
-
-        This narrow storage update remains explicit and provenance-preserving; it is not
-        the cognitive routing policy that was removed in this pivot.
-        """
+        """Update only a self-learned arbitrary relation from trusted evidence."""
 
         self._require_concept(concept_id)
         relation_type = _require_relation_type(relation_type)
@@ -251,6 +241,7 @@ class OrganismState:
     computational_time: ComputationalTime = field(default_factory=ComputationalTime)
     experience: ExperienceThread = field(default_factory=ExperienceThread)
     substrate: CognitiveSubstrate = field(default_factory=CognitiveSubstrate)
+    learning_metrics: dict[str, object] = field(default_factory=dict)
 
     def begin_session(self) -> None:
         self.session_id = str(uuid4())
@@ -278,6 +269,7 @@ class OrganismState:
             "time": self.computational_time.snapshot(),
             "experience_thread": self.experience.snapshot(),
             "cognitive_substrate": self.substrate.snapshot(),
+            "learning_metrics": dict(self.learning_metrics),
         }
 
 
