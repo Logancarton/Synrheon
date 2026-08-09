@@ -205,15 +205,21 @@ One cognitive step should produce one observable checkpoint:
 ```text
 CognitiveState S(t)
         ↓
-expose available cognitive operations
+construct valid operation + target candidates
         ↓
-cognition.py policy chooses a(t)
+cognition.py policy evaluates candidates
+        ↓
+choose a(t) = operation + target / scope
+        ↓
+transition model predicts S(t+1)
+        +
+value model estimates usefulness V(S,a)
         ↓
 execute one bounded cognitive operation
         ↓
 CognitiveState S(t+1)
         ↓
-record checkpoint / trace
+record checkpoint / trace + compute cost
         ↓
 resolved? ── yes ──→ stop / predict / act / express
    │
@@ -224,7 +230,7 @@ next micro-cycle
 
 A checkpoint is computational state, not a wall-clock sleep.
 
-The runtime may sequence this loop, but it must not select the cognitive action itself.
+The runtime may sequence this loop, but it must not select the cognitive action or its meaningful target itself.
 
 # 11. Planned Cognitive Action Flow
 
@@ -242,7 +248,18 @@ REVISE
 STOP
 ```
 
-The action names describe generic operations. Production code must not contain mappings such as:
+A useful action is not merely a verb. It may include parameters:
+
+```text
+RETRIEVE(target, region, depth)
+COMPARE(left, right, evidence_scope)
+FOCUS(candidate_region)
+EXPAND(candidate_path)
+PREDICT(target_state_feature)
+REVISE(belief_or_route)
+```
+
+The action names describe generic operation families. Production code must not contain mappings such as:
 
 ```text
 phrase X → RETRIEVE
@@ -250,30 +267,50 @@ relation IS_A → EXPAND
 concept Daisy → follow dog
 ```
 
-The policy should learn when each operation is useful from state and outcome evidence.
+Nor may it hide the real decision in a hand-written target selector after the model chooses the operation family.
 
-# 12. Planned Training / Credit Flow
+# 12. Planned Policy / Transition / Value Boundary
+
+```text
+POLICY
+P(a | S)
+Which operation + target should happen next?
+
+TRANSITION
+F(S, a) → predicted S'
+What should that action change?
+
+VALUE
+V(S, a)
+How useful should that action be from here?
+```
+
+These may share a small model initially, but their semantic roles remain distinct so prediction accuracy is not confused with action usefulness.
+
+# 13. Planned Training / Credit Flow
 
 ```text
 state_before
 +
-available_actions
+available actions / targets
         ↓
 selected_action
+        ↓
+predicted state + expected value
         ↓
 short transition
         ↓
 state_after checkpoint
         ↓
-prediction / task consequence
-        ↓
 observed outcome / correction
+        +
+compute cost / wasted steps
         ↓
 error
         ↓
 learning.py assigns credit / blame
         ↓
-policy / transition model parameters update
+policy / transition / value parameters update
 ```
 
 Critical rule:
@@ -284,7 +321,25 @@ selected path ≠ successful path
 
 No route is strengthened merely because the model chose it.
 
-# 13. Planned Knowledge / Skill Separation
+The trace also preserves unchosen valid alternatives so later credit assignment can estimate whether the selected action was actually better than plausible counterfactuals.
+
+# 14. Planned Cognitive Cost Flow
+
+```text
+checkpoint
+ ↓
+record steps / invalid actions / redundant actions / retrieval-expansion use
+ ↓
+task outcome
+ ↓
+compare usefulness against cognitive cost
+ ↓
+learning signal
+```
+
+A hard maximum budget remains infrastructure. Within that ceiling, the policy should learn to avoid exhaustive exploration when a smaller useful sequence is enough.
+
+# 15. Planned Knowledge / Skill Separation
 
 ```text
 KNOWLEDGE SOURCES
@@ -312,12 +367,29 @@ stop
 
 This allows the same learned process to be evaluated with knowledge it never trained on.
 
-# 14. Planned Transfer Experiment Flow
+# 16. Planned Generated Curriculum Flow
 
 ```text
-training worlds A / B / C
+seeded world/task generator
         ↓
-create task-specific CognitiveStates
+random concept identities
+random relation identities / encodings
+varied topology
+varied task targets
+varied distractors
+varied minimum cognitive depth
+        ↓
+hidden ground truth retained by experiment harness
+        ↓
+policy sees only legitimate CognitiveState
+```
+
+Hand-written worlds may remain for debugging, but the main training/evaluation curriculum must not depend on a few developer-authored examples.
+
+# 17. Planned Transfer Experiment Flow
+
+```text
+generated training worlds A / B / C
         ↓
 train cognitive-action policy
         ↓
@@ -327,7 +399,7 @@ unseen world D
         ↓
 run policy
         ↓
-measure task success + action sequence + checkpoints
+measure task success + action sequence + checkpoints + cost
         ↓
 rename / permute concept identities
         ↓
@@ -338,12 +410,21 @@ compare against random / untrained baseline
 
 The experiment is not passed by training-world accuracy alone.
 
-# 15. Planned Retrieval Flow
+Results are classified:
+
+```text
+Level 0 — training memorization
+Level 1 — identity transfer
+Level 2 — structural transfer
+Level 3 — compositional transfer
+```
+
+# 18. Planned Retrieval Flow
 
 ```text
 current CognitiveState
         ↓
-policy selects RETRIEVE
+policy selects RETRIEVE(target, region, depth)
         ↓
 Level 1 coarse orientation
         ↓
@@ -358,7 +439,7 @@ policy chooses next cognitive action
 
 Retrieval levels constrain search cost. They do not encode which answer is correct.
 
-# 16. Planned Durable Memory Flow
+# 19. Planned Durable Memory Flow
 
 ```text
 ordered ExperienceEvent thread
@@ -374,7 +455,7 @@ reconstructed sequence / evidence
 CognitiveState checkpoint
 ```
 
-# 17. Planned Language Expression Flow
+# 20. Planned Language Expression Flow
 
 Expression happens after cognition has produced enough state to communicate:
 
@@ -388,7 +469,7 @@ external response
 
 Fluent text must never be used as proof that the internal cognitive process occurred.
 
-# 18. Planned Autonomous Continuation
+# 21. Planned Autonomous Continuation
 
 Only after bounded micro-cycles are useful under direct stimulation:
 
