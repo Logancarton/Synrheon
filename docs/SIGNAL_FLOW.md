@@ -12,13 +12,13 @@ TARGET GROUND 0 COGNITIVE FLOW
 ```text
 Chat / injected developer thought
         ↓
-interfaces.py
+dev_server.py
         ↓
 runtime.py
         ↓
-time.py + experience.py
+temporal.py + experience.py
         ↓
-OrganismState / trace
+state.py
         ↓
 UI
 ```
@@ -39,17 +39,15 @@ E011-A remains a useful controlled donor mechanism:
 ```text
 revealed CognitiveState
         ↓
-valid cognitive action + target candidates
-        ↓
-trainable policy
+policy.py enumerates/scores valid operation + target candidates
         ↓
 selected operation + target
         ↓
-bounded transition
+bounded experiment transition
         ↓
 outcome / cost
         ↓
-learning update
+policy_learning.py update
 ```
 
 Its narrow action set was:
@@ -61,12 +59,35 @@ STOP
 
 This demonstrated transferable learned operation selection, not full Ground 0 cognition.
 
-## Ground 0 Target Flow
+## Ground 0 Production Contract
 
-The next live cognitive path should preserve these distinct stages:
+`cognition.py` now owns the production-facing Ground 0 checkpoint vocabulary:
 
 ```text
-legitimate live CognitiveState
+broad_field
+routing
+tapering
+recurrent_deliberation
+evidence_assessment
+complete
+```
+
+and dispositions:
+
+```text
+continue
+commit
+abstain
+seek_evidence
+reopen
+```
+
+This is a designed contract only. The real taper/recurrent mechanism is not live-integrated yet.
+
+## Ground 0 Target Flow
+
+```text
+legitimate live state
         ↓
 BROAD CANDIDATE / KNOWLEDGE FIELD
         ↓
@@ -74,30 +95,28 @@ learned context / operation routing
         ↓
 REVERSIBLE SOFT TAPER
         ↓
-checkpoint: what remains strongly active?
+Ground0Checkpoint
         ↓
 SMALL SERIOUS-CANDIDATE FIELD
         ↓
 STATE-DEPENDENT RECURRENCE
         ↓
-checkpoint: how did candidates change one another?
+Ground0Checkpoint
         ↓
 EVIDENCE / UNCERTAINTY STATE
         ↓
 COMMIT | ABSTAIN | SEEK EVIDENCE | REOPEN
         ↓
-checkpoint
+Ground0Checkpoint
         ↓
 runtime sequences result
         ↓
-OrganismState / trace
+state / trace
         ↓
 UI
 ```
 
 ## Critical Separation
-
-Taper and recurrence are different jobs.
 
 ```text
 Taper:
@@ -110,11 +129,9 @@ Commitment:
 Is the evidence sufficient to act?
 ```
 
-HCT-2 showed why this separation matters: removing recurrence reduced good behavior to 45% even though the correct candidate survived tapering 100% of the time.
+HCT-2 showed why this matters: removing recurrence reduced good behavior to 45% even though the correct candidate survived tapering 100% of the time.
 
 ## Reopening Flow
-
-Suppression must remain reversible:
 
 ```text
 initial context
@@ -128,7 +145,7 @@ reopen broader preserved field
 rerun appropriate taper / deliberation
 ```
 
-Hard Top-K is not the Ground 0 default because HCT-1 and HCT-2 both showed that irreversible deletion failed context-reversal cases.
+Hard Top-K is not the Ground 0 default because HCT-1 and HCT-2 both showed irreversible deletion failing context-reversal cases.
 
 ## Optional Reliability Flow
 
@@ -142,19 +159,28 @@ learned reliability or resistance
 modulated evidence influence
 ```
 
-This is optional. HCT-2 did not require learned resistance for full good behavior.
+This remains optional. HCT-2 did not require learned resistance for full good behavior.
 
 ## Ownership Rule
 
 ```text
-cognition / learning owners
-    choose and learn cognitive work
+cognition.py
+    Ground 0 process/checkpoint owner
 
-runtime
+policy.py + policy_learning.py
+    retained learned-routing donor mechanism
+
+state.py
+    explicit organism/cognitive substrate state
+
+temporal.py + experience.py
+    event position, sequence, provenance, ordered experience
+
+runtime.py
     sequences handoffs only
 
-interfaces
-    transport only
+dev_server.py
+    local browser/API transport only
 
 UI
     observation / control only
