@@ -120,6 +120,21 @@ These operations define **what kinds of mental work are possible**, not when the
 
 The initial vocabulary is experimental. Later systems may learn finer operations, compose primitives, compress repeated action sequences into higher-level skills, or replace discrete actions with a continuous action representation.
 
+### Parameterized cognitive actions
+
+Action families must not hide the real cognitive choice in Python. A useful action representation should be able to include its target or scope:
+
+```text
+RETRIEVE(target, region, depth)
+COMPARE(left, right, evidence_scope)
+FOCUS(candidate_region)
+EXPAND(candidate_path)
+PREDICT(target_state_feature)
+REVISE(belief_or_route)
+```
+
+The model should increasingly learn both the operation and what it should act upon. The first slice may deliberately constrain the parameter space, but the architecture must not require a developer-authored target selector to make the action meaningful.
+
 ### Trainable policy
 
 The central policy is conceptually:
@@ -139,6 +154,18 @@ predicted S(t+1) = F(S(t), a(t))
 ```
 
 The difference between predicted and observed next state becomes learning evidence rather than merely another score chosen by the developer.
+
+### Expected cognitive value
+
+A third conceptually distinct learned quantity is:
+
+```text
+V(S, a)
+```
+
+This estimates whether an available cognitive action is worth taking from the current state. A valid action may still be low-value because it is redundant, too expensive, or unlikely to reduce uncertainty.
+
+Policy, transition prediction, and value may initially share a compact model, but the architecture should not collapse these questions into one opaque score.
 
 ### Training trace
 
@@ -165,6 +192,24 @@ path useful
 ```
 
 A route receives reinforcement only when later evidence supports its usefulness.
+
+### Cognitive utility and cost
+
+Correctness alone is not enough. A policy that retrieves, expands, and compares everything is not sparse cognition.
+
+Evaluation should increasingly consider:
+
+```text
+task success / useful progress
+-
+compute cost
+-
+unnecessary steps
+-
+invalid or redundant actions
+```
+
+A hard maximum cognitive budget remains designed infrastructure. Within that ceiling, the learned policy should prefer efficient cognition. Exact utility weights remain experimental rather than permanent architecture constants.
 
 ## What Is Designed vs Learned
 
@@ -194,6 +239,7 @@ attention / focus
 concept organization
 candidate-path ranking
 cognitive-action selection
+action targets / parameters
 retrieval timing
 comparison strategy
 prediction strategy
@@ -264,6 +310,26 @@ Tokenization may be part of the input adapter. It should not dictate the thought
 
 A future LLM may participate in perception, concept proposal, outside knowledge, simulation, or expression, but Synrheon's persistent state, provenance, cognitive-process traces, and learning effects remain explicit owners.
 
+## Generated Curriculum Requirement
+
+The primary E011 curriculum should come from a deterministic seeded world/task generator rather than a small hand-written set of examples.
+
+A generator may define experiment rules and retain hidden ground truth for scoring while exposing only legitimate task state to the cognitive policy.
+
+Generated variation should include:
+
+```text
+concept identities
+relation identities / encodings
+graph topology
+task targets
+starting focus
+irrelevant distractors
+required cognitive-step count
+```
+
+Hand-authored worlds remain useful for debugging and human interpretation, but cannot be the main evidence for general cognitive skill.
+
 ## Required Transfer Experiment
 
 The first model experiment must test **process transfer** rather than answer accuracy alone.
@@ -293,6 +359,38 @@ untrained/random baseline
 
 A stronger second evaluation should vary graph/world topology so success cannot come from memorizing one structural template.
 
+### Generalization ladder
+
+Claims should name the strongest demonstrated level:
+
+```text
+Level 0 — Training memorization
+same training worlds/tasks
+
+Level 1 — Identity transfer
+new or renamed concepts with comparable structure
+
+Level 2 — Structural transfer
+new concepts + changed topology / relation arrangement
+
+Level 3 — Compositional transfer
+new knowledge + new structure + novel combinations of cognitive demands
+```
+
+Passing Level 1 does not imply Level 2 or 3.
+
+### Counterfactual credit direction
+
+The learning trace should preserve the alternatives available at a checkpoint so later credit assignment can distinguish:
+
+```text
+action correlated with success
+from
+action likely contributed to success
+```
+
+Counterfactual estimates may initially be approximate or deferred, but the architecture should allow comparison of chosen actions against plausible alternatives rather than reinforcing whatever happened during a successful episode.
+
 ### Meaningful pass condition
 
 The experiment is promising only if the learned policy:
@@ -307,6 +405,8 @@ survives concept renaming
 performs useful multi-step action sequences
 +
 produces inspectable checkpoints
++
+uses cognitive resources more economically than exhaustive search
 ```
 
 If it only becomes better at the training worlds, it learned content or shortcuts rather than a reusable cognitive skill.
@@ -447,6 +547,7 @@ concept representation
 organization / routing
 cognitive-action policy
 state-transition prediction
+expected cognitive value
 retrieval strategy
 prediction / revision
 route usefulness

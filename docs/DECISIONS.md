@@ -292,3 +292,128 @@ Later evaluations should also vary world topology and task composition.
 The key question is:
 
 > **Can Synrheon use a learned thinking process on knowledge it did not learn that process from?**
+
+## D022 — Training Worlds and Tasks Must Be Generated, Not Hand-Curated as the Main Curriculum
+
+E011 should use a deterministic seeded generator capable of producing many small knowledge worlds and tasks from abstract templates.
+
+The generator may define the **rules of an experiment** and know the ground-truth solution path for scoring, but production cognition must never receive that hidden solution.
+
+The curriculum should vary at least:
+
+```text
+concept identities
+relation identities / encodings
+graph topology
+task targets
+starting focus
+irrelevant distractors
+required cognitive-step count
+```
+
+Developer-authored examples may be used for debugging and human inspection, but they are not sufficient evidence of learned cognition because they can accidentally encode the developer's assumptions.
+
+## D023 — Cognitive Actions Are Operation + Target, Not Merely Action Labels
+
+A discrete action name such as `RETRIEVE` or `COMPARE` is only the operation family.
+
+A useful cognitive action may also need parameters describing what the operation acts on, for example:
+
+```text
+RETRIEVE(target, region, depth)
+COMPARE(left, right, evidence_scope)
+FOCUS(candidate_region)
+EXPAND(candidate_path)
+PREDICT(target_state_feature)
+REVISE(belief_or_route)
+```
+
+The model should increasingly learn both:
+
+```text
+which operation?
++
+what should it operate on?
+```
+
+Python must not secretly choose the meaningful target after the model selects only a generic verb, because that would move the real cognitive decision back into hand-written code.
+
+The first E011 slice may use a deliberately small parameter space, but the representation must not prevent later parameterized actions.
+
+## D024 — Separate Policy, Transition Prediction, and Expected Cognitive Value
+
+The architecture distinguishes three learnable questions:
+
+```text
+POLICY
+P(a | S)
+Which cognitive action should I take?
+
+TRANSITION MODEL
+F(S, a) → predicted S'
+What do I expect this action to change?
+
+VALUE
+V(S, a)
+How useful do I expect this action to be from here?
+```
+
+These functions may initially share a small model or be implemented incrementally, but the concepts must remain distinct.
+
+Expected value matters because an action can be valid yet not worth its computational cost in the current state.
+
+## D025 — Cognitive Utility Includes Resource Cost
+
+A cognition policy is not successful merely because it eventually reaches the correct outcome after exploring everything.
+
+Training and evaluation should eventually account for both task success and cognitive cost, conceptually:
+
+```text
+utility
+=
+task success / progress
+-
+compute cost
+-
+unnecessary cognitive steps
+-
+invalid or redundant actions
+```
+
+The exact coefficients are experimental and must not become arbitrary permanent constants without evidence.
+
+A hard maximum budget remains infrastructure. Within that ceiling, the learned policy should prefer useful, economical cognition over exhaustive search.
+
+## D026 — Credit Assignment Must Consider Alternatives and Generalization Level
+
+Observed success does not prove that the selected action caused the success.
+
+Training should preserve enough information to estimate or later learn from alternatives available at each checkpoint:
+
+```text
+state
+├─ chosen action
+├─ other available actions
+├─ predicted consequences
+└─ later outcome
+```
+
+Counterfactual estimates may be approximate, learned, sampled, or introduced in a later E011 phase, but the architecture must not equate correlation with causal credit.
+
+Generalization claims use four levels:
+
+```text
+Level 0 — Training memorization
+same training worlds/tasks
+
+Level 1 — Identity transfer
+new/renamed concepts with comparable structure
+
+Level 2 — Structural transfer
+new concepts + changed topology / relation arrangement
+
+Level 3 — Compositional transfer
+new knowledge + new structure + novel combinations of cognitive demands
+```
+
+Passing one level does not imply the next. Documentation and status claims must name the strongest demonstrated level rather than using the broad phrase “learned how to think” without qualification.

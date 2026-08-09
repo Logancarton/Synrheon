@@ -23,13 +23,17 @@ This document records implemented truth, not future intention.
 | 1 | Cognitive Substrate | Built | Supporting cognition | Concepts, world relations, open-ended organism relations, activation representation |
 | 1P | Trainable Cognitive Policy architecture | Designed | Supporting cognition | State/action/checkpoint/transfer contract documented; no production policy yet |
 | 1P.1 | CognitiveState feature representation | Not Started | Cognitive improvement | |
-| 1P.2 | Generic cognitive-action representation | Not Started | Cognitive improvement | |
-| 1P.3 | State → cognitive-action policy | Not Started | Cognitive improvement | |
+| 1P.2 | Parameterized cognitive-action representation | Designed | Supporting cognition | Operation + target/scope requirement documented; implementation absent |
+| 1P.3 | State → cognitive-action/target policy | Not Started | Cognitive improvement | |
 | 1P.4 | One-action → checkpoint transition loop | Not Started | Cognitive improvement | |
-| 1P.5 | Transition / next-state prediction | Not Started | Cognitive improvement | |
-| 1P.6 | Outcome/error/credit training trace | Not Started | Cognitive improvement | |
-| 1P.7 | A/B/C → unseen-D transfer harness | Designed | Cognitive improvement | E011 preregistered with anti-memorization gates |
-| 1P.8 | Live runtime invocation of learned policy | Not Started | Cognitive improvement | |
+| 1P.5 | Transition / next-state prediction | Designed | Supporting cognition | `F(S,a) → S'` boundary documented; model absent |
+| 1P.6 | Expected cognitive value | Designed | Supporting cognition | `V(S,a)` kept distinct from transition prediction; model absent |
+| 1P.7 | Outcome/error/credit training trace | Designed | Supporting cognition | Trace contract includes alternatives and cost; learning absent |
+| 1P.8 | Generated world/task curriculum | Designed | Supporting cognition | Seeded generated curriculum required; generator absent |
+| 1P.9 | A/B/C → unseen-D transfer harness | Designed | Supporting cognition | E011 preregistered with anti-memorization and generalization gates |
+| 1P.10 | Cognitive-cost evaluation | Designed | Supporting cognition | Step/budget/invalid/redundant-action measurements required |
+| 1P.11 | Counterfactual / alternative-action credit | Designed | Supporting cognition | Alternative actions must be preserved; estimator absent |
+| 1P.12 | Live runtime invocation of learned policy | Not Started | Cognitive improvement | |
 | 2 | Computational Time + Experience | Integrated | Supporting cognition | Current-episode timestamp, elapsed time, sequence, provenance, previous/next links live |
 | 3A | Hand-written Sparse Activation experiment | Removed / superseded | Experimental cognition | Lexical matching, fixed spreading, decay, inhibition, Top-K, and fixed recurrence removed from production |
 | 3B | Durable Memory | Not Started | Cognitive improvement | Current experience remains process-local |
@@ -57,8 +61,12 @@ Internal Thought → ordered injected experience        Integrated
 Cognition.py owner retained for trainable policy      Designed
 Cognitive physics vs learned-skill boundary            Designed
 Micro-cycle / checkpoint contract                     Designed
-Training-trace schema                                 Designed
-Transfer / renaming experiment                        Designed
+Parameterized action/target contract                  Designed
+Policy / transition / value separation               Designed
+Generated curriculum requirement                      Designed
+Cognitive-cost measurement                            Designed
+Counterfactual-credit direction                       Designed
+Generalization Level 0→3 ladder                       Designed
 Trainable state → action → next-state policy          Not Started
 Semantic language understanding                       Not Started
 Natural-language response generation                  Not Started
@@ -70,7 +78,7 @@ The important pivot is intentional: the runtime no longer mutates activation mer
 
 ## Stage 1P Design Truth
 
-The current design now distinguishes what software may define from what training should learn.
+The current design distinguishes what software may define from what training should learn.
 
 ### Designed infrastructure
 
@@ -82,6 +90,7 @@ provenance
 hard compute / safety budget
 training-record format
 outcome / correction interface
+seeded world/task generation boundary
 validation and persistence boundaries
 ```
 
@@ -91,16 +100,28 @@ validation and persistence boundaries
 attention / focus
 concept organization
 candidate-path ranking
-cognitive-action selection
+cognitive-action + target selection
 retrieval timing
 comparison / evidence strategy
 prediction / revision behavior
+expected cognitive value
 route usefulness
 credit assignment
 stopping preference within hard limits
 ```
 
 This is a **Designed** architecture only. None of those learned capabilities may be described as Built or Integrated until a model exists and the live runtime actually reaches it.
+
+## Generalization Claim Levels
+
+```text
+Level 0 — Training memorization
+Level 1 — Identity transfer
+Level 2 — Structural transfer
+Level 3 — Compositional transfer
+```
+
+A result may only claim the strongest level directly demonstrated. Passing Level 1 does not justify a broad “learned how to think” claim.
 
 ## Stage 1 Representation Truth
 
@@ -146,7 +167,7 @@ E011 is the next cognition gate. It must demonstrate:
 ```text
 training improvement
 +
-held-out world > untrained/random baseline
+held-out Level-1 world > untrained/random baseline
 +
 concept renaming robustness
 +
@@ -154,8 +175,14 @@ useful multi-step cognitive-action sequences
 +
 inspectable checkpoints / outcome / error / credit
 +
+action targets not secretly selected by Python
++
+cognitive-cost measurement
++
 no production world-specific shortcuts
 ```
+
+Stronger follow-up gates test Level 2 structural transfer and Level 3 compositional transfer.
 
 A successful training-world result without held-out transfer is **not** a cognitive improvement claim.
 
