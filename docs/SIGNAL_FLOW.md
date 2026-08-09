@@ -1,6 +1,6 @@
 # Synrheon Signal Flow
 
-This document separates **CURRENT REAL FLOW** from **PLANNED / INTENDED FLOW**.
+This document separates **CURRENT REAL FLOW**, **E011-A CONTROLLED EXPERIMENT FLOW**, and **E011-B PLANNED LIVE COGNITION FLOW**.
 
 # 1. Current Real Application Flow
 
@@ -106,7 +106,30 @@ SelfRelation.injected_relations[relation_type]
 
 No production-code list decides which organism relation types are allowed.
 
-# 5. Current Ownership
+# 5. Current Organism UI Evidence Flow
+
+```text
+backend OrganismState
+        ↓
+GET /api/state
+        ↓
+ui/index.html
+        ↓
+Organism tab
+        ├─ live experience thread
+        ├─ concepts
+        ├─ world relations
+        ├─ injected vs learned organism relations
+        ├─ activation
+        ├─ cycle / counts
+        └─ stage-specific evidence
+```
+
+The UI also has a reserved growth surface that may later display backend-owned learning/generalization metrics.
+
+Until a learning owner actually produces those values, the UI must say that cognitive growth is not measured.
+
+# 6. Current Ownership
 
 ```text
 core.py
@@ -138,9 +161,9 @@ interfaces.py  HTTP / browser transport only
 ui/            explicit injection + observation only
 ```
 
-# 6. Removed Experimental Cognition
+# 7. Removed Experimental Cognition
 
-The following flow was tried and then deliberately removed from production:
+The following flow was tried and deliberately removed from production:
 
 ```text
 text
@@ -154,15 +177,7 @@ fixed salience / decay / inhibition
 fixed Top-K winners
 ```
 
-The experiment demonstrated end-to-end state-changing wiring, but its decision mechanics were developer-selected rather than learned. It must not be silently rebuilt inside runtime, retrieval, memory, learning, or UI.
-
-# 7. Current Self-Learning Storage Mechanism — Built, Not Live Outcome-Integrated
-
-`CognitiveSubstrate.learn_self_relation()` accepts an arbitrary relation type and updates only its learned representation while preserving injected/world state and evidence IDs.
-
-This remains a narrow storage update. It does **not** decide which cognitive path to take and is not the trainable thinking policy.
-
-There is still no live outcome/feedback owner deciding when or why to call it.
+The experiment demonstrated end-to-end state-changing wiring, but its decision mechanics were developer-selected rather than learned. It must not be rebuilt inside runtime, retrieval, memory, learning, or UI.
 
 # 8. Current Episode Boundary
 
@@ -182,94 +197,268 @@ Injected concepts/world relations/injected organism relations and learned organi
 
 Process restart still loses all of this because durable persistence is not implemented.
 
-# 9. Planned Perception → Cognition Boundary
+# 9. E011-A v1 — Controlled Process-Transfer Assay
 
-Language should not be the cognition owner.
+E011-A is the next implementation target.
+
+It is a controlled scientific assay, not yet the live organism cognition path.
+
+## 9.1 Generated world flow
 
 ```text
-text / observation
-        ↓
-perception / grounding
-        ↓
-CognitiveState seed
-        ↓
-trainable cognition
+seed
+ ↓
+e011a-v1 generator
+ ↓
+complete hidden 10–14 node graph
+ ├─ visible start
+ ├─ hidden goal marker
+ ├─ unique shortest route 3–5 edges
+ ├─ 2–4 distractor branches
+ └─ 0–2 cross/back edges
 ```
 
-Tokenization, embeddings, an LLM, vision encoder, or other perception system may later help construct a state seed. Those mechanisms must not decide the complete thought process merely because they recognized the input.
+The generator/scorer may retain the complete graph.
 
-# 10. Planned Cognitive Micro-Cycle
+The policy may not.
 
-One cognitive step should produce one observable checkpoint:
+## 9.2 Hidden-truth firewall
 
 ```text
-CognitiveState S(t)
-        ↓
-construct valid operation + target candidates
-        ↓
-cognition.py policy evaluates candidates
-        ↓
-choose a(t) = operation + target / scope
-        ↓
-transition model predicts S(t+1)
-        +
-value model estimates usefulness V(S,a)
-        ↓
-execute one bounded cognitive operation
-        ↓
-CognitiveState S(t+1)
-        ↓
-record checkpoint / trace + compute cost
-        ↓
-resolved? ── yes ──→ stop / predict / act / express
-   │
-   no
-   ↓
-next micro-cycle
+                ┌────────────────────────────┐
+                │ generator / scorer         │
+                │ full graph                 │
+                │ hidden goal location       │
+                │ shortest path / cost       │
+                │ success truth              │
+                └─────────────┬──────────────┘
+                              │
+                 scoring / training evidence
+                              │
+                              │ NEVER policy input
+                              │
+revealed state only           ↓
+        ┌────────────────────────────┐
+        │ CognitiveState             │
+        │ revealed nodes / edges     │
+        │ frontier / expanded state  │
+        │ known depth / reveal order │
+        │ remaining budget           │
+        │ goal marker only if seen   │
+        │ valid actions + targets    │
+        └─────────────┬──────────────┘
+                      ↓
+                 learned policy
 ```
 
-A checkpoint is computational state, not a wall-clock sleep.
-
-The runtime may sequence this loop, but it must not select the cognitive action or its meaningful target itself.
-
-# 11. Planned Cognitive Action Flow
-
-Initial experimental action vocabulary may include:
+Forbidden policy inputs include:
 
 ```text
-FOCUS
-EXPAND
-RETRIEVE
-COMPARE
-CHECK_SEQUENCE
-CHECK_EVIDENCE
-PREDICT
-REVISE
+unrevealed nodes / edges
+hidden goal location
+shortest path
+shortest-path distance
+on-solution-path flags
+correct next action / target
+future frontier
+solver output
+world seed as a predictive feature
+```
+
+If hidden truth crosses this boundary, the experiment is invalid.
+
+# 10. E011-A v1 — Cognitive Micro-Cycle
+
+The first action vocabulary is intentionally only:
+
+```text
+EXPAND(target)
 STOP
 ```
 
-A useful action is not merely a verb. It may include parameters:
+The flow is:
 
 ```text
-RETRIEVE(target, region, depth)
-COMPARE(left, right, evidence_scope)
-FOCUS(candidate_region)
-EXPAND(candidate_path)
-PREDICT(target_state_feature)
-REVISE(belief_or_route)
+revealed CognitiveState S(t)
+        ↓
+enumerate valid candidates
+        ├─ EXPAND(frontier target A)
+        ├─ EXPAND(frontier target B)
+        ├─ ...
+        └─ STOP
+        ↓
+policy selects operation + target
+        ↓
+execute deterministic action
+        ↓
+consume 1 of 10 cognitive actions
+        ↓
+revealed CognitiveState S(t+1)
+        ↓
+record checkpoint / outcome / cost
+        ↓
+goal revealed + STOP? ── yes ──→ success
+        │
+        no
+        ↓
+budget left? ── yes ──→ next policy step
+        │
+        no
+        ↓
+fail by budget exhaustion
 ```
 
-The action names describe generic operation families. Production code must not contain mappings such as:
+Python may define which actions are valid. Python must not choose the preferred frontier target.
+
+# 11. E011-A v1 — Training / Evaluation Flow
 
 ```text
-phrase X → RETRIEVE
-relation IS_A → EXPAND
-concept Daisy → follow dog
+TRAIN worlds 1000–4999
+        ↓
+optimize model seeds 11 / 22 / 33 / 44 / 55
+        ↓
+DEVELOPMENT VALIDATION 5000–5999
+        ↓
+freeze final configuration
+        ↓
+FINAL LEVEL-1 HELD-OUT 10000–10999
+        ↓
+paired identity permutation 20000–20999
+        ↓
+compare all five trained runs against:
+        ├─ random-valid policy
+        ├─ matched untrained model
+        └─ exhaustive all-reachable cost reference
 ```
 
-Nor may it hide the real decision in a hand-written target selector after the model chooses the operation family.
+Future Level-2 structural worlds use 30000–30999 under a separately versioned topology distribution.
 
-# 12. Planned Policy / Transition / Value Boundary
+Final held-out data is not a tuning surface.
+
+# 12. E011-A v1 — Checkpoint / Credit Record
+
+```text
+state_before
++
+available_actions_and_targets
+        ↓
+selected_action
+        ↓
+state_after
+        ↓
+observed_outcome
++
+compute_cost
+        ↓
+error_or_correction
+        ↓
+credit_assignment
+```
+
+The record shape also reserves:
+
+```text
+predicted_state_after
+expected_value
+alternative_action_estimates
+```
+
+These may be deferred/null in the first policy-only slice, but the architecture must not later confuse selection with usefulness.
+
+# 13. E011-A v1 — Cognitive Cost Flow
+
+```text
+checkpoint
+ ↓
+record EXPAND / STOP / invalid / stale-target / budget use
+ ↓
+world outcome
+ ↓
+compare successful action cost against exhaustive reference
+ ↓
+report efficiency with success
+```
+
+The hard budget is exactly 10 actions for E011-A v1.
+
+The first pass requires successful mean cost at or below 80% of the exhaustive all-reachable reference and mean hard-budget use at or below 80% while meeting the success thresholds.
+
+# 14. E011-A v1 — Failure Classification Flow
+
+```text
+result
+ ↓
+classify first
+ ├─ failed learning
+ ├─ memorization / overfit
+ ├─ identity shortcut
+ ├─ structural overfit
+ ├─ inefficient cognition
+ ├─ insufficient / misleading state
+ └─ answer leakage
+ ↓
+inspect correct owner / representation
+ ↓
+new experiment revision if material contract changes
+```
+
+Do not jump from a failed example directly to a world-specific code patch.
+
+# 15. E011-A v1 — Model Lineage / Growth Flow
+
+```text
+trained checkpoint
+ ↓
+model artifact metadata
+ ├─ model + parent ID
+ ├─ experiment / generator / state / action versions
+ ├─ model seed / training split
+ ├─ config hash
+ ├─ episodes seen
+ ├─ parameter checksum
+ ├─ Git commit
+ └─ evaluation summary
+ ↓
+immutable evaluation history
+ ↓
+backend learning_metrics summary
+ ↓
+Organism UI growth surface
+```
+
+The UI displays backend-owned evidence. It does not compute the scientific result itself.
+
+# 16. E011-B — Planned Live Cognition Flow
+
+Only after a controlled E011-A artifact is ready for integration:
+
+```text
+live legitimate CognitiveState
+        ↓
+cognition.py
+        ↓
+learned operation + target
+        ↓
+bounded transition
+        ↓
+checkpoint
+        ↓
+runtime.py sequences only
+        ↓
+OrganismState + trace
+        ↓
+interfaces.py
+        ↓
+Organism UI
+```
+
+The generated experiment's hidden scorer, full graph, hidden goal, and solution path are not production dependencies.
+
+Runtime may invoke the cognition owner and route its output. Runtime must not reimplement target choice, learning, memory, or policy scoring.
+
+# 17. Broader Planned Policy / Transition / Value Boundary
+
+The long-term cognitive architecture still distinguishes:
 
 ```text
 POLICY
@@ -285,61 +474,25 @@ V(S, a)
 How useful should that action be from here?
 ```
 
-These may share a small model initially, but their semantic roles remain distinct so prediction accuracy is not confused with action usefulness.
+E011-A v1 may begin with the policy question only. Prediction and value remain distinct future trainable quantities rather than hand-written scores.
 
-# 13. Planned Training / Credit Flow
+# 18. Planned Perception → Cognition Boundary
 
-```text
-state_before
-+
-available actions / targets
-        ↓
-selected_action
-        ↓
-predicted state + expected value
-        ↓
-short transition
-        ↓
-state_after checkpoint
-        ↓
-observed outcome / correction
-        +
-compute cost / wasted steps
-        ↓
-error
-        ↓
-learning.py assigns credit / blame
-        ↓
-policy / transition / value parameters update
-```
-
-Critical rule:
+Language should not be the cognition owner.
 
 ```text
-selected path ≠ successful path
+text / observation
+        ↓
+perception / grounding
+        ↓
+CognitiveState seed
+        ↓
+trainable cognition
 ```
 
-No route is strengthened merely because the model chose it.
+Tokenization, embeddings, an LLM, vision encoder, or other perception system may later help construct a state seed. Those mechanisms must not decide the complete thought process merely because they recognized the input.
 
-The trace also preserves unchosen valid alternatives so later credit assignment can estimate whether the selected action was actually better than plausible counterfactuals.
-
-# 14. Planned Cognitive Cost Flow
-
-```text
-checkpoint
- ↓
-record steps / invalid actions / redundant actions / retrieval-expansion use
- ↓
-task outcome
- ↓
-compare usefulness against cognitive cost
- ↓
-learning signal
-```
-
-A hard maximum budget remains infrastructure. Within that ceiling, the policy should learn to avoid exhaustive exploration when a smaller useful sequence is enough.
-
-# 15. Planned Knowledge / Skill Separation
+# 19. Planned Knowledge / Skill Separation
 
 ```text
 KNOWLEDGE SOURCES
@@ -367,59 +520,7 @@ stop
 
 This allows the same learned process to be evaluated with knowledge it never trained on.
 
-# 16. Planned Generated Curriculum Flow
-
-```text
-seeded world/task generator
-        ↓
-random concept identities
-random relation identities / encodings
-varied topology
-varied task targets
-varied distractors
-varied minimum cognitive depth
-        ↓
-hidden ground truth retained by experiment harness
-        ↓
-policy sees only legitimate CognitiveState
-```
-
-Hand-written worlds may remain for debugging, but the main training/evaluation curriculum must not depend on a few developer-authored examples.
-
-# 17. Planned Transfer Experiment Flow
-
-```text
-generated training worlds A / B / C
-        ↓
-train cognitive-action policy
-        ↓
-freeze evaluation configuration
-        ↓
-unseen world D
-        ↓
-run policy
-        ↓
-measure task success + action sequence + checkpoints + cost
-        ↓
-rename / permute concept identities
-        ↓
-run again
-        ↓
-compare against random / untrained baseline
-```
-
-The experiment is not passed by training-world accuracy alone.
-
-Results are classified:
-
-```text
-Level 0 — training memorization
-Level 1 — identity transfer
-Level 2 — structural transfer
-Level 3 — compositional transfer
-```
-
-# 18. Planned Retrieval Flow
+# 20. Planned Retrieval Flow
 
 ```text
 current CognitiveState
@@ -439,7 +540,7 @@ policy chooses next cognitive action
 
 Retrieval levels constrain search cost. They do not encode which answer is correct.
 
-# 19. Planned Durable Memory Flow
+# 21. Planned Durable Memory Flow
 
 ```text
 ordered ExperienceEvent thread
@@ -455,7 +556,7 @@ reconstructed sequence / evidence
 CognitiveState checkpoint
 ```
 
-# 20. Planned Language Expression Flow
+# 22. Planned Language Expression Flow
 
 Expression happens after cognition has produced enough state to communicate:
 
@@ -469,7 +570,7 @@ external response
 
 Fluent text must never be used as proof that the internal cognitive process occurred.
 
-# 21. Planned Autonomous Continuation
+# 23. Planned Autonomous Continuation
 
 Only after bounded micro-cycles are useful under direct stimulation:
 
