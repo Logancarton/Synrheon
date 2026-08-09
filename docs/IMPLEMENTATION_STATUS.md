@@ -5,70 +5,173 @@ This file records what actually exists and what level of evidence supports it.
 ## Status meanings
 
 - **Historical synthetic evidence** — observed in a controlled self-authored world; useful but not external validation.
-- **External test pending** — a stronger confirmatory assay is frozen but its final external result is not yet observed.
+- **External development evidence** — observed on public data/development split; stronger than synthetic evidence but not a final held-out claim.
 - **Built** — implementation exists in isolation.
 - **Integrated** — live runtime reaches it.
 - **Verified** — intended behavior was observed through the running organism.
+
+## Authoritative research branch
+
+```text
+Historical synthetic branch:
+experiment/hippocampal-sparse-settling
+
+Current external-validation branch:
+experiment/external-retrieval-cascade
+```
+
+Scientific continuation must proceed from `experiment/external-retrieval-cascade`. The historical hippocampal branch should remain preserved as the synthetic research record.
+
+At Revision 5, the external branch is a strict descendant of the historical branch and contains the current retrieval-cascade and EXT-2 diagnostic implementation.
+
+See:
+
+```text
+docs/REV5_CONTINUATION_STATE.md
+```
+
+for the current continuation protocol. Where the older Revision 4 theory document still says EXT-1 is the immediate next gate, the Revision 5 continuation note supersedes that boundary.
 
 ## Ground 0
 
 ```text
 large candidate / knowledge field
     ↓
-learned routing
+learned routing / context selection
     ↓
 reversible contextual tapering
     ↓
 serious-candidate field
     ↓
-state-dependent recurrence
+optional recurrence if it earns value
     ↓
 evidence / uncertainty
     ↓
 commit | abstain | seek evidence | reopen
 ```
 
-A post-HCT code review found design vulnerabilities that weaken the strongest HCT-2 causal interpretations. HCT-1/HCT-2 remain part of the scientific history, but the recurrence, ordering, and efficiency claims are now **provisional pending EXT-1**.
+The architecture is being simplified whenever stronger external evidence fails to support a mechanism.
 
 | Component | Current evidence status |
 |---|---|
-| Reversible soft narrowing | Strong synthetic support; external C2 pending |
-| Context-driven reopening | Strong synthetic support; external C2 pending |
-| Learned context ordering | HCT-2 historical efficiency result; clean external C1 pending |
-| State-dependent recurrence | Large HCT-2 ablation effect, but answer-bearing graph weakens causal interpretation; EXT-1 ablation pending |
-| Commitment separate from winner | Synthetic support; external C3 pending |
+| Reversible soft narrowing | Strong synthetic support; external value remains open |
+| Context-driven reopening | Strong synthetic support; external value remains open |
+| Multiple ordered context stages | Not established; MT-1 blocked until D6 |
+| State-dependent recurrence | Synthetic support in selected families; current static recurrence discounted on SciFact development |
+| Commitment separate from winner | Conceptually retained; current external calibration discounted |
 | Opaque-identity transfer | Supported in earlier synthetic controls |
-| Learned pathway resistance | Promising earlier; not necessary in HCT-2; optional |
+| Learned pathway resistance | Promising earlier; optional / task-dependent |
 
-Historical HCT-2 measurements remain recorded in the theory paper, but the old `7.14%`, `5.49%`, `3.125%`, and `100% → 45%` figures must not be described as externally settled mechanisms.
+Historical HCT measurements remain part of the research record, but the old ordering, recurrence, and efficiency figures must not be described as externally settled mechanisms.
 
-## EXT-1 status
+## External-validation status
 
-```text
-Branch: experiment/external-retrieval-cascade
-Status: preregistered / implementation built / final external split NOT YET RUN
-Primary dataset: BEIR SciFact
-Secondary preregistered dataset: BEIR NFCorpus
-```
-
-EXT-1 closes the main HCT review vulnerabilities by construction:
+Current source includes:
 
 ```text
-external qrels; no planted answer index
-answer-independent document relation graph
-document-id tie breaking
-symmetric per-condition feature caching
-measured feature evaluations + timing
-order learned from utility / measured cost
-published BM25 sanity anchor
-paired confidence intervals
-synthetic runs forced to NOT EVIDENCE
-partial final runs forbidden
+experiments/external_retrieval_cascade.py
+experiments/ext2_diagnostics.py
+tests/test_external_retrieval_cascade.py
+tests/test_ext2_diagnostics.py
 ```
 
-C1, C2, and C3 are reported independently. Fewer than 30 paired reopening cases makes C2 inconclusive without hiding a failure in C1 or C3.
+The current external evidence ledger is:
 
-See `docs/EXT1_PREREGISTRATION.md`.
+### Supported
+
+- Reversible suppression has strong synthetic evidence.
+- A single full-context soft taper approximately preserves the BM25 SciFact development anchor.
+- Meaningful oracle headroom remains on development data.
+
+### Falsified / discounted in the current implementation
+
+- EXT-1 C1/C2/C3 are not validated as originally hoped in the current implementation.
+- Current static recurrence is not beneficial on SciFact development; removing recurrence improved development nDCG from approximately `0.5081` to `0.5415`.
+- The current four hand-designed channels are not established as useful residual discriminators.
+- Current commitment calibration is not established.
+
+### Partially supported / open
+
+- External value of reopening.
+- Contextual state persistence as a possible cause of the partial-context -> full-context collapse.
+
+### Untested
+
+- Question-guided contextual divergence.
+- Trajectory-based recurrence.
+- Residual-guided tapering.
+- Matched-compute multiple-soft-taper necessity.
+
+## Immediate scientific boundary — D6 only
+
+The immediate research gate is **D6: Transition Persistence Diagnostic**.
+
+Do not proceed directly to a large multi-taper experiment because the current sequential partial -> full process may already contain a transition-state persistence pathology.
+
+Freeze:
+
+```text
+same 93 SciFact development queries
+same BM25 candidate field
+same current channels
+same learned parameters
+no final split
+no recurrence
+no new semantic channels
+no threshold tuning
+```
+
+Conditions:
+
+```text
+A — BM25 / full-query anchor
+B — one full-context soft taper
+C — partial -> full with carried activation, no recurrence
+D — partial -> full, reset before full-context stage
+E — partial -> full, stage two acts only on unresolved residual
+```
+
+Diagnostic quantities:
+
+```text
+Delta_damage = B - C
+R_reset = (D - C) / (B - C)
+```
+
+Frozen interpretation:
+
+- `D > C` with paired 95% CI excluding zero and `R_reset >= 0.50` -> inappropriate persistence supported as a major contributor.
+- `R_reset < 0.25` -> persistence is not a sufficient explanation.
+- `0.25 <= R_reset < 0.50` -> partial support.
+
+## Next major experiment — MT-1, blocked on D6
+
+After D6, specify **MT-1: Matched-Compute Multi-Taper Falsification**.
+
+Primary comparison:
+
+```text
+single full-context soft taper
+vs
+multiple context-settled soft tapers
+vs
+matched-compute hard staged pruning
+```
+
+Also include multi-stage reset, scrambled-order, and clock-driven Top-K as a negative control.
+
+Critical interpretation rule:
+
+> Hard pruning losing is not sufficient evidence for multiple contextual settling stages.
+
+Multi-taper necessity is supported only if multi-soft materially outperforms single-soft under matched computation.
+
+If multi-soft ~= single-soft while hard pruning loses reactivation, conclude:
+
+```text
+reversibility supported
+multiple contextual settling stages not supported
+```
 
 ## Live organism
 
@@ -101,7 +204,7 @@ runtime.py           thin sequencing
 dev_server.py        local HTTP/UI transport
 ```
 
-Placeholder-only future modules were removed. Planned capabilities do not receive source files until implementation exists.
+Placeholder-only future modules remain excluded until implementation exists.
 
 ## Current live flow
 
@@ -121,21 +224,12 @@ UI
 
 Ground 0 cognition is not yet in this live path.
 
-## Next scientific boundary
+## Scientific rule
 
-The immediate research gate is **EXT-1**, not another synthetic HCT expansion.
+Do not optimize the architecture toward the current preferred theory. Optimize experiments toward discovering where the theory is wrong.
 
-Before any production Ground 0 integration is treated as justified, we need to learn which of these survive external data:
-
-```text
-C1: ordered reversible tapering earns measured feature cost
-C2: reversibility recovers externally relevant candidates after suppression
-C3: abstention improves external calibration
-plus: recurrence adds value when the relation graph is answer-independent
-```
-
-A negative EXT-1 result should simplify Ground 0 rather than trigger threshold tuning.
+A negative result should simplify Ground 0 rather than trigger threshold tuning.
 
 ## Scientific boundary
 
-Neither the HCT series nor EXT-1 currently establishes natural-language understanding, learned semantics, biological equivalence, general intelligence, modern-retrieval superiority, end-to-end wall-clock superiority, autonomous cognition, or production integration.
+Neither the HCT series nor current external-development work establishes natural-language understanding, learned semantics, biological equivalence, general intelligence, modern-retrieval superiority, end-to-end wall-clock superiority, autonomous cognition, or production integration.
