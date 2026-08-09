@@ -14,6 +14,9 @@
       --text: #eef2f7;
       --muted: #9aa5b5;
       --accent: #8fd3c8;
+      --good: #78c9a7;
+      --warn: #e1b56f;
+      --quiet: #657083;
       --shadow: 0 16px 50px rgba(0,0,0,.28);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
@@ -30,7 +33,7 @@
     .status-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
     .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #5c6470; box-shadow: 0 0 0 4px rgba(255,255,255,.03); }
     .status-dot.running { background: var(--accent); }
-    .status-dot.paused { background: #e1b56f; }
+    .status-dot.paused { background: var(--warn); }
     .tiny { color: var(--muted); font-size: 12px; line-height: 1.45; }
     .controls { display: grid; gap: 8px; }
     .btn { border: 1px solid var(--line); background: var(--panel-2); border-radius: 11px; padding: 10px 12px; cursor: pointer; transition: .15s ease; }
@@ -47,6 +50,7 @@
     .view { display: none; flex: 1; min-height: 0; }
     .view.active { display: flex; flex-direction: column; }
     .feed { width: min(860px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 140px; display: flex; flex-direction: column; gap: 16px; }
+    .organism-feed { width: min(980px, calc(100% - 32px)); padding-bottom: 48px; }
     .empty { margin: auto; max-width: 560px; text-align: center; color: var(--muted); padding: 60px 20px; }
     .empty h2 { color: var(--text); margin-bottom: 8px; font-size: 22px; }
     .message { max-width: 78%; padding: 13px 15px; border-radius: 16px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -67,9 +71,9 @@
     .metric span:first-child { color: var(--muted); }
     .state-json { margin-top: 16px; padding: 12px; border-radius: 12px; background: #0c0f14; border: 1px solid var(--line); overflow: auto; font-size: 11px; line-height: 1.5; color: #b7c1ce; max-height: 48vh; }
     .knowledge-grid { display: grid; gap: 16px; }
-    .knowledge-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
-    .knowledge-card h3 { margin: 0 0 6px; }
-    .knowledge-card p { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+    .knowledge-card, .overview-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+    .knowledge-card h3, .overview-card h3 { margin: 0 0 6px; }
+    .knowledge-card p, .overview-card p { margin: 0 0 14px; color: var(--muted); font-size: 13px; line-height: 1.55; }
     .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .fields.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .field { display: grid; gap: 6px; }
@@ -78,8 +82,61 @@
     .field input:focus { border-color: #425063; }
     .knowledge-actions { margin-top: 12px; display: flex; justify-content: flex-end; }
     .error { position: fixed; top: 78px; left: 50%; transform: translateX(-50%); background: #3a2023; border: 1px solid #6d343a; color: #ffd8dc; padding: 10px 14px; border-radius: 10px; z-index: 20; display: none; }
+
+    .overview-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; padding: 4px 2px 6px; }
+    .overview-head h1 { margin: 0 0 7px; font-size: 28px; line-height: 1.15; }
+    .overview-head p { margin: 0; color: var(--muted); max-width: 680px; line-height: 1.55; }
+    .truth-badge { flex: 0 0 auto; padding: 8px 10px; border: 1px solid #365047; background: rgba(120,201,167,.08); color: var(--good); border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .overview-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 16px; }
+    .card-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .card-title-row h3 { margin: 0; }
+    .status-pill { border-radius: 999px; padding: 5px 8px; font-size: 11px; font-weight: 700; border: 1px solid var(--line); color: var(--muted); }
+    .status-pill.verified, .status-pill.integrated { color: var(--good); border-color: #365047; background: rgba(120,201,167,.07); }
+    .status-pill.built { color: #a9d5cc; border-color: #344c4c; background: rgba(143,211,200,.06); }
+    .status-pill.designed { color: var(--warn); border-color: #5b4931; background: rgba(225,181,111,.06); }
+    .status-pill.not-started { color: var(--quiet); }
+    .stage-list { display: grid; gap: 8px; }
+    .stage-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid rgba(42,49,64,.58); }
+    .stage-row:last-child { border-bottom: 0; }
+    .stage-name { font-weight: 650; font-size: 13px; }
+    .stage-detail { margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+    .growth-hero { padding: 14px; background: #10151b; border: 1px solid #2c3845; border-radius: 13px; margin-bottom: 13px; }
+    .growth-kicker { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .growth-value { margin-top: 6px; font-size: 19px; font-weight: 750; }
+    .growth-value.pending { color: var(--warn); }
+    .growth-value.positive { color: var(--good); }
+    .growth-metrics { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
+    .growth-metric { padding: 10px 11px; border-radius: 11px; background: #11161d; border: 1px solid rgba(42,49,64,.8); }
+    .growth-metric span { display: block; color: var(--muted); font-size: 11px; }
+    .growth-metric strong { display: block; margin-top: 4px; font-size: 14px; }
+    .capability-list { display: grid; gap: 8px; margin-top: 4px; }
+    .capability { display: flex; gap: 9px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid rgba(42,49,64,.48); }
+    .capability:last-child { border-bottom: 0; }
+    .capability-mark { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; font-size: 11px; border: 1px solid var(--line); color: var(--muted); }
+    .capability-mark.live { color: var(--good); border-color: #365047; }
+    .capability-mark.future { color: var(--quiet); }
+    .capability-copy strong { display: block; font-size: 13px; }
+    .capability-copy span { display: block; color: var(--muted); font-size: 11px; line-height: 1.4; margin-top: 2px; }
+    .live-strip { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+    .live-stat { padding: 12px; background: #11161d; border: 1px solid var(--line); border-radius: 12px; }
+    .live-stat span { display: block; color: var(--muted); font-size: 11px; }
+    .live-stat strong { display: block; margin-top: 5px; font-size: 19px; }
+    .evidence-note { margin-top: 12px; padding: 11px 12px; border-left: 3px solid var(--warn); background: rgba(225,181,111,.05); color: #d8c6a8; font-size: 12px; line-height: 1.5; }
+
+    @media (max-width: 1180px) { .overview-grid { grid-template-columns: 1fr; } }
     @media (max-width: 1050px) { .app { grid-template-columns: 210px minmax(0,1fr); } .inspector { display: none; } .composer-wrap { left: 210px; right: 0; } }
-    @media (max-width: 720px) { .app { grid-template-columns: 1fr; } .sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: 12px; } .controls { grid-template-columns: repeat(4, 1fr); } .status-card, .sidebar-spacer, .sidebar .tiny { display: none; } .composer-wrap { left: 0; right: 0; padding: 12px; } .topbar { padding: 0 12px; } .stage { display: none; } .fields, .fields.three { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: 12px; }
+      .controls { grid-template-columns: repeat(4, 1fr); }
+      .status-card, .sidebar-spacer, .sidebar .tiny { display: none; }
+      .composer-wrap { left: 0; right: 0; padding: 12px; }
+      .topbar { padding: 8px 12px; min-height: 72px; overflow-x: auto; }
+      .tabs { min-width: max-content; }
+      .stage { display: none; }
+      .fields, .fields.three, .growth-metrics, .live-strip { grid-template-columns: 1fr; }
+      .overview-head { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
@@ -97,20 +154,126 @@
         <button id="pauseBtn" class="btn" disabled>Pause</button>
       </div>
       <div class="sidebar-spacer"></div>
-      <div class="tiny">Stage 1 · Trainable Cognition Pivot<br>Hard-wired thinking policy removed.</div>
+      <div class="tiny">Stage 1 · Trainable Cognition Pivot<br>Next cognition gate: E011.</div>
     </aside>
 
     <main class="main">
       <header class="topbar">
         <div class="tabs">
-          <button class="tab active" data-view="chat">Chat</button>
+          <button class="tab active" data-view="organism">Organism</button>
+          <button class="tab" data-view="chat">Chat</button>
           <button class="tab" data-view="thought">Internal Thought</button>
           <button class="tab" data-view="knowledge">Knowledge</button>
         </div>
-        <div class="stage">stimulus → experience → trainable cognitive policy (next)</div>
+        <div class="stage">what is live · what is learned · what improves next</div>
       </header>
 
-      <section id="chatView" class="view active"><div id="chatFeed" class="feed"></div></section>
+      <section id="organismView" class="view active">
+        <div class="feed organism-feed">
+          <div class="overview-head">
+            <div>
+              <h1>Synrheon Organism</h1>
+              <p>This view separates what is actually integrated from what is only designed, and it will surface measurable cognitive growth as learning becomes real.</p>
+            </div>
+            <div class="truth-badge">Implemented truth only</div>
+          </div>
+
+          <div class="live-strip">
+            <div class="live-stat"><span>Runtime</span><strong id="overviewRuntime">Offline</strong></div>
+            <div class="live-stat"><span>Experiences this session</span><strong id="overviewExperiences">0</strong></div>
+            <div class="live-stat"><span>Known concepts</span><strong id="overviewConcepts">0</strong></div>
+            <div class="live-stat"><span>Current activation</span><strong id="overviewActive">0</strong></div>
+          </div>
+
+          <div class="overview-grid">
+            <div class="overview-card">
+              <div class="card-title-row">
+                <h3>Integrated Cognitive System</h3>
+                <span class="status-pill designed">Stage 1 pivot</span>
+              </div>
+              <p>These labels describe current repository truth. “Designed” does not mean Synrheon can do it yet.</p>
+              <div class="stage-list">
+                <div class="stage-row">
+                  <div><div class="stage-name">Stage 0B · Observable Runtime + UI</div><div class="stage-detail">Start, Step, Continue, Pause, browser/API/runtime state and trace.</div></div>
+                  <span class="status-pill verified">Verified</span>
+                </div>
+                <div class="stage-row">
+                  <div><div class="stage-name">Stage 1 · Cognitive Substrate</div><div class="stage-detail">Concepts, world relations, open-ended organism relations, activation representation.</div></div>
+                  <span class="status-pill built">Built</span>
+                </div>
+                <div class="stage-row">
+                  <div><div class="stage-name">Stage 2 · Computational Time + Experience</div><div class="stage-detail">Ordered current-episode experience with temporal coordinates and provenance.</div></div>
+                  <span class="status-pill integrated">Integrated</span>
+                </div>
+                <div class="stage-row">
+                  <div><div class="stage-name">Stage 1P · Trainable Cognitive Policy</div><div class="stage-detail">State → operation + target → checkpoint architecture; model not built yet.</div></div>
+                  <span class="status-pill designed">Designed</span>
+                </div>
+                <div class="stage-row">
+                  <div><div class="stage-name">Stage 3B · Durable Memory</div><div class="stage-detail">Cross-process autobiographical retention and learned memory routing.</div></div>
+                  <span class="status-pill not-started">Not started</span>
+                </div>
+                <div class="stage-row">
+                  <div><div class="stage-name">Stage 4 · Learned Retrieval</div><div class="stage-detail">Level 1 → Level 2 → Level 3 retrieval chosen when useful.</div></div>
+                  <span class="status-pill not-started">Not started</span>
+                </div>
+                <div class="stage-row">
+                  <div><div class="stage-name">Stage 5 · Recursive Cognition</div><div class="stage-detail">Useful multi-step internal cognition through bounded checkpoints.</div></div>
+                  <span class="status-pill not-started">Not started</span>
+                </div>
+                <div class="stage-row">
+                  <div><div class="stage-name">Stage 7 · Learning + Plasticity</div><div class="stage-detail">Outcome/error/credit changes future cognitive behavior.</div></div>
+                  <span class="status-pill not-started">Not started</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="overview-card">
+              <div class="card-title-row">
+                <h3>Cognitive Growth</h3>
+                <span class="status-pill designed">E011 next</span>
+              </div>
+              <p>This is where Synrheon must prove that training creates reusable cognitive improvement rather than prettier output or training-set memorization.</p>
+              <div class="growth-hero">
+                <div class="growth-kicker">Current evidence of getting smarter</div>
+                <div class="growth-value pending">Not measurable yet</div>
+                <div class="tiny" style="margin-top:7px;">No trainable cognitive policy is currently integrated, so the UI intentionally shows no artificial improvement score.</div>
+              </div>
+              <div class="growth-metrics">
+                <div class="growth-metric"><span>Training improvement</span><strong>Not measured</strong></div>
+                <div class="growth-metric"><span>Unseen knowledge transfer</span><strong>Not measured</strong></div>
+                <div class="growth-metric"><span>Concept-renaming robustness</span><strong>Not measured</strong></div>
+                <div class="growth-metric"><span>Cognitive efficiency</span><strong>Not measured</strong></div>
+              </div>
+              <div class="evidence-note">E011 is the next gate: learn a cognitive process on generated worlds, then prove that improvement survives unfamiliar concepts and later unfamiliar structure.</div>
+            </div>
+          </div>
+
+          <div class="overview-grid">
+            <div class="overview-card">
+              <div class="card-title-row"><h3>What Synrheon Can Do Now</h3><span class="status-pill integrated">Live foundation</span></div>
+              <div class="capability-list">
+                <div class="capability"><div class="capability-mark live">✓</div><div class="capability-copy"><strong>Experience events in sequence</strong><span>External Chat becomes observed experience; Internal Thought remains explicitly injected.</span></div></div>
+                <div class="capability"><div class="capability-mark live">✓</div><div class="capability-copy"><strong>Maintain computational time</strong><span>Current-episode order, timestamps, elapsed time, and previous/next links remain observable.</span></div></div>
+                <div class="capability"><div class="capability-mark live">✓</div><div class="capability-copy"><strong>Hold explicit cognitive substrate</strong><span>Concepts, world relations, organism-relative relations, provenance, and activation storage exist separately.</span></div></div>
+                <div class="capability"><div class="capability-mark live">✓</div><div class="capability-copy"><strong>Expose the organism</strong><span>Runtime state and trace can be inspected while the live process runs.</span></div></div>
+              </div>
+            </div>
+
+            <div class="overview-card">
+              <div class="card-title-row"><h3>What Must Become Smarter</h3><span class="status-pill designed">Not claimed yet</span></div>
+              <div class="capability-list">
+                <div class="capability"><div class="capability-mark future">○</div><div class="capability-copy"><strong>Choose useful cognitive operations and targets</strong><span>The trainable policy must learn this rather than Python deciding the route.</span></div></div>
+                <div class="capability"><div class="capability-mark future">○</div><div class="capability-copy"><strong>Improve from outcomes</strong><span>Later success, failure, correction, prediction error, and credit must alter future cognition.</span></div></div>
+                <div class="capability"><div class="capability-mark future">○</div><div class="capability-copy"><strong>Transfer improvement</strong><span>Better behavior must survive unfamiliar identities, structure, and eventually novel combinations.</span></div></div>
+                <div class="capability"><div class="capability-mark future">○</div><div class="capability-copy"><strong>Use less wasted cognition</strong><span>Improvement should include efficient sparse thought, not exhaustive search.</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="chatView" class="view"><div id="chatFeed" class="feed"></div></section>
       <section id="thoughtView" class="view"><div id="thoughtFeed" class="feed"></div></section>
       <section id="knowledgeView" class="view">
         <div class="feed">
@@ -161,7 +324,7 @@
         </div>
       </section>
 
-      <div id="composerWrap" class="composer-wrap">
+      <div id="composerWrap" class="composer-wrap" style="display:none;">
         <div class="composer">
           <textarea id="composerInput" placeholder="Start Synrheon to send a message..." disabled></textarea>
           <div class="composer-actions">
@@ -187,7 +350,7 @@
   <div id="errorToast" class="error"></div>
 
   <script>
-    let currentView = "chat";
+    let currentView = "organism";
     let state = {
       session_id:null,status:"off",cycle:0,event_sequence:0,stimuli:[],trace:[],
       time:{experience_sequence:0},
@@ -235,6 +398,11 @@
       $("stateJson").textContent = JSON.stringify(state, null, 2);
       $("substrateJson").textContent = JSON.stringify(state.cognitive_substrate ?? {}, null, 2);
 
+      $("overviewRuntime").textContent = statusLabel;
+      $("overviewExperiences").textContent = state.experience_thread?.events?.length ?? 0;
+      $("overviewConcepts").textContent = state.cognitive_substrate?.concepts?.length ?? 0;
+      $("overviewActive").textContent = Object.keys(state.cognitive_substrate?.activation ?? {}).length;
+
       const started = state.status !== "off";
       $("startBtn").textContent = started ? "Restart Session" : "Start Synrheon";
       $("stepBtn").disabled = state.status !== "paused";
@@ -245,7 +413,7 @@
       $("addConceptBtn").disabled = !started;
       $("addWorldBtn").disabled = !started;
       $("addSelfBtn").disabled = !started;
-      $("composerWrap").style.display = currentView === "knowledge" ? "none" : "block";
+      $("composerWrap").style.display = currentView === "chat" || currentView === "thought" ? "block" : "none";
       $("composerInput").placeholder = !started ? "Start Synrheon to send a message..." : currentView === "chat" ? "Message Synrheon..." : "Inject an internal thought...";
       $("composerHint").textContent = currentView === "chat" ? "External stimulus → observed experience" : "Injected thought → injected experience";
       renderChat();
@@ -335,6 +503,7 @@
       tab.addEventListener("click", () => {
         currentView = tab.dataset.view;
         document.querySelectorAll(".tab").forEach(item => item.classList.toggle("active", item === tab));
+        $("organismView").classList.toggle("active", currentView === "organism");
         $("chatView").classList.toggle("active", currentView === "chat");
         $("thoughtView").classList.toggle("active", currentView === "thought");
         $("knowledgeView").classList.toggle("active", currentView === "knowledge");
