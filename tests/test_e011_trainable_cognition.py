@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from experiments.e011a import assess_pass_gate, full_assay, generate_world
 from synrheon.cognition import CognitiveAction, CognitiveState, LinearCognitivePolicy, RevealedNode
+from synrheon.runtime import SynrheonRuntime
 
 
 def _state(prefix: str) -> CognitiveState:
@@ -65,3 +66,21 @@ def test_quick_assay_learns_and_transfers_without_identity_shortcut() -> None:
     assert gate["median_held_out_success"] >= 0.70
     assert gate["median_renamed_success"] == gate["median_held_out_success"]
     assert gate["random_valid_success"] < gate["median_held_out_success"]
+
+
+def test_runtime_exposes_recorded_growth_evidence_without_invoking_policy() -> None:
+    runtime = SynrheonRuntime(cycle_interval_seconds=10.0)
+    try:
+        before = runtime.snapshot()
+        metrics = before["learning_metrics"]
+        assert metrics["verdict"] == "E011-A v1 numeric gate passed"
+        assert metrics["training_success"] == 0.81
+        assert metrics["held_out_success"] == 0.798
+        assert metrics["renamed_success"] == 0.798
+        assert metrics["strongest_generalization_level"] == "Level 1"
+
+        started = runtime.start()
+        assert started["learning_metrics"] == metrics
+        assert not any(event["event"] == "cognition_activated" for event in started["trace"])
+    finally:
+        runtime.close()
