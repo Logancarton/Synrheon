@@ -1102,7 +1102,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--quick", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(run_assay(quick=args), indent=2))
+    print(json.dumps(run_assay(quick=args.quick), indent=2))
 
 
 if __name__ == "__main__":
