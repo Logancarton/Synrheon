@@ -75,7 +75,7 @@ Agents should use this repository without asking the user to provide it again.
 
 Generic world relationships and Synrheon-relative relationships are different state.
 
-Examples:
+Example:
 
 ```text
 Daisy IS_A dog
@@ -83,7 +83,7 @@ Daisy IS_A dog
 
 is world knowledge, while organism-relative relations describe what Daisy means to Synrheon.
 
-The two may influence the same future activation calculation but one must not overwrite or silently become the other.
+The two may later influence the same learned cognitive state, but one must not overwrite or silently become the other.
 
 ## D013 — Injected, Observed, Inferred, and Learned Provenance Is Preserved
 
@@ -106,16 +106,7 @@ If neural training later absorbs a pattern, the explicit source/evidence represe
 
 Synrheon must not be limited to a hard-coded list of ways that something can matter to her.
 
-Organism-relative relation types are stored as data, for example:
-
-```text
-protective_of
-expects_help_from
-reminds_me_of_home
-trusted_source
-```
-
-Those examples are not reserved categories. A relation type not known when the software was written must be representable without changing production code.
+Organism-relative relation types are stored as data. A relation type not known when the software was written must be representable without changing production code.
 
 For each concept, injected and self-learned organism relations remain permanently separate collections:
 
@@ -129,17 +120,7 @@ Injected developer scaffolding may write only `injected_relations`.
 
 Experience-based learning may create or update only `learned_relations`.
 
-For one learned relation type, the initial online update is:
-
-```text
-learned_new = learned_old + (learning_rate × trust) × (observed_strength - learned_old)
-```
-
-Each learned relation preserves its own confidence and supporting experience-event IDs.
-
-Later sparse activation may combine contributions from both collections, but their provenance remains separable and inspectable.
-
-Neural training may absorb broader regularities, but the explicit provenance-bearing relations remain authoritative state outside model weights.
+The existing learned-relation update is a narrow provenance-preserving storage mechanism, not a thinking policy.
 
 ## D015 — Experience Thread Is Ordered but Is Not Yet Durable Memory
 
@@ -155,32 +136,58 @@ This creates an autobiographical thread for live cognition.
 
 It does not become durable memory until a later memory owner persists and retrieves it across process restart.
 
-## D016 — Sparse Activation Uses General Mechanics, Not Stimulus Rules
+## D016 — The First Hand-Written Sparse Activation Policy Was Experimental and Is Retired
 
-The first live activation mechanism belongs in `cognition.py` and operates over data already owned by the substrate.
-
-Its generic sequence is:
+A temporary experiment used:
 
 ```text
-textual experience
-        ↓
-known-concept lexical cues
-        ↓
-directed world-relation spread
-        ↓
-organism-relative salience for already-reached concepts
-        ↓
-decay + competition
-        ↓
-bounded Top-K active region
+lexical concept matching
+fixed graph spreading
+fixed decay / salience gains
+fixed inhibition
+fixed Top-K
+fixed recurrence rounds
 ```
 
-No production branch may name a domain example such as Daisy, violin, dog, walk, or any particular organism-relation type.
+It proved that the live Chat/runtime path could reach a state-changing cognition owner and expose the result in the UI.
 
-The initial lexical cue matcher is explicitly a bootstrap interface between text and already-known concept identities. It is not claimed as semantic language understanding and should later be replaced or augmented by a learned language/perception mechanism without moving activation ownership out of `cognition.py`.
+It did **not** prove that those developer-selected mechanics were the correct long-term cognition policy.
 
-Organism relation names remain uninterpreted by this first activation mechanism. Their stored `strength × confidence` contributes generic personal salience only after a concept has already been reached by the current stimulus/world spread. This prevents highly self-relevant but unrelated concepts from globally activating.
+That production logic has been removed. Historical experiment evidence may remain in Git history/docs, but future agents must not treat the retired heuristic as current architecture.
 
-World-relation fan-out is normalized before spreading so high-degree source concepts do not gain unlimited total influence merely because they have many outgoing edges.
+## D017 — Train the Cognitive Process Instead of Hand-Coding Cognitive Routes
 
-Current activation is transient state. The activation mechanism must not rewrite world knowledge, injected organism relations, learned organism relations, or experience provenance.
+Synrheon's next core hypothesis is that the system should learn **how to transform cognitive state** rather than primarily memorize input→output mappings or follow developer-authored reasoning routes.
+
+The preferred training unit is:
+
+```text
+state before
+candidate cognitive actions
+selected action
+short transition / path
+checkpoint
+state after
+prediction
+outcome
+error
+credit
+```
+
+The architecture may define general process boundaries, representations, safety constraints, compute limits, and learning mechanics.
+
+It should not encode world-specific answers, stimulus-specific branches, or permanent rules saying which relation/path to follow for a given phrase.
+
+A selected path is not automatically rewarded. Learning should depend on outcome, correction, prediction error, or other evidence that the transition was useful.
+
+The required research test is **transfer**:
+
+```text
+train on unrelated knowledge worlds A/B/C
+        ↓
+learn cognitive-action policy
+        ↓
+evaluate on unseen world D
+```
+
+If the policy only works because it remembers concept names, relation labels, exact prompts, or answers from training, the experiment fails.
