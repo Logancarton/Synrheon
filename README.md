@@ -4,8 +4,8 @@
 
 This repository is the canonical home for Synrheon.
 
-The current implementation priority is **Stage 1 — Cognitive Substrate + First Sparse Activation**. The verified Stage 0B runtime/UI now carries Chat and Internal Thought stimuli into a real `cognition.py` state transition: known concept cues seed activation, directed world relations spread it, open-ended organism relations contribute personal salience, and competition retains a bounded Top-K active region.
+The current implementation priority is **Stage 1 — Trainable Cognition Pivot**. The verified runtime/UI, cognitive substrate, computational time, provenance, and ordered experience process remain in place, but the experimental hand-written lexical/spreading/Top-K thinking policy has been removed.
 
-This is real cognitive state change, but it is intentionally narrow. The current text-to-concept bridge is lexical rather than semantic; durable memory, retrieval, response generation, and autonomous cognition are still future work.
+Synrheon now deliberately records experience without pretending that fixed graph heuristics are the final cognition. The next experiment is to learn **how to transform cognitive state**—short state → cognitive action → next-state checkpoints—then test whether that learned process transfers to unseen knowledge worlds.
 
 See `docs/PROJECT_GUIDE.md`, `docs/SIGNAL_FLOW.md`, `docs/ARCHITECTURE_PLAN.md`, `docs/IMPLEMENTATION_STATUS.md`, and `docs/CURRENT_STAGE.md` for current implemented truth.
