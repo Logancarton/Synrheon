@@ -119,8 +119,11 @@ core.py
 └─ OrganismState
 
 cognition.py
-└─ reserved owner for future trainable cognitive policy
-   (no hand-written thinking algorithm)
+└─ reserved owner for trainable cognitive-state transformation
+   (no hand-written thinking policy today)
+
+learning.py
+└─ future outcome / error / credit / parameter-update owner
 
 time.py
 ├─ TemporalCoordinate
@@ -130,7 +133,7 @@ experience.py
 ├─ ExperienceEvent
 └─ ExperienceThread
 
-runtime.py     sequence owners / route commands only
+runtime.py     sequence owners / route typed handoffs only
 interfaces.py  HTTP / browser transport only
 ui/            explicit injection + observation only
 ```
@@ -151,7 +154,7 @@ fixed salience / decay / inhibition
 fixed Top-K winners
 ```
 
-The experiment demonstrated end-to-end state-changing wiring, but its decision mechanics were developer-selected rather than learned. It must not be silently rebuilt inside runtime, retrieval, memory, or UI.
+The experiment demonstrated end-to-end state-changing wiring, but its decision mechanics were developer-selected rather than learned. It must not be silently rebuilt inside runtime, retrieval, memory, learning, or UI.
 
 # 7. Current Self-Learning Storage Mechanism — Built, Not Live Outcome-Integrated
 
@@ -179,40 +182,168 @@ Injected concepts/world relations/injected organism relations and learned organi
 
 Process restart still loses all of this because durable persistence is not implemented.
 
-# 9. Planned Trainable Cognitive Policy Flow
+# 9. Planned Perception → Cognition Boundary
+
+Language should not be the cognition owner.
 
 ```text
-experience / current state
+text / observation
         ↓
-CognitiveState representation
+perception / grounding
         ↓
-available generic cognitive actions
+CognitiveState seed
         ↓
-trainable policy P(action | state)
-        ↓
-selected cognitive action
-        ↓
-short state transition / path
-        ↓
-checkpoint
-        ↓
-state after
-        ↓
-prediction / outcome / error
-        ↓
-credit assignment
-        ↓
-policy / transition learning
+trainable cognition
 ```
 
-The central requirement is **transfer**: a policy trained on knowledge worlds A/B/C should remain useful in unseen world D without concept-name or answer-specific rules.
+Tokenization, embeddings, an LLM, vision encoder, or other perception system may later help construct a state seed. Those mechanisms must not decide the complete thought process merely because they recognized the input.
 
-# 10. Planned Retrieval Flow
+# 10. Planned Cognitive Micro-Cycle
+
+One cognitive step should produce one observable checkpoint:
 
 ```text
-current cognitive state
+CognitiveState S(t)
         ↓
-learned decision to retrieve
+expose available cognitive operations
+        ↓
+cognition.py policy chooses a(t)
+        ↓
+execute one bounded cognitive operation
+        ↓
+CognitiveState S(t+1)
+        ↓
+record checkpoint / trace
+        ↓
+resolved? ── yes ──→ stop / predict / act / express
+   │
+   no
+   ↓
+next micro-cycle
+```
+
+A checkpoint is computational state, not a wall-clock sleep.
+
+The runtime may sequence this loop, but it must not select the cognitive action itself.
+
+# 11. Planned Cognitive Action Flow
+
+Initial experimental action vocabulary may include:
+
+```text
+FOCUS
+EXPAND
+RETRIEVE
+COMPARE
+CHECK_SEQUENCE
+CHECK_EVIDENCE
+PREDICT
+REVISE
+STOP
+```
+
+The action names describe generic operations. Production code must not contain mappings such as:
+
+```text
+phrase X → RETRIEVE
+relation IS_A → EXPAND
+concept Daisy → follow dog
+```
+
+The policy should learn when each operation is useful from state and outcome evidence.
+
+# 12. Planned Training / Credit Flow
+
+```text
+state_before
++
+available_actions
+        ↓
+selected_action
+        ↓
+short transition
+        ↓
+state_after checkpoint
+        ↓
+prediction / task consequence
+        ↓
+observed outcome / correction
+        ↓
+error
+        ↓
+learning.py assigns credit / blame
+        ↓
+policy / transition model parameters update
+```
+
+Critical rule:
+
+```text
+selected path ≠ successful path
+```
+
+No route is strengthened merely because the model chose it.
+
+# 13. Planned Knowledge / Skill Separation
+
+```text
+KNOWLEDGE SOURCES
+concepts
+relations
+experience
+memory
+tools
+outside knowledge
+        │
+        ↓
+CognitiveState
+        │
+        ↓
+COGNITIVE SKILL
+focus
+explore
+retrieve
+compare
+check
+predict
+revise
+stop
+```
+
+This allows the same learned process to be evaluated with knowledge it never trained on.
+
+# 14. Planned Transfer Experiment Flow
+
+```text
+training worlds A / B / C
+        ↓
+create task-specific CognitiveStates
+        ↓
+train cognitive-action policy
+        ↓
+freeze evaluation configuration
+        ↓
+unseen world D
+        ↓
+run policy
+        ↓
+measure task success + action sequence + checkpoints
+        ↓
+rename / permute concept identities
+        ↓
+run again
+        ↓
+compare against random / untrained baseline
+```
+
+The experiment is not passed by training-world accuracy alone.
+
+# 15. Planned Retrieval Flow
+
+```text
+current CognitiveState
+        ↓
+policy selects RETRIEVE
         ↓
 Level 1 coarse orientation
         ↓
@@ -220,12 +351,14 @@ Level 2 relevant situation / episode / concept region
         ↓
 Level 3 detailed evidence / relationships
         ↓
-checkpoint / next cognitive action
+new checkpoint
+        ↓
+policy chooses next cognitive action
 ```
 
-Retrieval should become one cognitive operation available to the learned policy rather than a response to hard-coded phrases.
+Retrieval levels constrain search cost. They do not encode which answer is correct.
 
-# 11. Planned Durable Memory Flow
+# 16. Planned Durable Memory Flow
 
 ```text
 ordered ExperienceEvent thread
@@ -234,45 +367,39 @@ memory owner
         ↓
 persistent episodes/events
         ↓
-retrieval
+retrieval operation
         ↓
 reconstructed sequence / evidence
+        ↓
+CognitiveState checkpoint
 ```
 
-# 12. Planned Language / Perception Flow
+# 17. Planned Language Expression Flow
 
-Language should not be the cognition owner.
+Expression happens after cognition has produced enough state to communicate:
 
 ```text
-text / observation
+resolved / reportable cognitive state
         ↓
-perception / concept grounding
+language expression owner / model
         ↓
-cognitive state
-        ↓
-trainable cognitive policy
-        ↓
-state result
-        ↓
-optional language expression
+external response
 ```
 
-A neural encoder or LLM may later participate in perception/expression without owning Synrheon's persistent autobiographical state or learned cognitive process.
+Fluent text must never be used as proof that the internal cognitive process occurred.
 
-# 13. Planned Training Trace
+# 18. Planned Autonomous Continuation
 
-A useful training unit should preserve at least:
+Only after bounded micro-cycles are useful under direct stimulation:
 
 ```text
-state before
-candidate cognitive actions
-selected action
-short path / transition
-state after
-prediction
-outcome
-error
-credit
+checkpoint
+ ↓
+unresolved + expected value of more cognition
+ ↓
+autonomy owner permits another cycle
+ ↓
+runtime sequences cognition owner again
 ```
 
-Training should reward useful process/outcome evidence, not merely reinforce a path because it happened to be selected.
+A hard resource ceiling remains infrastructure even if the preference to continue/stop becomes learned.
