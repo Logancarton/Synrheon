@@ -15,56 +15,55 @@ interfaces.py
  ↓
 runtime.py
  ↓
-correct Synrheon owner
+time.py + experience.py + core.py
  ↓
-state change
- ↓
-snapshot / trace
+state / trace
  ↓
 UI
 ```
 
-Current cognitive/data owners:
-
-```text
-core.py        concepts, world relations, organism relations, activation state/frames
-cognition.py   current stimulus → sparse active concept region
-time.py        episode time + experience sequence
-experience.py  ordered autobiographical thread
-runtime.py     sequencing/routing only
-interfaces.py  browser/API transport only
-ui/            explicit injection + observation only
-```
+The future learned thinking owner remains `cognition.py`, but it intentionally contains no hand-written thinking policy right now.
 
 # Current Project Status
 
 ```text
-Stage 0B — Observable Organism Harness    Verified
-Stage 1  — Cognitive Substrate            Integrated candidate
-Stage 3A — First Sparse Activation slice  Integrated candidate
+Stage 0B — Observable Organism Harness   Verified
+Stage 1  — Cognitive Substrate           Built / partially integrated
+Stage 2  — Time + Experience             Integrated foundation
+Pivot    — Trainable Cognitive Policy    Designed, not implemented
 ```
 
-Human live browser/state inspection is still required before the new cognition is called `Verified`.
+The previous lexical-match → relation-spread → fixed Top-K cognition experiment has been removed from production.
 
-Current Synrheon can now:
-- hold explicitly injected concept identities
+That means Chat currently records experience again without pretending that a developer-selected graph heuristic is the final cognition.
+
+# What Synrheon Can Do Now
+
+Synrheon can currently:
+- run through the browser/runtime UI
+- start, pause, continue, and step the observable harness
+- record external Chat as `observed` experience
+- record Internal Thought injection as `injected` experience
+- maintain current-episode time, sequence, elapsed time, and previous/next links
+- hold explicit concepts
 - hold typed world relations
 - hold open-ended organism-relative relations
 - keep injected and self-learned organism relations separate
-- keep current activation separate from stored knowledge
-- record ordered current-process experience
-- send Chat/Internal Thought text through the real cognition owner
-- generically cue already-known concepts by concept ID/label
-- spread activation through directed world relations
-- let already-reached concepts gain organism-relative salience
-- inhibit weak candidates and keep a bounded Top-K active region
-- expose the winning concepts and activation paths in the UI/state
+- keep activation representation separate from stored knowledge
+- expose live state and trace in the UI
 
-There is still no semantic language understanding, durable memory, retrieval, response generation, automatic relation discovery, outcome-driven learning, or autonomous thought.
+Synrheon currently **does not**:
+- automatically decide which concepts should activate from text
+- spread activation through a hand-written graph policy
+- choose cognitive actions through a trained model
+- retrieve durable memory
+- reason recursively
+- generate natural-language answers
+- learn from live outcomes
 
 # Root / Workflow Files
 
-`README.md` — why Synrheon exists and the current implementation boundary.
+`README.md` — why Synrheon exists and the current pivot.
 
 `AGENTS.md` — front door for coding agents.
 
@@ -100,50 +99,35 @@ There is still no semantic language understanding, durable memory, retrieval, re
 
 # Actual Python Organism
 
-## `src/synrheon/__init__.py`
-
-Package identity/version.
-
-## `src/synrheon/__main__.py`
-
-Application entry point:
-
-```text
-python -m synrheon
- ↓
-runtime.main()
-```
-
 ## `src/synrheon/core.py`
 
-**Plain English:** owns Synrheon's basic internal representations and the top-level live state. It does not decide how activation should spread; that decision now belongs to `cognition.py`.
+**Plain English:** owns basic explicit state, not the thinking strategy.
 
 ### `Concept`
 
-One stable concept identity.
+One stable concept identity:
 
-Important fields:
-- `concept_id` — stable internal key
-- `label` — human-readable name
-- `world_vector` — reserved for later generic/vector representation
+```text
+concept_id
+label
+optional future world_vector
+```
 
 ### `WorldRelation`
 
-One directed world relationship between two known concepts.
-
-Example:
+A stored relationship between known concepts, for example:
 
 ```text
 daisy IS_A dog
 ```
 
-It stores source, relation type, target, provenance, confidence, and evidence lineage.
+The relation is data. Storing it does not mean production cognition automatically follows it.
 
 ### `OrganismRelation`
 
-One open-ended relation between Synrheon and a concept.
+An open-ended relationship between Synrheon and a concept.
 
-Fields:
+Important fields:
 
 ```text
 relation_type
@@ -153,176 +137,83 @@ origin
 evidence_event_ids
 ```
 
-The critical rule is that `relation_type` is data, not an enum. New relation types can exist without editing production code.
+`relation_type` remains free data rather than a fixed Python ontology.
 
 ### `SelfRelation`
 
-Groups one concept's organism relations into two permanent collections:
+Keeps two separate collections:
 
 ```text
 injected_relations
 learned_relations
 ```
 
-Injected information never silently becomes self-learned information.
+What Synrheon was explicitly told cannot silently become what she learned herself.
 
 ### `ActivationState`
 
-The small set of concepts that are active **right now**.
+A container for current activation values.
 
-It is separate from whether a concept exists or whether a relation is stored.
+Important change: **it is representation only.** Core no longer contains Top-K selection or atomic winner replacement for the retired heuristic.
 
-`replace()` lets the cognition owner atomically replace the current active region after one bounded cognitive transition.
-
-### `ActivationContribution`
-
-One inspectable contribution to activation.
-
-Examples:
-
-```text
-seed: Daisy +1.0
-world: daisy —IS_A→ dog +0.62
-organism: self —personally_relevant_to_self→ dog +0.14
-```
-
-This is observable state-transition evidence, not private chain-of-thought.
-
-### `CognitiveFrame`
-
-One observable result of processing one experience.
-
-Stores:
-- source experience event ID
-- exact stimulus text
-- `activated` or `unmatched`
-- concepts directly matched by the lexical bootstrap
-- final sparse active concepts
-- activation contributions
+A future learned cognition owner may update activation through an explicit interface, but the state container itself does not choose how to think.
 
 ### `CognitiveSubstrate`
 
-Owns concepts, world relations, organism relations, and current activation.
+Owns concepts, world relations, organism relations, and activation representation.
 
-Important methods:
+It validates stored state but does not choose cognitive routes.
 
-`add_concept()` — creates a stable concept identity.
+### `learn_self_relation()`
 
-`add_world_relation()` — adds a world edge when both concepts exist.
-
-`set_injected_self_relation()` — accepts any non-empty organism relation type and writes only injected state.
-
-`learn_self_relation()` — updates only the learned relation of one arbitrary type using:
-
-```text
-learned_new
-=
-learned_old
-+
-(learning_rate × trust)
-×
-(observed_strength - learned_old)
-```
-
-`set_activation()` — direct low-level activation setter used mainly for substrate/testing support.
-
-### `StimulusRecord`
-
-Transport-facing record of an accepted Chat/Internal Thought input. Links to its `experience_event_id`.
-
-### `TraceEvent`
-
-Observable runtime event. It is not hidden reasoning.
+This remains a narrow provenance-preserving storage update for one learned organism relation. It does not decide what thought path to follow and is not the new cognitive policy.
 
 ### `OrganismState`
 
 Top-level live state containing:
 - session status/cycle
 - stimuli
-- runtime trace
-- cognitive frames
+- trace
 - computational time
-- experience thread
+- ordered experience thread
 - cognitive substrate
 
-A new session clears current experience, cognitive frames, and current activation. Injected/learned substrate knowledge remains only for the lifetime of the current Python process.
+The retired `cognitive_frames` produced by the fixed activation heuristic are gone.
 
 ## `src/synrheon/cognition.py`
 
-**Plain English:** this is now the first real next-state cognition owner.
+**Plain English:** reserved home for the trainable thinking policy.
 
-### `ActivationConfig`
+Right now it deliberately contains **no production thinking algorithm**.
 
-Contains the initial general activation hyperparameters:
-
-```text
-seed_strength       1.00
-decay               0.30
-spread_gain         0.62
-organism_gain       0.35
-inhibition_fraction 0.10
-activation_floor    0.05
-top_k               5
-rounds              3
-```
-
-These values are starting mechanics to test, not semantic facts and not claimed optimal.
-
-### `activate_from_text()`
-
-Current live transformation:
+The removed experiment used:
 
 ```text
-textual experience
- ↓
-match already-known concept IDs/labels
- ↓
-seed matching concepts
- ↓
-recurrently spread through directed world relations
- ↓
-add organism salience to concepts already reached
- ↓
-decay + inhibition
- ↓
-keep Top-K winners
- ↓
-replace ActivationState
- ↓
-return CognitiveFrame
+lexical matching
+fixed relation spreading
+fixed gains / decay
+fixed inhibition
+fixed Top-K
+fixed recurrent rounds
 ```
 
-There are no Daisy-, dog-, violin-, or phrase-specific branches.
+Those rules were useful to prove live wiring but were too hand-designed to become Synrheon's long-term cognition.
 
-### Lexical cue matcher
-
-The first language bridge lowercases/tokenizes text and matches existing concept ID/label phrases.
-
-This lets injected concept knowledge participate in cognition before a learned language model exists.
-
-It is **not semantic understanding**. Unknown wording that does not match a known concept produces an `unmatched` frame and clears stale activation.
-
-### World spreading
-
-Activation follows the stored direction of `WorldRelation` edges.
-
-Outgoing confidence is normalized per source concept so a node cannot send unlimited total activation merely because it has many outgoing edges.
-
-### Organism salience
-
-For a concept already reached by the cue/world spread, arbitrary injected/learned organism relations contribute generic salience based on:
+The next implementation here should learn transformations such as:
 
 ```text
-strength × confidence
+current cognitive state
+ ↓
+choose cognitive action
+ ↓
+short transition
+ ↓
+checkpoint
+ ↓
+new cognitive state
 ```
 
-The cognition code does not care what the relation type is called.
-
-A highly self-relevant but unrelated concept does not activate by itself in this first mechanism.
-
-### Competition
-
-After each recurrent round, activation below the floor/winner-relative threshold is suppressed and only the strongest `Top-K` concepts survive.
+and train from outcome/error/credit evidence.
 
 ## `src/synrheon/time.py`
 
@@ -330,17 +221,11 @@ Owns when an experience occurs and where it sits in the current episode.
 
 `TemporalCoordinate` stores sequence, timestamp, episode ID, and elapsed seconds.
 
-`ComputationalTime.begin_episode()` starts a new episode.
-
-`ComputationalTime.next_coordinate()` creates the next temporal coordinate.
-
 ## `src/synrheon/experience.py`
 
 Owns the current autobiographical event thread.
 
 `ExperienceEvent` contains event ID, external/internal kind, observed/injected provenance, exact text, temporal coordinate, previous event ID, and next event ID.
-
-`ExperienceThread.append()` maintains backward/forward sequence links.
 
 This is not durable memory across restart.
 
@@ -348,9 +233,7 @@ This is not durable memory across restart.
 
 **Plain English:** thin traffic controller.
 
-Runtime sequences owners; it does not perform activation math itself.
-
-For each Chat/Internal Thought event it:
+For Chat/Internal Thought it currently:
 
 ```text
 records time
@@ -359,26 +242,18 @@ records ordered experience
  ↓
 records stimulus
  ↓
-invokes cognition.activate_from_text()
- ↓
-stores returned CognitiveFrame
- ↓
-returns snapshot
+returns state / trace
 ```
 
-`define_concept()` routes concept scaffolding.
+It no longer calls a hand-written activation policy.
 
-`define_world_relation()` routes world-knowledge scaffolding.
-
-`define_self_relation()` routes arbitrary injected organism relations.
-
-`Think One Step` / `Continue` still advance harness cycles only. They do not yet produce stimulus-free recursive cognition.
+Runtime must remain thin when the learned cognitive policy arrives.
 
 ## `src/synrheon/interfaces.py`
 
 Browser/API transport only.
 
-Current endpoints:
+Current endpoints remain:
 
 ```text
 GET  /
@@ -395,90 +270,92 @@ POST /api/world-relation
 POST /api/self-relation
 ```
 
-It validates request shape and calls runtime. It does not interpret language or relations.
+## Other Cognitive Owners
 
-## Other cognitive owners
-
-`memory.py` — future durable memory across restart.
+`memory.py` — future durable memory.
 
 `retrieval.py` — future Level 1 → Level 2 → Level 3 retrieval.
 
-`scratchpad.py` — future limited active working state.
+`scratchpad.py` — future active working state/checkpoints.
 
-`problem_solving.py` — future problem/model/plan/prediction/trial/outcome/revision.
+`problem_solving.py` — future problem/trial/outcome structure.
 
-`learning.py` — future broader credit assignment and adaptation.
+`learning.py` — future outcome/error/credit assignment and trainable policy updates.
 
-`consolidation.py` — future replay, pattern detection, compression.
+`consolidation.py` — future replay/pattern/compression.
 
 `abstraction.py` — future higher-order concept formation.
 
-`autonomy.py` — future decision to continue cognition without a new external/internal stimulus.
+`autonomy.py` — future decision to continue cognition without new input.
 
 # UI
 
 ## `ui/index.html`
 
-The development microscope has three views.
+The same three development views remain:
+
+```text
+Chat
+Internal Thought
+Knowledge
+```
 
 ### Chat
 
-Chat now shows both:
+Shows external text that was accepted and recorded as ordered observed experience.
 
-```text
-user stimulus
-+
-Cognitive activation card
-```
-
-If a known concept matches, the card shows the sparse active winners.
-
-If nothing matches, the card explicitly says no known concept cue matched. This prevents a silent/dead-looking Chat while avoiding a fake conversational reply.
+It intentionally does **not** show fake cognitive activation or a fake answer while the learned policy is absent.
 
 ### Internal Thought
 
-Displays:
-- ordered experience thread
-- full cognitive activation frames
-- recent relation-path contributions
-- runtime trace
+Shows the ordered experience thread and runtime trace.
 
 ### Knowledge
 
-Manual scaffolding for:
-- concept
-- world relation
-- injected organism relation
+Still allows manual developer scaffolding for:
+- concepts
+- world relations
+- injected organism relations
 
-The organism relation type remains free text, not a fixed dropdown.
+The organism-relation type remains free text.
 
 ### Inspector
 
-Shows status, cycle, trace count, experience count, concept count, active concept count, and complete backend state.
-
-JavaScript never owns authoritative cognition.
+Shows status, cycle, trace, experience, concept count, activation state, and complete backend state.
 
 # Tests
 
 ## `tests/test_scaffold.py`
 
-The current high-value suite now proves:
-- Stage 0B controls still work
-- observed/injected experience channels remain distinct
-- previous/next experience links remain consistent
-- arbitrary organism relation types remain data
-- injected/learned relation provenance remains separate
-- learning does not mutate world/injected state
-- `Daisy → dog → animal` activates through general world edges
-- a separate `violin → music` network uses the same mechanism
-- unrelated concepts do not survive simply because another network was activated first
-- an arbitrary organism relation increases only an already-reached concept's salience
-- Top-K actually bounds the active region
-- unknown cue clears stale activation without deleting the experience
-- Chat reaches cognition through the real runtime path
-- HTTP reaches the same runtime/cognition owners
+The high-value tests now prove:
+- UI/runtime transport remains connected
+- external/internal experience provenance remains distinct
+- temporal sequence and previous/next links remain correct
+- open-ended organism relation types remain data
+- injected/learned provenance remains separate
+- invalid state fails safely
+- Chat does **not** mutate knowledge/activation through a hand-written cognitive policy
+- HTTP still reaches the same real runtime and UI
 
-Candidate reconstructed branch result: **12/12 passed**.
+The tests intentionally no longer prove lexical spreading or fixed Top-K because that production behavior was removed.
+
+# Next Research Experiment
+
+The next core test is not “Can Synrheon answer a Daisy question?”
+
+It is:
+
+```text
+train cognitive process on worlds A/B/C
+            ↓
+learn state → action → next-state transitions
+            ↓
+run on unseen world D
+            ↓
+perform useful cognitive operations above baseline
+```
+
+If changing concept names destroys performance, the model likely learned knowledge/shortcuts instead of how to think.
 
 # Developer Scripts
 
@@ -498,39 +375,20 @@ Chat / Internal Thought
      interfaces.py
           ↓
       runtime.py
-       /   |    \
-      ↓    ↓     ↓
- time.py experience.py cognition.py
-                    ↓
-                  core.py
-          (ActivationState + CognitiveFrame)
-                    ↓
-             snapshot / trace
-                    ↓
-                   UI
+       /       \
+      ↓         ↓
+ time.py   experience.py
+      \         /
+       OrganismState
+            ↓
+      snapshot / trace
+            ↓
+            UI
 ```
 
-# Important Truth
+Knowledge injection separately reaches `core.py` through runtime.
 
-Current Synrheon now does more than store Chat text. A recognized cue produces a bounded internal state transition through general graph/salience mathematics.
-
-But current cognition is still narrow:
-
-```text
-known lexical cue
-→ sparse association activation
-```
-
-not:
-
-```text
-full language understanding
-→ retrieval
-→ reasoning
-→ answer
-```
-
-That distinction must remain explicit so future development improves the real organism instead of hiding missing cognition behind fluent output.
+`cognition.py` remains intentionally uninvoked until a genuine trainable policy exists.
 
 # Maintenance Rule
 
