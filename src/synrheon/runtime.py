@@ -10,9 +10,9 @@ from pathlib import Path
 from threading import Event, RLock, Thread
 from time import sleep
 
-from synrheon.core import Concept, OrganismState, StimulusKind, StimulusRecord, TraceEvent, WorldRelation
-from synrheon.learning import load_recorded_learning_metrics
-from synrheon.time import utc_now
+from synrheon.policy_learning import load_recorded_learning_metrics
+from synrheon.state import Concept, OrganismState, StimulusKind, StimulusRecord, TraceEvent, WorldRelation
+from synrheon.temporal import utc_now
 
 _E011A_EVIDENCE_FILE = Path(__file__).resolve().parents[2] / "data" / "e011a_v1_evidence.json"
 
@@ -196,7 +196,7 @@ class SynrheonRuntime:
 
 def main() -> None:
     """Start the connected development application."""
-    from synrheon.interfaces import run_development_server
+    from synrheon.dev_server import run_development_server
 
     runtime = SynrheonRuntime()
     try:
