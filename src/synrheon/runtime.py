@@ -6,11 +6,15 @@ memory, learning, retrieval, abstraction, or problem-solving cognition.
 
 from __future__ import annotations
 
+from pathlib import Path
 from threading import Event, RLock, Thread
 from time import sleep
 
 from synrheon.core import Concept, OrganismState, StimulusKind, StimulusRecord, TraceEvent, WorldRelation
+from synrheon.learning import load_recorded_learning_metrics
 from synrheon.time import utc_now
+
+_E011A_EVIDENCE_FILE = Path(__file__).resolve().parents[2] / "data" / "e011a_v1_evidence.json"
 
 
 class SynrheonRuntime:
@@ -18,6 +22,7 @@ class SynrheonRuntime:
 
     def __init__(self, cycle_interval_seconds: float = 0.75) -> None:
         self._state = OrganismState()
+        self._state.learning_metrics = load_recorded_learning_metrics(_E011A_EVIDENCE_FILE)
         self._lock = RLock()
         self._stop_event = Event()
         self._cycle_interval_seconds = cycle_interval_seconds
