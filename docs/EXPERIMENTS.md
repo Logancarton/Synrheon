@@ -137,14 +137,14 @@ The experiment is intentionally not a natural-language question-answering benchm
 
 ### Hypothesis
 
-A small trainable cognitive policy can learn **which cognitive operation to perform next** from abstract cognitive state and transfer that process to an unseen knowledge world whose concepts and answers were never used during training.
+A small trainable cognitive policy can learn **which cognitive operation and target to use next** from abstract cognitive state and transfer that process to an unseen knowledge world whose concepts and answers were never used during training.
 
 ### First-Phase Scope
 
 Keep the first slice deliberately narrow:
 
 ```text
-small explicit knowledge world
+small generated knowledge worlds
 +
 small CognitiveState
 +
@@ -152,7 +152,7 @@ small cognitive-action vocabulary
 +
 one action per checkpoint
 +
-trainable action policy
+trainable action/target policy
 +
 outcome / credit signal
 ```
@@ -177,19 +177,34 @@ STOP
 
 The experiment may begin with a smaller subset if that creates a cleaner causal test. These actions are cognitive operations, not answer labels.
 
+### Parameterized Actions
+
+A cognitive action must represent enough information to identify what the operation acts upon. Conceptually:
+
+```text
+operation
++
+target / candidate region / operands / scope
+```
+
+The first E011 implementation may constrain targets to a tiny valid candidate set, but production Python must not choose the meaningful target after the model selects only the generic operation.
+
 ### Core Training Unit
 
 ```text
 state_before
-available_actions
+available_actions_and_targets
 selected_action
 short_transition_or_path
 checkpoint
 state_after
-prediction
+predicted_state_after
+expected_value
 observed_outcome
+compute_cost
 error_or_correction
 credit_assignment
+alternative_action_estimates
 ```
 
 A path is not rewarded merely because it was selected. Credit must depend on outcome, correction, prediction error, or another explicit usefulness signal.
@@ -210,19 +225,29 @@ remaining compute budget
 
 It must not contain the correct next action, final answer, hidden target identity, or a world-specific shortcut.
 
-### Training Worlds
+### Generated Curriculum Requirement
 
-Use at least three tiny worlds with different content.
+The main training/evaluation worlds must be generated from seeded abstract templates rather than manually authored one by one.
 
-Example requirement:
+The generator should vary:
 
 ```text
-World A — arbitrary objects / relations
-World B — unrelated arbitrary objects / relations
-World C — unrelated arbitrary objects / relations
+concept identities
+relation identities / encodings
+graph topology
+task target
+starting focus
+distractor count
+minimum useful cognitive-step count
 ```
 
-The important feature is not the topic. The worlds should require comparable **cognitive work** while using different knowledge.
+The generator may retain hidden ground truth for scoring and supervision. That hidden solution must not appear in policy features.
+
+A small hand-written world may still be used as a human-readable debugging fixture, but it cannot establish E011 success.
+
+### Training Worlds
+
+Use many generated tasks divided into at least three logically distinct training world families A/B/C. The important feature is not topic familiarity; the worlds should require comparable cognitive skills while using different knowledge.
 
 Names should be opaque, randomized, or permuted where practical so semantic familiarity cannot solve the task.
 
@@ -235,7 +260,7 @@ World D must contain:
 - a task requiring the same general cognitive abilities;
 - enough structural difference that success is not a trivial copied trace.
 
-The first evaluation may preserve some abstract task structure so transfer is measurable. A stronger second evaluation should change topology and task composition as well.
+The first evaluation may preserve some abstract task structure so transfer is measurable. Stronger evaluations change topology and task composition.
 
 ### Required Renaming Test
 
@@ -244,19 +269,60 @@ For at least one evaluation world:
 ```text
 same underlying world / task
         ↓
-randomly permute every concept name / identity presented to the policy
+randomly permute every concept identity presented to the policy
         ↓
 run again
 ```
 
 Material performance collapse is evidence that the policy relied on identity shortcuts instead of reusable process.
 
+### Policy / Transition / Value Measurements
+
+Treat these as conceptually distinct:
+
+```text
+P(a | S)             action/target policy
+F(S, a) → S'         next-state prediction
+V(S, a)              expected usefulness
+```
+
+The first model may share parameters or omit a learned value head if the smaller test is cleaner, but evaluation must not confuse next-state prediction with action usefulness.
+
+### Cognitive Cost
+
+Record resource use explicitly:
+
+```text
+number of cognitive steps
+invalid actions
+redundant actions
+retrieval / expansion operations
+budget consumed
+```
+
+The first experiment should compare task success **and** cognitive efficiency. A policy that succeeds only by exhaustively exploring every option is not evidence of useful sparse cognition.
+
+Do not freeze a permanent utility equation yet. If a temporary training objective uses step penalties or compute costs, record the exact values as experiment configuration rather than architecture truth.
+
+### Counterfactual Credit
+
+At every checkpoint preserve the actions/targets that were available, not only the chosen action.
+
+The first implementation may use simple policy-gradient/advantage-style credit or another bounded mechanism. A later phase should be able to estimate whether plausible alternatives would have produced better or worse outcomes.
+
+The architecture must not conclude:
+
+```text
+successful episode → every selected action was good
+```
+
 ### Baselines
 
 At minimum compare against:
-- random action selection;
+- random valid action/target selection;
 - same model before training;
-- a simple non-learning heuristic only if it can remain outside production cognition and does not contaminate the policy.
+- exhaustive search as an efficiency reference when feasible;
+- a simple non-learning heuristic only if it remains outside production cognition and does not contaminate the policy.
 
 ### Measurements
 
@@ -269,62 +335,99 @@ held-out-world task success
 random / untrained baseline success
 renamed-world success
 mean cognitive steps to resolution
+compute / budget consumed
 invalid / wasted cognitive actions
 percentage of tasks requiring successful multi-step sequences
 ```
 
-For any stochastic experiment, use enough repeated episodes/seeds that a single lucky run cannot be presented as success.
+For stochastic experiments, use enough repeated episodes/seeds that a single lucky run cannot be presented as success.
+
+### Generalization Levels
+
+Every result must be classified at the strongest demonstrated level:
+
+```text
+Level 0 — Training memorization
+same training worlds/tasks
+
+Level 1 — Identity transfer
+new or renamed concepts with comparable structure
+
+Level 2 — Structural transfer
+new concepts + changed topology / relation arrangement
+
+Level 3 — Compositional transfer
+new knowledge + new structure + novel combinations of cognitive demands
+```
+
+Do not summarize Level 1 success as unrestricted “learned how to think.”
 
 ### Pass Criteria
 
-The experiment is promising only if all of the following are true:
+The first E011 gate is promising only if all of the following are true:
 
 1. model parameters actually change through training;
 2. decision quality or task success improves on training worlds;
-3. held-out world performance exceeds the untrained/random baseline by a meaningful margin;
+3. held-out Level-1 performance exceeds the untrained/random baseline by a meaningful margin;
 4. renaming concepts does not materially destroy the learned strategy;
 5. at least some held-out tasks require and receive a useful **multi-step cognitive-action sequence**, not one lucky action;
 6. success cannot be explained by memorized answer text, concept identities, relation names, or production world-specific branches;
 7. each cognitive action produces an inspectable checkpoint;
 8. state/action/outcome/error/credit traces remain inspectable;
 9. the learned policy can be invoked through the real Synrheon runtime boundary without moving cognition into runtime or UI;
-10. unrelated persistent world/organism state is not silently mutated by policy inference.
+10. unrelated persistent world/organism state is not silently mutated by policy inference;
+11. action targets are selected by the learned policy or its trainable representation rather than hidden hand-written target routing;
+12. cognitive resource use is measured and compared with a baseline/reference.
 
-### Stronger Follow-Up Gate
+### Stronger Follow-Up Gates
 
-If the first transfer test passes, the next test should vary more than names:
+After Level 1 transfer:
 
 ```text
+Level 2
 new concepts
 +
 new relation arrangement / topology
 +
-new task composition
-+
 same underlying cognitive skills
 ```
 
-This is a stronger test of learning **how** rather than memorizing a structural template.
+Then:
+
+```text
+Level 3
+new knowledge
++
+new topology
++
+novel combination of cognitive demands
+```
+
+These distinguish identity transfer from structural and compositional process transfer.
 
 ### Failure Criteria
 
 The experiment fails if:
 - performance collapses on unseen or renamed identities despite equivalent cognitive demands;
 - the implementation embeds task answers or special-case routes;
+- Python secretly chooses action targets that carry the real reasoning decision;
 - selected paths are reinforced without outcome evidence;
 - runtime becomes the cognition owner;
 - the model merely reproduces training traces rather than adapting its operation sequence to current state;
 - the policy receives leaked answer/target features;
 - a single-step shortcut solves nearly every task that was supposed to test multi-step cognition;
-- training-world improvement does not transfer above baseline.
+- training-world improvement does not transfer above baseline;
+- apparent success requires near-exhaustive search without useful efficiency improvement.
 
 ### Interpretation Rules
 
-If training performance rises but held-out performance does not, classify the result as **task memorization / overfitting**, not cognitive improvement.
+If training performance rises but held-out performance does not, classify the result as **Level 0 — task memorization / overfitting**, not cognitive improvement.
 
-If held-out performance survives concept renaming but fails on changed topology, classify the result as **partial process transfer** and design the next experiment around structural generalization.
+If held-out performance survives concept renaming but fails on changed topology, classify the result as **Level 1 — identity/process transfer**, not structural generalization.
 
-If the model transfers across unseen content and altered structure while choosing useful multi-step operations, that is the first meaningful evidence that Synrheon is learning a reusable cognitive process.
+If the model transfers across unseen content and altered structure while choosing useful multi-step operations, classify it as **Level 2 — structural transfer**.
+
+Only success on novel combinations of knowledge, structure, and cognitive demands should be described as **Level 3 — compositional transfer**.
 
 ### Current Status
 
