@@ -2,9 +2,11 @@
 
 ## Evidence Standard
 
-The preferred experiment is a real stimulus applied through the running Synrheon organism.
+The preferred final integration evidence is a real stimulus applied through the running Synrheon organism.
 
-Record stimulus/action, baseline, expected behavior, observed UI/runtime output, relevant internal state/trace, and interpretation.
+For controlled learning experiments, a scientific assay may run before live-organism integration when isolating the mechanism is necessary to answer the research question. Such a result is **experimental evidence**, not `Integrated` or `Verified` live cognition.
+
+Record stimulus/action, baseline, expected behavior, observed output, relevant state/trace, interpretation, experiment version, seed split, and model artifact identity.
 
 Automated tests protect discovered behavior but are not enough to call cognition `Verified`.
 
@@ -29,11 +31,11 @@ Status: **Superseded representation; provenance separation retained.**
 Hypothesis: Synrheon can preserve injected-versus-self-learned provenance without hard-coding a closed list of organism-relative dimensions.
 
 Candidate result:
-- arbitrary relation names were accepted as data
-- injected and learned versions remained separate
-- learned evidence lineage remained explicit
-- world knowledge and current activation remained separate
-- Stage 0B controls and ordered experience behavior remained intact
+- arbitrary relation names were accepted as data;
+- injected and learned versions remained separate;
+- learned evidence lineage remained explicit;
+- world knowledge and current activation remained separate;
+- Stage 0B controls and ordered experience behavior remained intact.
 
 Status: **Built / integrated representation; human live verification still required for that bounded UI behavior.**
 
@@ -42,13 +44,13 @@ Status: **Built / integrated representation; human live verification still requi
 Hypothesis: every meaningful external or explicitly injected internal event can receive an episode coordinate and explicit before/after links without pretending current-episode experience is durable memory.
 
 Expected result:
-- Chat event is `origin = observed`
-- Internal Thought injection is `origin = injected`
-- sequence is monotonic
-- previous/next links agree
-- stimulus records link to experience event IDs
-- new session starts a new episode
-- no durable cross-process memory claim
+- Chat event is `origin = observed`;
+- Internal Thought injection is `origin = injected`;
+- sequence is monotonic;
+- previous/next links agree;
+- stimulus records link to experience event IDs;
+- new session starts a new episode;
+- no durable cross-process memory claim.
 
 Candidate automated result: current tests produced consistent observed/injected provenance, sequence, links, and stimulus-to-experience IDs.
 
@@ -65,11 +67,11 @@ Status: Future
 Hypothesis tested: can Chat reach a state-changing cognition owner using generic lexical matching plus relation spreading, salience, inhibition, and Top-K selection without domain-specific phrase branches?
 
 Historical candidate result:
-- the live architecture was successfully wired from Chat/Internal Thought through runtime into `cognition.py`
-- unrelated concept networks used the same algorithm
-- fixed Top-K bounded the active region
-- unknown cues failed safely
-- world/organism knowledge was not rewritten
+- the live architecture was successfully wired from Chat/Internal Thought through runtime into `cognition.py`;
+- unrelated concept networks used the same algorithm;
+- fixed Top-K bounded the active region;
+- unknown cues failed safely;
+- world/organism knowledge was not rewritten.
 
 Important interpretation after review:
 
@@ -127,308 +129,497 @@ Can unresolved internal state produce useful S(t+1) without new external input w
 
 Status: Future
 
-## E011 — Train the Cognitive Process, Test Transfer
+# E011 — Train the Cognitive Process, Test Transfer
 
-### Research Question
+## Research Question
 
-Can a small model learn **how to perform useful cognitive operations** on explicit state, then reuse that skill with knowledge it never trained on?
+Can a small model learn a reusable cognitive process over explicit state and transfer that process to generated knowledge it never trained on?
 
-The experiment is intentionally not a natural-language question-answering benchmark. Natural-language fluency would make it too easy to mistake memorized language/world knowledge for learned cognition.
+The experiment is intentionally not natural-language question answering. Natural-language fluency would make it too easy to mistake pretrained or memorized knowledge for learned cognition.
 
-### Hypothesis
+The governing principle is:
 
-A small trainable cognitive policy can learn **which cognitive operation and target to use next** from abstract cognitive state and transfer that process to an unseen knowledge world whose concepts and answers were never used during training.
+> **We code the cognitive physics. Synrheon learns the cognitive skill.**
 
-### First-Phase Scope
-
-Keep the first slice deliberately narrow:
+E011 is divided into two gates so scientific evidence is not confused with live integration:
 
 ```text
-small generated knowledge worlds
-+
-small CognitiveState
-+
-small cognitive-action vocabulary
-+
-one action per checkpoint
-+
-trainable action/target policy
-+
-outcome / credit signal
+E011-A — Controlled Process-Transfer Assay
+prove a trainable policy learns reusable bounded search behavior
+
+E011-B — Live Organism Integration
+wire the proven policy through cognition.py → thin runtime → state/trace/UI
 ```
 
-Do not add an LLM, response generator, durable memory system, autonomous loop, or large neural architecture merely to make the demo look intelligent.
+Passing E011-A does **not** mean the mechanism is Integrated. E011-B is required for that claim.
 
-### Initial Cognitive Actions
+# E011-A — Controlled Process-Transfer Assay
 
-Candidate first action set:
+## Frozen Experiment Version
 
 ```text
-FOCUS
-EXPAND
-RETRIEVE
-COMPARE
-CHECK_SEQUENCE
-CHECK_EVIDENCE
-PREDICT
-REVISE
-STOP
+experiment_id: E011-A
+generator_version: e011a-v1
+action_contract_version: e011a-actions-v1
+state_contract_version: e011a-state-v1
+hard_action_budget: 10
+model_initialization_seeds: 11, 22, 33, 44, 55
 ```
 
-The experiment may begin with a smaller subset if that creates a cleaner causal test. These actions are cognitive operations, not answer labels.
+Any material change to the task generator, policy-visible features, action semantics, final seed split, or pass thresholds creates a new experiment version. It must not be silently treated as the same preregistered result.
 
-### Parameterized Actions
+## Exact First Problem Family — Bounded Partial Graph Discovery
 
-A cognitive action must represent enough information to identify what the operation acts upon. Conceptually:
+The first test deliberately asks Synrheon to learn a small reusable search process rather than language semantics.
+
+Each generated episode contains:
 
 ```text
-operation
-+
-target / candidate region / operands / scope
+10–14 opaque concept nodes
+1 visible start node
+1 hidden goal-marked node
+1 unique shortest start→goal path of 3–5 edges
+2–4 distractor branches
+0–2 generated cross/back edges where valid
+opaque per-world node identities
+no natural-language labels with useful meaning
 ```
 
-The first E011 implementation may constrain targets to a tiny valid candidate set, but production Python must not choose the meaningful target after the model selects only the generic operation.
+The start node is revealed at episode start. Other nodes and edges are hidden until a cognitive action reveals them.
 
-### Core Training Unit
+The goal is not identified by a meaningful word. When the goal node itself becomes revealed, its terminal `is_goal` marker becomes legitimate observable state. Before reveal, the policy receives no goal-location information.
+
+The task is successful only when the policy reveals the goal and chooses `STOP` within the fixed 10-action budget.
+
+The task is intentionally multi-step: the goal cannot be initially visible, and the unique shortest route requires at least three edge transitions.
+
+## Why This Task Exists
+
+This is not intended to prove general intelligence. It tests a narrower causal question:
+
+> Can training produce a reusable policy for where to spend limited cognitive expansion next, rather than merely memorizing node identities or developer-authored routes?
+
+A useful learned process should increasingly avoid wasteful deep distractor exploration, preserve budget, reveal the goal, and stop when appropriate on unfamiliar generated worlds.
+
+## Policy-Visible CognitiveState — Information Firewall
+
+The policy may receive only information legitimately available from the revealed episode state.
+
+### Policy may see
+
+```text
+checkpoint / action index
+remaining hard action budget
+revealed nodes only
+revealed edges only
+for each revealed node:
+    candidate slot / opaque handle
+    depth from revealed start through known structure
+    expanded / unexpanded state
+    reveal order / frontier status
+    is_goal only if that node has already been revealed
+available valid operation + target candidates
+previous selected operation + target summary
+```
+
+Opaque concept handles exist only so the chosen target can be executed. E011-A must not learn a persistent embedding keyed to stable concept identity. Candidate slots are generated from current revealed state rather than a global vocabulary.
+
+### Policy must never see
+
+```text
+unrevealed nodes
+unrevealed edges
+hidden goal location before reveal
+shortest path
+shortest-path distance to goal
+on-solution-path flags
+correct next action
+correct next target
+future frontier structure
+exhaustive solver output
+scorer rankings
+world seed as a predictive feature
+```
+
+### Scorer / experiment harness may see
+
+The experiment harness may retain the complete generated graph, hidden goal, shortest route, reference costs, and success truth for evaluation and training signal.
+
+That hidden information must remain structurally outside production cognition inputs.
+
+Conceptually:
+
+```text
+GENERATOR / SCORER
+full hidden graph ───────────────→ scoring / training evidence
+      │
+      │ revealed state only
+      ↓
+CognitiveState
+      ↓
+cognition policy
+      ↓
+operation + target
+      ↓
+bounded environment transition
+      ↓
+next revealed CognitiveState
+```
+
+If any hidden field enters policy features, the E011-A result is invalid regardless of score.
+
+## Frozen First Action Contract
+
+E011-A deliberately begins with the smallest action vocabulary that can test learned target selection and stopping.
+
+### `EXPAND(target)`
+
+Valid target: one currently revealed, unexpanded frontier node.
+
+Deterministic effect:
+- mark that target as expanded;
+- reveal its currently hidden outgoing edges and newly reached nodes;
+- update the revealed graph/frontier;
+- expose `is_goal` only for newly revealed nodes that actually are the generated goal;
+- consume exactly 1 cognitive action.
+
+Python may enumerate which `EXPAND(target)` actions are currently valid. Python may **not** choose which target is cognitively preferable.
+
+### `STOP`
+
+Deterministic effect:
+- terminate the episode;
+- consume exactly 1 cognitive action;
+- success only if the goal marker has already been revealed;
+- otherwise record premature-stop failure.
+
+No other operation is part of E011-A v1. `FOCUS`, `RETRIEVE`, `COMPARE`, `CHECK_EVIDENCE`, `PREDICT`, `REVISE`, and richer parameterization remain later expansions after the first transfer mechanism is understood.
+
+This narrow first vocabulary is intentional: the causal question is whether **learned operation/target selection under bounded compute** transfers at all.
+
+## Seed Splits — Frozen Before Training
+
+World-generation seeds are disjoint:
+
+```text
+TRAIN
+1000–4999
+4000 generated worlds/tasks
+
+DEVELOPMENT VALIDATION
+5000–5999
+1000 generated worlds/tasks
+may be used for architecture/training development
+must not be reported as final transfer evidence
+
+FINAL LEVEL-1 HELD-OUT
+10000–10999
+1000 generated worlds/tasks
+must not be used for tuning
+
+RENAMING / IDENTITY-PERMUTATION CONTROL
+same held-out world seeds 10000–10999
+paired independent permutation seeds 20000–20999
+
+FUTURE LEVEL-2 STRUCTURAL GATE
+30000–30999
+1000 worlds from a separately versioned topology-distribution change
+not part of the initial E011-A pass
+```
+
+The five model initialization/training seeds are frozen as:
+
+```text
+11
+22
+33
+44
+55
+```
+
+Final claims report all five runs, not only the best seed.
+
+Once the final held-out split has been inspected, any model, feature, reward, generator, or hyperparameter change intended to improve that result creates a new experiment revision with a fresh untouched final split. The old result remains recorded.
+
+## Baselines
+
+E011-A must report at least four references:
+
+### Random-valid policy
+
+Uniformly choose among currently valid `EXPAND(target)` actions plus `STOP`.
+
+This estimates chance behavior under the same action contract and budget.
+
+### Matched untrained model
+
+Evaluate the exact trainable architecture before optimization for each frozen model seed.
+
+This proves that any gain is not merely an architectural prior or favorable initialization.
+
+### Trained model
+
+The learned policy after the documented training configuration.
+
+### Exhaustive all-reachable reference
+
+A non-learning experiment-only reference that expands every reachable node needed to fully expose the generated world and then stops.
+
+This reference is not production cognition and is not a competitor the trained policy must imitate. It provides a cost ceiling for how much work brute-force discovery requires.
+
+A separate deterministic breadth-first diagnostic may be recorded for interpretation, but it is not a production policy and must not be copied into `cognition.py`.
+
+## Training Record Contract
+
+Each cognitive checkpoint preserves at least:
 
 ```text
 state_before
 available_actions_and_targets
 selected_action
-short_transition_or_path
-checkpoint
 state_after
-predicted_state_after
-expected_value
+predicted_state_after        # when prediction is implemented
+expected_value               # when value is implemented
 observed_outcome
 compute_cost
 error_or_correction
 credit_assignment
-alternative_action_estimates
+alternative_action_estimates # may initially be deferred/null, but field remains available
 ```
 
-A path is not rewarded merely because it was selected. Credit must depend on outcome, correction, prediction error, or another explicit usefulness signal.
+Selected does not mean useful. Credit must derive from outcome/evidence rather than from having appeared in a successful episode.
 
-### CognitiveState Requirements
+## Required Cost Measurements
 
-The first state representation should expose only information that is legitimately available at that checkpoint, such as:
+Record:
 
 ```text
-current focus / active region
-available local structure
-current goal or unresolved condition
-retrieved evidence already present
-sequence position where relevant
-uncertainty / confidence features
-remaining compute budget
+total cognitive actions
+EXPAND count
+STOP count
+premature STOP count
+invalid decoded action count
+invalid target count
+repeated / stale target attempt count
+budget exhaustion count
+mean and median actions on successful episodes
+mean fraction of 10-step budget consumed
+exhaustive-reference action cost on the same world
 ```
 
-It must not contain the correct next action, final answer, hidden target identity, or a world-specific shortcut.
+If the model succeeds only by approaching exhaustive cost, that is not useful sparse cognition.
 
-### Generated Curriculum Requirement
+## Model Artifact / Development Lineage Contract
 
-The main training/evaluation worlds must be generated from seeded abstract templates rather than manually authored one by one.
-
-The generator should vary:
+Every saved policy checkpoint intended for comparison must preserve:
 
 ```text
-concept identities
-relation identities / encodings
-graph topology
-task target
-starting focus
-distractor count
-minimum useful cognitive-step count
+model_id
+parent_model_id
+experiment_id + experiment_version
+generator_version
+state_contract_version
+action_contract_version
+model architecture identifier
+model initialization seed
+training world seed range
+optimizer / training configuration hash
+episodes_seen
+checkpoint index
+parameter checksum
+source Git commit
+created timestamp
+evaluation summary
+strongest demonstrated generalization level
 ```
 
-The generator may retain hidden ground truth for scoring and supervision. That hidden solution must not appear in policy features.
+This allows Synrheon's cognitive development to be compared across actual parameter generations rather than by filename or memory.
 
-A small hand-written world may still be used as a human-readable debugging fixture, but it cannot establish E011 success.
+## Cognitive-Growth History Contract
 
-### Training Worlds
-
-Use many generated tasks divided into at least three logically distinct training world families A/B/C. The important feature is not topic familiarity; the worlds should require comparable cognitive skills while using different knowledge.
-
-Names should be opaque, randomized, or permuted where practical so semantic familiarity cannot solve the task.
-
-### Held-Out World
-
-World D must contain:
-- concept identities never used in training;
-- no answer text seen during training;
-- no production branch that names the world;
-- a task requiring the same general cognitive abilities;
-- enough structural difference that success is not a trivial copied trace.
-
-The first evaluation may preserve some abstract task structure so transfer is measurable. Stronger evaluations change topology and task composition.
-
-### Required Renaming Test
-
-For at least one evaluation world:
+Evaluation history should preserve immutable records containing at least:
 
 ```text
-same underlying world / task
-        ↓
-randomly permute every concept identity presented to the policy
-        ↓
-run again
+model_id
+checkpoint / episodes_seen
+evaluation split
+world seed range
+success rate
+mean / median cognitive actions
+budget exhaustion rate
+premature STOP rate
+invalid action / target rate
+exhaustive-cost ratio
+random-valid baseline
+matched-untrained baseline
+renaming-paired result where applicable
+strongest demonstrated generalization level
+experiment/config hash
 ```
 
-Material performance collapse is evidence that the policy relied on identity shortcuts instead of reusable process.
-
-### Policy / Transition / Value Measurements
-
-Treat these as conceptually distinct:
+For the existing Organism UI, a backend-owned summary may expose fields such as:
 
 ```text
-P(a | S)             action/target policy
-F(S, a) → S'         next-state prediction
-V(S, a)              expected usefulness
+learning_metrics:
+    model_version
+    training_episode
+    training_success
+    held_out_success
+    renamed_success
+    cognitive_efficiency
+    strongest_generalization_level
+    verdict
+    detail
 ```
 
-The first model may share parameters or omit a learned value head if the smaller test is cleaner, but evaluation must not confuse next-state prediction with action usefulness.
+The UI displays this evidence. It must not calculate or invent the scientific truth itself.
 
-### Cognitive Cost
+## Pre-Registered Failure Taxonomy
 
-Record resource use explicitly:
+A poor result should be classified rather than patched locally.
 
-```text
-number of cognitive steps
-invalid actions
-redundant actions
-retrieval / expansion operations
-budget consumed
-```
+### Failed learning
 
-The first experiment should compare task success **and** cognitive efficiency. A policy that succeeds only by exhaustively exploring every option is not evidence of useful sparse cognition.
+Training performance does not improve at least 10 percentage points over the matched untrained model.
 
-Do not freeze a permanent utility equation yet. If a temporary training objective uses step penalties or compute costs, record the exact values as experiment configuration rather than architecture truth.
+Interpretation: optimization/model capacity/training signal may be inadequate before any transfer claim is considered.
 
-### Counterfactual Credit
+### Memorization / training overfit
 
-At every checkpoint preserve the actions/targets that were available, not only the chosen action.
+Training success reaches at least 70%, but final held-out success is less than 10 percentage points above random-valid behavior.
 
-The first implementation may use simple policy-gradient/advantage-style credit or another bounded mechanism. A later phase should be able to estimate whether plausible alternatives would have produced better or worse outcomes.
+Interpretation: the policy fit the training distribution without learning a reusable process.
 
-The architecture must not conclude:
+### Identity shortcut
 
-```text
-successful episode → every selected action was good
-```
+Paired renaming causes more than a 10-percentage-point absolute drop in held-out success.
 
-### Baselines
+Interpretation: concept identity leaked into behavior despite the intended opaque representation.
 
-At minimum compare against:
-- random valid action/target selection;
-- same model before training;
-- exhaustive search as an efficiency reference when feasible;
-- a simple non-learning heuristic only if it remains outside production cognition and does not contaminate the policy.
+### Structural overfit
 
-### Measurements
+Level 1 passes but later Level-2 structural evaluation drops more than 20 percentage points and falls near baseline.
 
-Record at least:
+Interpretation: the policy learned a process tied to the original topology distribution, not a broader structural skill.
 
-```text
-training loss or policy objective
-training-world task success
-held-out-world task success
-random / untrained baseline success
-renamed-world success
-mean cognitive steps to resolution
-compute / budget consumed
-invalid / wasted cognitive actions
-percentage of tasks requiring successful multi-step sequences
-```
+### Inefficient cognition
 
-For stochastic experiments, use enough repeated episodes/seeds that a single lucky run cannot be presented as success.
+Success thresholds pass, but successful held-out episodes consume more than 90% of the exhaustive all-reachable reference cost on average or more than 85% of the hard budget.
 
-### Generalization Levels
+Interpretation: the policy found answers mainly through brute-force exploration.
+
+### Insufficient / misleading representation
+
+Multiple model configurations fail while inspection shows the permitted state omits information necessary for any policy to improve, or exposes a feature that directly encodes the route.
+
+Interpretation: revisit `CognitiveState` rather than tuning around a broken information boundary.
+
+### Answer leakage
+
+Any hidden graph, goal-location, shortest-path, correct-action, or solver-derived feature reaches policy input or target selection.
+
+Interpretation: invalidate the result and fix the boundary before continuing.
+
+## Frozen Quantitative E011-A Pass Gate
+
+E011-A v1 is promising only if **all** of the following are true:
+
+1. Parameters change measurably from the matched untrained checkpoints and parameter checksums differ.
+2. At least 4 of 5 model seeds improve training success by **20 percentage points or more** over their own untrained checkpoints.
+3. Median final Level-1 held-out success across the five model seeds is at least **70%**.
+4. Median final Level-1 held-out success is at least **20 percentage points above both** the random-valid baseline and matched-untrained baseline.
+5. At least 4 of 5 model seeds individually beat both final baselines by at least **15 percentage points**.
+6. Paired renaming retains at least **95% of unrenamed held-out success** and causes no more than a **5-percentage-point median absolute drop**.
+7. Held-out success includes tasks whose shortest path is 3, 4, and 5 edges; no success claim may come only from the easiest depth subset.
+8. On successful held-out episodes, mean cognitive action cost is at most **80% of the exhaustive all-reachable reference cost** on the same worlds.
+9. Mean hard-budget consumption on held-out episodes is at most **80%** while maintaining the success thresholds above.
+10. No hidden-answer or hidden-route field reaches policy input.
+11. No production branch names a world, node identity, seed, expected route, or correct target.
+12. Python enumerates valid actions but does not choose the cognitively preferred target.
+13. Unrelated world/organism state is not mutated by policy inference.
+14. Results for all five frozen seeds are reported, including failures.
+
+These are experiment thresholds, not permanent architecture constants.
+
+If a threshold is changed after seeing final results, the changed run is a new experiment revision and cannot retroactively pass E011-A v1.
+
+## Architecture-Reconsideration / Stop-Tuning Rules
+
+Do not endlessly tune a failing benchmark.
+
+Revisit the state/action/task architecture rather than continuing local hyperparameter changes when any of the following occurs:
+
+- two materially different small model configurations each reach at least 80% training success but remain less than 10 percentage points above random on untouched Level-1 validation;
+- concept-renaming repeatedly loses more than 10 percentage points despite no intended identity feature;
+- improvements in success occur only by driving mean budget use above 85%;
+- random-valid and trained behavior remain nearly indistinguishable because the generated task is too easy, too hard, or underdetermined;
+- a useful result requires adding a feature that encodes distance-to-goal, on-path status, the correct next action, or another solver-derived shortcut;
+- the only apparent fix is a world-specific branch or special-case target selector.
+
+Development validation may guide iteration. Final held-out data must not become a tuning surface.
+
+## Generalization Levels
 
 Every result must be classified at the strongest demonstrated level:
 
 ```text
 Level 0 — Training memorization
-same training worlds/tasks
+same training distribution only
 
-Level 1 — Identity transfer
-new or renamed concepts with comparable structure
+Level 1 — Identity / instance transfer
+unseen generated worlds with unseen opaque identities from the same experiment family
+plus paired identity permutation control
 
 Level 2 — Structural transfer
-new concepts + changed topology / relation arrangement
+new concepts + separately versioned topology / relation arrangement distribution
 
 Level 3 — Compositional transfer
 new knowledge + new structure + novel combinations of cognitive demands
 ```
 
-Do not summarize Level 1 success as unrestricted “learned how to think.”
+Do not summarize Level-1 success as unrestricted “learned how to think.”
 
-### Pass Criteria
+## E011-A Status
 
-The first E011 gate is promising only if all of the following are true:
+**Fully preregistered / implementation not started.**
 
-1. model parameters actually change through training;
-2. decision quality or task success improves on training worlds;
-3. held-out Level-1 performance exceeds the untrained/random baseline by a meaningful margin;
-4. renaming concepts does not materially destroy the learned strategy;
-5. at least some held-out tasks require and receive a useful **multi-step cognitive-action sequence**, not one lucky action;
-6. success cannot be explained by memorized answer text, concept identities, relation names, or production world-specific branches;
-7. each cognitive action produces an inspectable checkpoint;
-8. state/action/outcome/error/credit traces remain inspectable;
-9. the learned policy can be invoked through the real Synrheon runtime boundary without moving cognition into runtime or UI;
-10. unrelated persistent world/organism state is not silently mutated by policy inference;
-11. action targets are selected by the learned policy or its trainable representation rather than hidden hand-written target routing;
-12. cognitive resource use is measured and compared with a baseline/reference.
+The task, information firewall, action semantics, budgets, seed ranges, baselines, failure taxonomy, artifact lineage, growth-history fields, stop-tuning rules, and quantitative first gate are frozen for `E011-A v1` before model implementation.
 
-### Stronger Follow-Up Gates
+# E011-B — Live Organism Integration Gate
 
-After Level 1 transfer:
+E011-B begins only after an E011-A artifact satisfies the preregistered gate or is explicitly carried forward as a clearly labeled experimental exception.
+
+The integration path must be:
 
 ```text
-Level 2
-new concepts
-+
-new relation arrangement / topology
-+
-same underlying cognitive skills
+legitimate live CognitiveState
+        ↓
+cognition.py
+learned operation + target
+        ↓
+bounded cognitive transition
+        ↓
+checkpoint
+        ↓
+thin runtime sequencing
+        ↓
+OrganismState / trace
+        ↓
+UI behavioral evidence + growth history
 ```
 
-Then:
+The generated experiment's hidden world/scorer must remain outside the live production cognition path.
 
-```text
-Level 3
-new knowledge
-+
-new topology
-+
-novel combination of cognitive demands
-```
+E011-B must prove:
 
-These distinguish identity transfer from structural and compositional process transfer.
+1. the exact identified model artifact loads through the intended cognition owner;
+2. runtime sequences but does not select cognitive actions or targets;
+3. live checkpoints reach explicit state/trace;
+4. the Organism UI shows the specific integrated stage and backend-owned learning/generalization evidence;
+5. the same policy behavior remains available after model reload/restart when persistence is enabled;
+6. malformed/mismatched state fails safely;
+7. unrelated persistent state is not silently mutated;
+8. focused and integration tests prove the real call path;
+9. no hidden experiment scorer or solution metadata enters production cognition.
 
-### Failure Criteria
-
-The experiment fails if:
-- performance collapses on unseen or renamed identities despite equivalent cognitive demands;
-- the implementation embeds task answers or special-case routes;
-- Python secretly chooses action targets that carry the real reasoning decision;
-- selected paths are reinforced without outcome evidence;
-- runtime becomes the cognition owner;
-- the model merely reproduces training traces rather than adapting its operation sequence to current state;
-- the policy receives leaked answer/target features;
-- a single-step shortcut solves nearly every task that was supposed to test multi-step cognition;
-- training-world improvement does not transfer above baseline;
-- apparent success requires near-exhaustive search without useful efficiency improvement.
-
-### Interpretation Rules
-
-If training performance rises but held-out performance does not, classify the result as **Level 0 — task memorization / overfitting**, not cognitive improvement.
-
-If held-out performance survives concept renaming but fails on changed topology, classify the result as **Level 1 — identity/process transfer**, not structural generalization.
-
-If the model transfers across unseen content and altered structure while choosing useful multi-step operations, classify it as **Level 2 — structural transfer**.
-
-Only success on novel combinations of knowledge, structure, and cognitive demands should be described as **Level 3 — compositional transfer**.
-
-### Current Status
-
-**Pre-registered; implementation not started.**
+Only after this live gate may the policy be called **Integrated**. Human testing through the running organism is still required for **Verified**.
