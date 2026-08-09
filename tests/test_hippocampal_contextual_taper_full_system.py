@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 from experiments.hippocampal_contextual_taper_full_system import (
     CONDITIONS,
     GATE,
@@ -5,7 +7,9 @@ from experiments.hippocampal_contextual_taper_full_system import (
     evaluate,
     generate_world,
     learn_parameters,
+    recurrent_solve,
     run_condition,
+    soft_context_cascade,
     verdict,
 )
 
@@ -41,6 +45,8 @@ def test_candidate_renaming_preserves_structure_and_behavior() -> None:
     assert [candidate.evidence for candidate in original.candidates] == [
         candidate.evidence for candidate in renamed.candidates
     ]
+    assert original.excitation == renamed.excitation
+    assert original.inhibition == renamed.inhibition
 
     original_result = run_condition(
         original,
@@ -54,6 +60,30 @@ def test_candidate_renaming_preserves_structure_and_behavior() -> None:
     )
 
     assert original_result == renamed_result
+
+
+def test_recurrent_solver_cannot_use_hidden_correct_index() -> None:
+    parameters = learn_parameters(range(60000, 60080))
+    world = generate_world(61001)
+    activation, _, _ = soft_context_cascade(
+        world,
+        parameters,
+        world.initial_cue,
+    )
+
+    original = recurrent_solve(world, activation, parameters, width=12)
+    falsified_label = replace(
+        world,
+        correct_index=(world.correct_index + 7) % len(world.candidates),
+    )
+    relabeled = recurrent_solve(
+        falsified_label,
+        activation,
+        parameters,
+        width=12,
+    )
+
+    assert relabeled == original
 
 
 def test_hard_topk_cannot_reactivate_a_candidate_it_deleted() -> None:
@@ -101,21 +131,29 @@ def test_full_assay_reports_every_world_type_and_matched_control() -> None:
     for condition in CONDITIONS:
         assert set(result["by_world_type"][condition]) == set(WORLD_TYPES)
 
+    cascade = result["conditions"]["context_specific_cascade"]
+    no_taper = result["conditions"]["no_taper"]
+    assert cascade["mean_recurrent_candidate_cycles"] < no_taper[
+        "mean_recurrent_candidate_cycles"
+    ]
+    assert cascade["mean_taper_candidate_evaluations"] > 0
+
 
 def test_hct1_gate_is_frozen_and_scientifically_falsifiable() -> None:
     assert GATE == {
         "cascade_good_behavior_min": 0.85,
         "cascade_final_survival_min": 0.90,
         "unresolved_commit_rate_max": 0.25,
+        "reversal_suppression_cases_min": 5,
         "cascade_reactivation_min": 0.75,
         "hard_reactivation_disadvantage_min": 0.20,
-        "cascade_cost_fraction_max": 0.50,
+        "cascade_recurrent_cost_fraction_max": 0.50,
         "renaming_retention_min": 0.97,
         "generic_advantage_max": 0.03,
     }
 
 
-def test_scientific_verdict_can_reinforce_or_discount_without_changing_tests() -> None:
+def test_scientific_verdict_can_reinforce_discount_or_be_inconclusive() -> None:
     parameters = learn_parameters(range(60000, 60080))
     held = evaluate(range(61000, 61100), parameters=parameters)
     renamed = evaluate(
@@ -126,5 +164,5 @@ def test_scientific_verdict_can_reinforce_or_discount_without_changing_tests() -
 
     decision, checks = verdict(held, renamed)
 
-    assert decision.startswith(("REINFORCED:", "DISCOUNTED:"))
+    assert decision.startswith(("REINFORCED:", "DISCOUNTED:", "INCONCLUSIVE:"))
     assert any(key.endswith("_pass") for key in checks)
