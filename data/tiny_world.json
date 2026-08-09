@@ -1,5 +1,5 @@
 {
-  "purpose": "Future deterministic Stage 1/2 experiment fixture",
+  "purpose": "DEBUG / UI FIXTURE ONLY — never E011 training data and never E011 transfer evidence",
   "concepts": [
     "Logan",
     "Daisy",
@@ -10,25 +10,9 @@
     "door"
   ],
   "relationships": [
-    [
-      "Logan",
-      "IS_A",
-      "person"
-    ],
-    [
-      "Daisy",
-      "IS_A",
-      "dog"
-    ],
-    [
-      "Logan",
-      "OWNS",
-      "Daisy"
-    ],
-    [
-      "Daisy",
-      "LIKES",
-      "walk"
-    ]
+    ["Logan", "IS_A", "person"],
+    ["Daisy", "IS_A", "dog"],
+    ["Logan", "OWNS", "Daisy"],
+    ["Daisy", "LIKES", "walk"]
   ]
 }
