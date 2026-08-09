@@ -1,25 +1,25 @@
 # Context-Settled Tapering and Learned-Resistance Recurrent Inference
 
-## A hippocampal-inspired theory of reversible contextual compression, learned pathway resistance, recurrent deliberation, and evidence-gated commitment
+## A hippocampal-inspired theory of reversible contextual compression, learned pathway reliability, recurrent deliberation, and evidence-gated commitment
 
 **Synrheon Experimental Research Program**  
 **Revised August 9, 2026**
 
 ## Abstract
 
-This paper develops and updates a hippocampal-inspired computational theory for inference over a very large learned knowledge field. The central proposal is that cognition should not collapse a large candidate field in one irreversible pruning step. Instead, broad activation should be narrowed through soft, reversible contextual tapering, after which a much smaller set of serious alternatives can undergo more expensive state-dependent recurrent deliberation. Commitment should occur only when evidence is sufficiently discriminating; otherwise the system should remain uncertain, seek additional evidence, or reopen broader context.
+This paper develops and updates a hippocampal-inspired computational theory for inference over a very large learned knowledge field. The central proposal is that cognition should not collapse a large candidate field in one irreversible pruning step. Instead, broad activation should be narrowed through soft, reversible contextual tapering, after which a much smaller set of serious alternatives can undergo state-dependent recurrent deliberation. Commitment should occur only when evidence is sufficiently discriminating; otherwise the system should remain uncertain, seek additional evidence, or reopen broader context.
 
-The theory did not emerge from a single successful experiment. Several earlier mechanisms were tested and failed or proved insufficient. A static recurrence assay showed almost no necessity for recurrence because a one-pass solution already achieved approximately 99% accuracy. A later state-dependent relational assay created a genuine need for recurrence: the one-pass scorer fell to 0%, fixed-width recurrent inference reached approximately 98%, and clock-driven progressive narrowing fell to approximately 25.5%. Confidence-gated narrowing either failed to activate or produced only modest savings. A stochastic-consensus approach then produced false certainty, committing on approximately 78% of deliberately unresolved worlds. These failures motivated a shift away from elapsed-time pruning, winner frequency, and single-step compression toward context-dependent, reversible narrowing.
+The theory did not emerge from a single successful experiment. Several earlier mechanisms failed or proved insufficient. A static recurrence assay showed little necessity for recurrence because a one-pass solution already achieved approximately 99% accuracy. A later state-dependent relational assay created a genuine need for recurrence: the one-pass scorer fell to 0%, fixed-width recurrent inference reached approximately 98%, and clock-driven progressive narrowing fell to approximately 25.5%. Confidence-gated narrowing either failed to activate or produced only modest savings. A stochastic-consensus approach then produced false certainty, committing on approximately 78% of deliberately unresolved worlds. These failures motivated a shift away from elapsed-time pruning, winner frequency, and single-step compression toward context-dependent, reversible narrowing and explicit abstention.
 
-A learned-resistance mechanism remains promising. In an earlier synthetic family, equal resistance produced approximately 10% accuracy while learned pathway resistance reached approximately 94.5%, retained after opaque candidate renaming. This suggests that outcome-driven pathway reliability can transfer independently of candidate labels in that restricted setting.
+A learned-resistance mechanism also produced an important early result. In its original synthetic family, equal resistance produced approximately 10% accuracy while learned pathway resistance reached approximately 94.5% and retained that performance after opaque candidate renaming. This suggested that historical reliability could be attached to evidence pathways rather than candidate identity. HCT-2 later provided an important qualification: removing learned resistance did not reduce correct-or-abstain behavior in the HCT-2 family. Learned resistance therefore remains a promising, potentially task-dependent mechanism rather than a universally necessary component of the current architecture.
 
-The first full contextual-taper experiment, HCT-1 v1, has now been completed on 200 untouched held-out synthetic worlds with 256 opaque candidates each. The context-specific cascade achieved 100% correct-or-abstain behavior, 100% survival of the correct candidate into final recurrence, 0% commitment in deliberately unresolved worlds, 100% reactivation after context reversal, and 100% retention under candidate renaming. It reduced recurrent candidate processing from 2048 candidate-cycles per episode under no taper to 96, or 4.6875% of the full-field recurrent load. Hard Top-K pruning failed sharply under context reversal: the correct candidate was suppressed in 37 held-out reversal cases and reactivated in 0% of them. The reversible cascade suppressed the correct candidate from the recurrent field in all 40 reversal worlds and recovered it in 100% after context changed.
+HCT-1 v1 was completed on 200 untouched held-out synthetic worlds with 256 opaque candidates each. The context-specific cascade achieved 100% correct-or-abstain behavior, 100% survival of the correct candidate into final recurrence, 0% commitment in deliberately unresolved worlds, 100% reactivation after context reversal, and 100% retention under candidate renaming. It reduced recurrent candidate processing from 2048 candidate-cycles per episode under no taper to 96, or 4.6875% of the full-field recurrent load. Hard Top-K pruning failed sharply under context reversal: the correct candidate was suppressed in 37 held-out reversal cases and reactivated in 0% of them. However, a simpler generic soft taper matched the cascade behaviorally while requiring substantially fewer taper evaluations. HCT-1 therefore supported reversible soft narrowing but did not establish that ordered context-specific stages were computationally useful.
 
-However, HCT-1 also exposed an important limitation. A simpler generic soft taper achieved the same 100% correct-or-abstain behavior and 100% reactivation while requiring substantially fewer taper candidate-evaluations than the context-specific cascade. Therefore the strongest current evidence supports **reversible soft contextual narrowing over irreversible hard pruning**, not yet the stronger claim that multiple distinct ordered contextual taper stages are necessary or computationally superior.
+HCT-2 v1 was designed and preregistered specifically to test that unresolved claim. It increased the field to 512 opaque candidates, introduced hierarchical conditional context and aliasing, scrambled the anonymous context-channel order, and compared learned-order sparse settling against generic soft tapering, fixed-order sparse tapering, hard Top-K, no taper, no-resistance, and no-recurrence controls. The untouched 300-world final split passed every frozen HCT-2 criterion. Learned-order sparse settling achieved 100% correct-or-abstain behavior, 100% correct-candidate survival, 0% commitment on unresolved worlds, 100% context-reversal reactivation, and 100% renaming retention. It used 128 recurrent candidate-cycles versus 4096 under no taper, or 3.125% of the full-field recurrent load. It used only 7.14% of the context-feature evaluations required by the strong generic-soft control while matching its behavior. The learned channel order recovered the hidden semantic-depth progression `0 -> 1 -> 2 -> 3` and used approximately 5.49% fewer context-feature evaluations than the same sparse mechanism in fixed anonymous order.
 
-HCT-2 has now been designed, implemented, and preregistered specifically to test that unresolved stronger claim. It increases the field to 512 opaque candidates, introduces hierarchical conditional context, deliberately scrambles anonymous context-channel order, adds alias competitors whose deeper context features can be misleading outside the correct broad basin, and compares a learned ordered sparse cascade against generic soft tapering, fixed-order sparse tapering, hard Top-K, no taper, no-resistance, and no-recurrence controls. Its primary claim is not that ordered tapering must be more accurate; it is that learned ordered conditional settling should preserve behavior while requiring substantially fewer context-feature evaluations than a strong simultaneous generic-soft control. Training and development splits are separated from a reserved 300-world final split, and quick runs are prevented from consuming final seeds. The HCT-2 final split has **not yet been evaluated** in this paper.
+The HCT-2 ablations sharpen the theory further. Removing recurrence reduced correct-or-abstain behavior from 100% to 45%, despite the correct candidate surviving sparse tapering in 100% of episodes. This demonstrates that, in this family, tapering alone did not perform the decisive relational discrimination needed for appropriate commitment; recurrence contributed substantial computational work after narrowing. In contrast, removing learned resistance left correct-or-abstain behavior at 100%, so learned resistance was not necessary for HCT-2 performance. The strongest current evidence therefore favors **learned ordered reversible contextual narrowing + state-dependent recurrence + explicit abstention/reopening**, while treating learned resistance as a promising but task-dependent modifier whose necessity must be established separately.
 
-This work is controlled synthetic evidence only. It does not establish biological hippocampal equivalence, natural-language benefit, general intelligence, or superiority to contemporary machine-learning architectures.
+This work remains controlled synthetic evidence only. It does not establish biological hippocampal equivalence, natural-language benefit, general intelligence, or superiority to contemporary machine-learning architectures.
 
 ---
 
@@ -40,14 +40,14 @@ The working architecture is therefore not simply "choose the highest score." It 
 
 ```text
 large activated field
-    -> context-dependent soft narrowing
+    -> learned context-dependent soft narrowing
     -> small serious-candidate field
     -> recurrent interaction among serious alternatives
     -> evidence/stability assessment
     -> commit, abstain, seek evidence, or reopen
 ```
 
-The word **soft** is essential. A candidate may be strongly suppressed without being erased. The word **contextual** is also essential to the stronger theory, although HCT-1 did not yet show that distinct context-specific stages are superior to a simpler generic soft taper.
+The word **soft** is essential. A candidate may be strongly suppressed without being erased. The word **contextual** is also important, but the HCT-2 result makes the strongest claim precise: ordered context did not increase final behavior over the strong soft controls in this synthetic family; it increased **evaluation efficiency while preserving behavior**.
 
 ---
 
@@ -70,6 +70,8 @@ Too narrow too early
 ```
 
 The theory attempts to occupy the middle ground: **sparse enough to deliberate, but reversible enough to reconsider.**
+
+HCT-2 adds another refinement: if contextual features are conditional, the order in which they are evaluated may affect computational cost even when final behavior remains unchanged.
 
 ---
 
@@ -109,9 +111,24 @@ Renamed candidates            94.5% accuracy
 Renaming retention           100.0%
 ```
 
-This is one of the more promising early results because the learned effect survived opaque candidate renaming. The test therefore supports a restricted proposition: **historical reliability can be attached to pathways or evidence channels rather than memorized candidate names.**
+This remains a promising result because the learned effect survived opaque candidate renaming. It supports a restricted proposition: **historical reliability can be attached to pathways or evidence channels rather than memorized candidate names.**
 
-It does not establish mathematical novelty or superiority to conventional learned weights, attention, gating, mixture-of-experts routing, or other reliability-learning methods.
+### 3.2 HCT-2 qualification: resistance was not necessary there
+
+HCT-2 included a direct no-resistance ablation using the same learned-order sparse taper and recurrent solver. Removing learned resistance did not reduce correct-or-abstain behavior: both the full learned-order system and the no-resistance ablation achieved 100% good behavior, 100% survival, and 100% reversal reactivation.
+
+The no-resistance condition even showed a slightly higher raw correct rate in the final aggregate, but that should not be overinterpreted because raw winner identity in deliberately unresolved worlds is not equivalent to knowledge; both systems appropriately abstained in those worlds.
+
+The correct scientific interpretation is therefore:
+
+```text
+Learned resistance:
+PROMISING IN EARLIER SYNTHETIC FAMILY
+NOT NECESSARY FOR HCT-2 PERFORMANCE
+TASK-DEPENDENT NECESSITY REMAINS OPEN
+```
+
+This result narrows the theory rather than invalidating it. Resistance should remain an optional learned reliability mechanism until future experiments show when it adds value beyond the other components.
 
 ---
 
@@ -129,9 +146,58 @@ u_i^(t+1)
   + gamma * I_i
 ```
 
-where compatible candidates can excite one another, conflicting candidates can inhibit one another, and learned resistance changes how readily pathways influence settling.
+where compatible candidates can excite one another, conflicting candidates can inhibit one another, and learned resistance may modify pathway influence when useful.
 
 The important scientific distinction is between **recurrence that is actually necessary** and recurrence added to a task a one-pass scorer already solves.
+
+### 4.1 Early evidence for recurrence
+
+The first recurrence necessity test was weak because one-pass inference already reached approximately 99% accuracy. A redesigned state-dependent assay later produced:
+
+```text
+One-pass initial scorer                  0%
+State-dependent recurrent, fixed width  98%
+Clock-driven progressive recurrence     25.5%
+```
+
+This was the first strong indication that recurrence can matter when candidate interactions genuinely change the later evidence state.
+
+### 4.2 HCT-2 ablation: recurrence became mechanistically necessary
+
+HCT-2 provides a cleaner component-level result. The learned-order sparse mechanism with recurrence achieved:
+
+```text
+good behavior:                    100%
+correct candidate survival:       100%
+reversal reactivation:            100%
+```
+
+The matched no-recurrence ablation achieved:
+
+```text
+good behavior:                     45%
+correct candidate survival:       100%
+reversal reactivation:          81.67%
+```
+
+This is highly informative. The tapering mechanism still preserved the correct candidate in every episode, yet behavior collapsed when recurrent interaction was removed. Therefore the taper was not simply solving the task before recurrence began.
+
+The most defensible interpretation is:
+
+> **Sparse contextual tapering preserved the relevant hypothesis; recurrence supplied the relational discrimination and settling needed to convert that preserved field into appropriate commitment behavior.**
+
+The distinction matters because it separates two computational jobs:
+
+```text
+Taper:
+Which alternatives remain serious enough to consider?
+
+Recurrence:
+How do those serious alternatives change one another's support,
+and is the resulting state discriminating enough to act?
+```
+
+Within HCT-2, recurrence is therefore not decorative. It contributes measurable function after narrowing.
 
 ---
 
@@ -139,28 +205,18 @@ The important scientific distinction is between **recurrence that is actually ne
 
 The experimental history is important because the current theory is partly defined by mechanisms that did **not** work.
 
-### 5.1 Learned resistance: promising
+### 5.1 Learned resistance: promising, but now qualified
 
-The learned-resistance assay strongly outperformed equal resistance and transferred across candidate renaming in its synthetic family.
+The learned-resistance assay strongly outperformed equal resistance and transferred across candidate renaming in its original synthetic family.
 
 Status:
 
 ```text
 PROMISING
+BUT NOT UNIVERSALLY NECESSARY
 ```
 
-What it suggests:
-
-- reliability can be learned at the pathway/channel level;
-- misleading channels can become harder to traverse;
-- useful channels can become easier to traverse;
-- the effect need not depend on candidate names.
-
-What remains unresolved:
-
-- whether the mechanism is better than ordinary learned weighting;
-- whether it transfers to richer representations;
-- whether resistance should be local, contextual, temporal, relational, or all of these.
+HCT-2 showed that the full task could retain 100% correct-or-abstain behavior without learned resistance. Future work should therefore test **when** resistance adds value rather than assuming it is always necessary.
 
 ### 5.2 First recurrence necessity test: insufficient
 
@@ -174,11 +230,9 @@ INCONCLUSIVE FOR RECURRENCE NECESSITY
 
 The lesson was methodological: if the task can already be solved from static evidence, recurrence cannot demonstrate its value.
 
-This led to the design of a genuinely state-dependent relational problem in which later evidence depends on interactions among active candidates.
-
 ### 5.3 State-dependent recurrence: promising
 
-The revised assay produced approximately:
+The revised relational assay produced approximately:
 
 ```text
 One-pass initial scorer                  0%
@@ -192,8 +246,6 @@ Status:
 PROMISING FOR STATE-DEPENDENT RECURRENCE
 FAILED FOR CLOCK-DRIVEN PROGRESSIVE NARROWING
 ```
-
-This result was important because the recurrent process was no longer decorative. The state had to evolve for relational support to circulate.
 
 ### 5.4 Clock-driven progressive Top-K: failed
 
@@ -217,13 +269,11 @@ Status:
 LIMITED / DID NOT JUSTIFY THE MECHANISM AS DESIGNED
 ```
 
-This suggested that a single global narrowing event may be the wrong abstraction for a very large field. A system may need several smaller contextual settlements rather than one global confidence threshold.
+This suggested that a single global narrowing event may be the wrong abstraction for a very large field.
 
 ### 5.6 Stochastic consensus: failed
 
-The next idea was to run repeated perturbed recurrent trials and use consensus among trials as a confidence signal.
-
-In deliberately unresolved worlds, the system committed approximately 78% of the time, exceeding the test requirement of at most 50%. The winning answer was often internally consistent but not sufficiently evidenced.
+Repeated perturbed recurrent trials were tested as a confidence signal. In deliberately unresolved worlds, the system committed approximately 78% of the time, exceeding the test requirement of at most 50%.
 
 Status:
 
@@ -235,25 +285,24 @@ The lesson was:
 
 > **Repeated agreement is not the same as evidence. A stable structural bias can repeatedly select the same answer.**
 
-This failure directly motivated stronger abstention logic and the separation of **winner selection** from **commitment**.
+This directly motivated stronger abstention logic and the separation of **winner selection** from **commitment**.
 
 ### 5.7 Hard pruning under context reversal: failed
 
-HCT-1 later provided the clearest direct failure of irreversible narrowing. In the final 200-world held-out set, hard Top-K suppressed the correct candidate in 37 context-reversal cases and recovered it in 0% of them.
+HCT-1 provided the clearest direct failure of irreversible narrowing. In the final 200-world held-out set, hard Top-K suppressed the correct candidate in 37 context-reversal cases and recovered it in 0% of them.
+
+HCT-2 reproduced the same failure in a harder family: hard Top-K suppressed the correct candidate in all 60 context-reversal worlds and reactivated it in 0% of them.
 
 Status:
 
 ```text
 FAILED UNDER CONTEXT REVERSAL
+REPLICATED ACROSS HCT-1 AND HCT-2 FAMILIES
 ```
-
-This is stronger than a philosophical objection to hard pruning. It is a measured failure mode in the current synthetic family.
 
 ### 5.8 HCT-1 context specificity: behaviorally unresolved
 
-HCT-1's learned context-specific cascade and the simpler generic soft taper both achieved 100% correct-or-abstain behavior and 100% context-reversal reactivation.
-
-However, the generic soft taper used substantially fewer taper candidate-evaluations.
+HCT-1's learned context-specific cascade and the simpler generic soft taper both achieved 100% correct-or-abstain behavior and 100% context-reversal reactivation. The generic soft taper also used substantially fewer taper evaluations.
 
 Status:
 
@@ -262,17 +311,54 @@ REVERSIBLE SOFT NARROWING: PROMISING
 MULTI-STAGE CONTEXT SPECIFICITY: NOT YET JUSTIFIED
 ```
 
-This result prevented the theory from treating multiple ordered stages as established merely because the cascade worked. HCT-2 was created specifically to test whether ordered stages become useful when contextual information is hierarchical, aliased, and conditionally useful.
+This result directly motivated HCT-2.
 
-### 5.9 Experimental integrity hardening
+### 5.9 HCT-2 ordered sparse context: reinforced as an efficiency mechanism
+
+HCT-2 increased the field to 512 candidates, made deeper context tokens conditionally ambiguous, scrambled context-channel order, and allowed sparse stages to evaluate only currently eligible candidates while preserving dormant candidates for reopening.
+
+The learned-order sparse mechanism matched generic soft tapering at 100% correct-or-abstain behavior, but required only about 7.14% of generic soft's context-feature evaluations. It also used about 5.49% fewer context-feature evaluations than the same sparse mechanism run in fixed anonymous channel order.
+
+Status:
+
+```text
+REINFORCED AS AN EFFICIENCY-WITH-PRESERVED-BEHAVIOR RESULT
+```
+
+The result does **not** show that learned order is necessary for correctness in this family, because fixed-order sparse also achieved 100% good behavior. It shows that the learned order reduced contextual evaluation cost while preserving behavior.
+
+### 5.10 HCT-2 recurrence ablation: strongly supportive
+
+Removing recurrence reduced good behavior to 45% despite 100% correct-candidate survival through tapering.
+
+Status:
+
+```text
+STRONGLY SUPPORTIVE OF RECURRENT DELIBERATION
+IN THIS TASK FAMILY
+```
+
+### 5.11 HCT-2 resistance ablation: no added behavioral value in this family
+
+Removing learned resistance did not reduce good behavior, survival, or reversal recovery.
+
+Status:
+
+```text
+NO NECESSITY DEMONSTRATED IN HCT-2
+```
+
+This means the full theory should not treat resistance as required merely because it succeeded in earlier assays.
+
+### 5.12 Experimental integrity hardening
 
 During HCT-1 development, the inference firewall was hardened so that hidden correctness information used by the generator/scorer could not enter the recurrent solver. Explicit excitation and inhibition relations are materialized before inference, and the recurrent solver consumes those relations without consulting `correct_index`.
 
-A later CLI defect caused nominal full command-line runs to pass the `argparse.Namespace` object as the `quick` argument, making both normal and `--quick` CLI runs execute the 50-world quick subset. This did **not** alter the experiment function itself. The discrepancy was detected by directly invoking `run_assay()`, the CLI was corrected to pass `args.quick`, a regression test was added, and the official full HCT-1 result was then run over all 200 intended held-out worlds.
+A later CLI defect caused nominal full command-line runs to execute the 50-world quick subset. The discrepancy was detected, the CLI was corrected, a regression test was added, and the official HCT-1 result was rerun over all 200 intended held-out worlds.
 
-HCT-2 adds a stronger safeguard: its `--quick` mode is restricted to a separate development range and cannot consume the reserved final split.
+HCT-2 added a stronger safeguard: `--quick` was restricted to development seeds and could not consume the reserved final split. The final 300-world split was then run only after the design and gate were frozen.
 
-This implementation history is recorded because experimental tooling must be treated as part of scientific validity.
+This implementation history is recorded because experimental tooling is part of scientific validity.
 
 ---
 
@@ -312,7 +398,11 @@ semantic context
     -> self/social/relational context within that narrower basin
 ```
 
-The phrase **within the basin** is now experimentally important. HCT-2 is designed so that a deeper context feature may be ambiguous or misleading when evaluated globally but useful after broader context has narrowed the active region. This is the first direct attempt to test the user's proposed principle that **each taper should settle on a like/coherent context before the next taper is applied.**
+HCT-2 supplies the first direct evidence that the order can carry computational value when later features are conditionally meaningful. The learner recovered the hidden semantic-depth progression and reduced context-feature evaluations relative to fixed anonymous order while preserving identical final behavior.
+
+The claim should remain narrow:
+
+> **Ordered context settling can improve evaluation efficiency in hierarchically conditional fields. HCT-2 does not show that ordered settling is required for correct behavior in every field.**
 
 ---
 
@@ -351,7 +441,7 @@ when to reopen broader context
 when to stop
 ```
 
-HCT-1 learned anonymous evidence resistance, contextual-stage ordering, and gains from training outcomes. HCT-2 strengthens this test by scrambling observed context-channel order and asking training to recover a useful ordered progression without receiving semantic-depth labels as the routing answer.
+HCT-2 strengthens the learned-skill side of the theory because the observed channels were deliberately scrambled. Training recovered a useful semantic-depth order without receiving the desired order as the inference answer.
 
 Neither HCT-1 nor HCT-2 learns arbitrary human semantic representations or a fully state-conditioned cognitive-operation policy. Those remain future steps.
 
@@ -361,7 +451,7 @@ Neither HCT-1 nor HCT-2 learns arbitrary human semantic representations or a ful
 
 ### HCT-1 — Learned Contextual Taper + Recurrent Deliberation
 
-> **A transferable learned contextual-routing layer controlling multiple reversible soft taper stages will reduce a large nested candidate field before learned-resistance recurrent deliberation, while preserving final accuracy, retaining real ambiguity, and permitting context-driven reactivation better than matched hard pruning.**
+> **A transferable learned contextual-routing layer controlling multiple reversible soft taper stages will reduce a large nested candidate field before recurrent deliberation, while preserving final accuracy, retaining real ambiguity, and permitting context-driven reactivation better than matched hard pruning.**
 
 Subclaims were:
 
@@ -370,12 +460,10 @@ Subclaims were:
 - **HCT-1C — Recurrent compute:** substantially fewer candidates should enter expensive recurrence than under no taper.
 - **HCT-1D — Reversibility:** suppressed candidates should be able to return when context changes; hard deletion should fail this case.
 - **HCT-1E — Uncertainty:** genuinely unresolved worlds should remain mostly uncommitted.
-- **HCT-1F — Context specificity:** a distinct context-specific cascade should be compared with a matched generic soft taper; if generic soft matches it, the stronger context-specific claim is weakened.
+- **HCT-1F — Context specificity:** a distinct context-specific cascade should be compared with a matched generic soft taper.
 - **HCT-1G — Recurrence/resistance separability:** later ablations must test whether recurrence and learned resistance contribute independently.
 
 ### Frozen HCT-1 v1 interpretation gate
-
-Before final interpretation, the following criteria were frozen:
 
 ```text
 cascade good behavior >= 0.85
@@ -426,27 +514,6 @@ Matched conditions:
 4. learned context-specific reversible cascade + identical downstream recurrence
 ```
 
-The same learned parameters were used across held-out conditions:
-
-```text
-evidence_resistance:
-[3.0,
- 2.0725392061711534,
- 1.1025813281666983,
- 0.8107898768466211]
-
-taper_order:
-[2, 3, 1, 0]
-
-taper_gains:
-[0.7215276074720123,
- 1.0119617823169562,
- 1.1462560526105259,
- 1.1202545576005059]
-```
-
-Candidate names were opaque and then regenerated under a rename condition to test identity independence.
-
 ---
 
 ## 10. HCT-1 v1 Final 200-World Results
@@ -462,212 +529,29 @@ Candidate names were opaque and then regenerated under a rename condition to tes
 
 The formal frozen HCT-1 gate was passed in every category.
 
-### 10.2 Unresolved worlds
+### 10.2 Interpretation
 
-For the context-specific cascade:
+HCT-1 established three important points within its family:
 
-```text
-unresolved_close episodes: 40
-commit rate:               0.0%
-good behavior:           100.0%
-```
+1. reversible soft narrowing survived context reversal while hard deletion did not;
+2. the full field could be reduced drastically before recurrence without losing the correct candidate;
+3. winner identity had to remain separate from commitment in unresolved worlds.
 
-The internal winner still matched the hidden answer in 27.5% of unresolved cases, but the system correctly declined to commit because the evidence was intentionally insufficient.
-
-This distinction matters:
-
-```text
-winner != knowledge
-```
-
-A candidate can rank first without the system having enough evidence to act as if it knows.
-
-### 10.3 Context reversal
-
-Hard Top-K:
-
-```text
-40 reversal worlds
-37 cases where correct candidate was initially excluded
-0.0% reactivation
-2.5% final correct rate
-0.0% good behavior
-```
-
-Context-specific reversible cascade:
-
-```text
-40 reversal worlds
-40 cases where correct candidate was initially outside the recurrent field
-100.0% reactivation after late context
-100.0% final correct rate
-100.0% good behavior
-```
-
-Generic soft taper also achieved 100% reactivation.
-
-This is currently the strongest direct evidence for the **reversibility** principle. Hard pruning did exactly what the theory predicted it would do poorly: once a candidate was deleted, changed context could not restore it.
-
-### 10.4 Recurrent-field reduction
-
-No taper performed recurrence over all 256 candidates for 8 cycles:
-
-```text
-256 * 8 = 2048 recurrent candidate-cycles
-```
-
-The taper conditions performed recurrence over 12 candidates for 8 cycles:
-
-```text
-12 * 8 = 96 recurrent candidate-cycles
-```
-
-Therefore:
-
-```text
-96 / 2048 = 0.046875
-```
-
-The cascade used **4.6875% of the full-field recurrent candidate-cycle load**.
-
-This is evidence for recurrent-field reduction only. It is **not** evidence of lower total wall-clock cost because taper operations themselves also consume computation.
-
-### 10.5 Candidate renaming
-
-All aggregate results were preserved exactly under candidate renaming. The cascade's behavior retention was 100%.
-
-This indicates that the tested mechanism depends on generated evidence/context/relation structure rather than opaque candidate labels.
+But HCT-1 did **not** establish that a multi-stage context-specific cascade was preferable to generic soft narrowing because generic soft matched behavior and used fewer taper evaluations.
 
 ---
 
-## 11. What HCT-1 Supports
+## 11. HCT-2 v1: Frozen Ordered Conditional Context Experiment
 
-Within this synthetic experimental family, the following claims are now reasonably supported:
+### 11.1 Why HCT-2 exists
 
-### 11.1 Soft reversible narrowing is substantially safer than hard deletion under changing context
-
-This is the clearest result. Hard Top-K could not restore excluded candidates. Both soft methods could.
-
-### 11.2 A large field can be reduced before expensive recurrence without losing the correct candidate in the tested worlds
-
-The cascade retained the correct candidate into final recurrence in 100% of the 200 held-out worlds while reducing recurrence from 256 candidates to 12.
-
-### 11.3 Commitment must remain distinct from ranking
-
-The unresolved worlds demonstrate that a first-place candidate should not automatically produce an answer. The system can have a winner and still abstain.
-
-### 11.4 Learned routing parameters can transfer across candidate identity
-
-The learned resistance/order/gain parameters remained effective after opaque candidate renaming.
-
-### 11.5 Context change should be allowed to reopen a broader field
-
-The reversal results support a computational architecture in which earlier suppression is provisional rather than permanent.
-
----
-
-## 12. What HCT-1 Does Not Yet Support
-
-The following stronger claims remain unestablished.
-
-### 12.1 Multiple distinct context-specific taper stages are not yet shown to be necessary
-
-The generic soft control achieved:
-
-```text
-100% good behavior
-100% correct-candidate survival
-100% reversal reactivation
-96 recurrent candidate-cycles
-```
-
-These matched the cascade on the primary behavioral outcomes.
-
-The context-specific cascade therefore did **not** demonstrate a behavioral advantage over generic soft tapering in HCT-1 v1.
-
-### 12.2 The cascade is not yet computationally superior overall
-
-Average taper candidate-evaluations were:
-
-```text
-Generic soft taper            1228.8
-Context-specific cascade      4915.2
-```
-
-The cascade required roughly four times as many taper candidate-evaluations in this implementation.
-
-Therefore the current evidence does not justify a claim that the full cascade is cheaper overall. HCT-2 directly addresses this by allowing later context stages to evaluate only the currently eligible sparse field rather than all candidates at every stage.
-
-### 12.3 HCT-1 does not establish semantic cognition
-
-The contextual dimensions are anonymous synthetic channels, not learned human-like concepts such as time, self, goals, relationships, causality, or semantics.
-
-### 12.4 HCT-1 does not yet isolate recurrence from static reweighting
-
-HCT-2 includes explicit no-resistance and no-recurrence ablations. These are mechanistic probes rather than primary gates: if removing recurrence or resistance leaves behavior unchanged, the interpretation of those components must be weakened rather than protected post hoc.
-
----
-
-## 13. Current Theory Status
-
-The research program can now be summarized as follows.
-
-### Discounted or failed mechanisms
-
-```text
-automatic clock-driven progressive Top-K
-single global confidence gate as sufficient solution
-stochastic winner consensus as evidence of truth
-irreversible hard deletion under changing context
-```
-
-### Promising mechanisms
-
-```text
-outcome-learned pathway resistance
-state-dependent recurrence when the task truly requires interaction
-soft reversible suppression
-separate commitment/abstention logic
-context-driven reopening
-identity-independent structural transfer
-```
-
-### Promising but not yet uniquely justified
-
-```text
-multiple ordered context-specific taper stages
-learned stage ordering as a computational advantage
-```
-
-The strongest current formulation of the theory is therefore narrower than the original aspiration:
-
-> **A large candidate field should be narrowed softly and reversibly before expensive relational deliberation, and commitment should depend on discriminating evidence rather than simply on the existence or repetition of a winner.**
-
-A stronger statement—that cognition benefits specifically from several ordered contextual settling stages—remains under active test in HCT-2.
-
----
-
-## 14. HCT-2: Frozen Ordered Conditional Context Experiment
-
-HCT-2 is no longer merely a proposed next step. Its design, implementation, tests, and interpretation gate are now frozen before final held-out evaluation.
-
-### 14.1 Why HCT-2 exists
-
-HCT-1 established that reversible soft narrowing can preserve behavior and recover from changed context, but it did **not** establish that multiple distinct ordered stages are needed. Generic soft tapering matched the cascade behaviorally and used fewer taper evaluations.
-
-HCT-2 therefore tests a narrower and more demanding claim:
+HCT-2 directly tests the unresolved HCT-1 question:
 
 > **Does a learned order of context-specific settling become computationally useful when context channels are hierarchically aliased and later context is cheaper or safer to evaluate only after earlier context has narrowed the active field?**
 
 The primary HCT-2 claim is an **efficiency-with-preserved-behavior** claim, not an accuracy-superiority claim.
 
-### 14.2 HCT-2 hypothesis
-
-> **A learned ordering of reversible sparse context stages will preserve high correct-or-abstain behavior and correct-candidate survival in hierarchically aliased worlds while using substantially fewer context-feature evaluations than a strong simultaneous learned generic-soft control. The learned order should also be more evaluation-efficient than the same sparse mechanism run in fixed anonymous channel order.**
-
-The hypothesis is weakened if generic soft matches behavior at similar context-evaluation cost, if learned ordering provides no measurable efficiency benefit over fixed order, if correct candidates fail to survive sparse settling, or if reversibility is lost.
-
-### 14.3 Larger and harder candidate field
+### 11.2 Experimental structure
 
 HCT-2 uses:
 
@@ -676,17 +560,12 @@ HCT-2 uses:
 16-candidate recurrent width
 8 recurrent cycles
 4 hierarchical context depths
+500 training worlds:     70000-70499
+150 development worlds:  71000-71149
+300 final worlds:        72000-72299
 ```
 
-Each candidate has a four-level latent context path. Deeper observed context tokens are encoded through prefix-specific deterministic codebooks. The same deep token can therefore occur under different broad contexts.
-
-This means a deep feature can be locally meaningful but globally ambiguous.
-
-### 14.4 Anonymous context channels are scrambled
-
-The learner is not presented with context channels in semantic-depth order.
-
-Frozen mapping:
+Observed context channels are scrambled:
 
 ```text
 channel 0 -> semantic depth 2
@@ -695,26 +574,19 @@ channel 2 -> semantic depth 3
 channel 3 -> semantic depth 1
 ```
 
-The learner must derive a useful processing order from training outcomes. Development calibration indicates that the learned order recovers semantic depth progression `0 -> 1 -> 2 -> 3`, but this development observation is **not** a final HCT-2 result.
+The learner is not handed the desired order.
 
-### 14.5 Conditional aliasing
-
-HCT-2 creates wrong-broad-context candidates that share deeper raw context tokens with the correct path. Therefore simply averaging all context globally may spend computation evaluating features whose interpretation is ambiguous outside the proper broad basin.
-
-The proposed sparse mechanism instead asks:
+World types:
 
 ```text
-settle broad context
-    -> mark a narrower high-activation field as eligible
-    -> evaluate the next context stage mainly within that field
-    -> continue narrowing conditionally
+clear_hierarchy
+alias_conflict
+misleading_deep
+unresolved_branch
+context_reversal
 ```
 
-Dormant candidates are suppressed, not deleted. Context reversal can reopen from the broad field.
-
-### 14.6 HCT-2 conditions
-
-Seven conditions are frozen:
+Conditions:
 
 ```text
 1. no_taper
@@ -726,50 +598,7 @@ Seven conditions are frozen:
 7. learned_order_no_recurrence
 ```
 
-**No taper** runs recurrence over all 512 candidates.
-
-**Hard Top-K** scores the broad field, retains only 16 candidates, and permanently excludes the rest for that episode. Context reversal may rescore only retained candidates.
-
-**Generic soft** uses all learned context gains simultaneously across the full field for repeated settling cycles. It is deliberately a strong control.
-
-**Fixed-order sparse** uses the same reversible sparse mechanism and learned gains as the proposed model, but processes anonymous channels in fixed numerical order `(0, 1, 2, 3)`.
-
-**Learned-order sparse** is the primary proposed mechanism. It uses the learned channel order and reversible sparse eligibility.
-
-**Learned-order no resistance** removes learned evidence resistance to test whether resistance contributes independently.
-
-**Learned-order no recurrence** replaces recurrent deliberation with a non-recurrent downstream decision to test whether recurrence contributes independently.
-
-The no-resistance and no-recurrence conditions are mechanistic ablations. They are not forced to fail by the primary HCT-2 gate.
-
-### 14.7 HCT-2 data firewall
-
-Frozen splits:
-
-```text
-Training:     70000-70499   (500 worlds)
-Development:  71000-71149   (150 worlds)
-Quick dev:    71000-71049    (50 worlds)
-Final:        72000-72299   (300 worlds, reserved)
-```
-
-The final split is not used for:
-
-```text
-quick runs
-parameter selection
-development tuning
-gate selection
-regression tests
-```
-
-The CLI explicitly separates development quick mode from the final run so the final split cannot be accidentally consumed by `--quick`.
-
-At the time of this revision, the HCT-2 final 300-world split remains **untouched**.
-
-### 14.8 Frozen HCT-2 interpretation gate
-
-Before any final HCT-2 evaluation, the following primary criteria are frozen:
+### 11.3 Frozen HCT-2 interpretation gate
 
 ```text
 learned-order good behavior >= 0.90
@@ -783,46 +612,275 @@ renaming retention >= 0.97
 generic behavior advantage over learned order <= 0.03
 learned-order context-evaluation fraction <= 0.50 of generic soft
 learned-order efficiency advantage over fixed order >= 0.03
+learned hierarchical order must recover semantic depth progression
 ```
 
-These criteria must not be loosened after inspecting final results.
+These criteria were frozen before the final split was run.
 
-### 14.9 What would count as strong HCT-2 evidence
+---
 
-The strongest HCT-2 result would not merely be higher accuracy. It would show that the learned ordered sparse mechanism:
+## 12. HCT-2 v1 Final 300-World Results
+
+HCT-2 passed every frozen criterion.
+
+### 12.1 Aggregate comparison
+
+| Condition | Correct | Commit | Good behavior | Correct survival | Recurrent cycles | Context evaluations | Reversal reactivation |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| No taper | 50.0% | 28.0% | 48.0% | 100.0% | 4096 | 0 | n/a |
+| Hard Top-K | 70.67% | 60.33% | 80.0% | 80.0% | 128 | 2060.8 | 0.0% |
+| Generic soft | 90.33% | 80.0% | 100.0% | 100.0% | 128 | 19660.8 | 100.0% |
+| Fixed-order sparse | 90.33% | 80.0% | 100.0% | 100.0% | 128 | 1485.78 | 100.0% |
+| Learned-order sparse | 90.33% | 80.0% | 100.0% | 100.0% | 128 | 1404.26 | 100.0% |
+| Learned-order no resistance | 91.33% | 80.0% | 100.0% | 100.0% | 128 | 1404.26 | 100.0% |
+| Learned-order no recurrence | 85.0% | 25.0% | 45.0% | 100.0% | 0 | 1404.26 | 81.67% |
+
+### 12.2 Ordered sparse settling versus generic soft
+
+The learned-order sparse system matched generic soft on the primary behavioral outcomes:
 
 ```text
-preserves correct-or-abstain behavior
-preserves the correct candidate
-retains genuine uncertainty
-recovers after context reversal
-transfers under candidate renaming
-uses much less context evaluation than generic simultaneous tapering
-uses less evaluation than the same sparse mechanism in the wrong/fixed order
-continues to reduce expensive recurrence
+good behavior:          100% vs 100%
+survival:               100% vs 100%
+reversal reactivation:  100% vs 100%
 ```
 
-That would be direct evidence that **order itself carries computational value** when context is conditional.
+But context-feature evaluations were:
 
-### 14.10 What would weaken the theory
+```text
+Generic soft:            19660.8
+Learned-order sparse:     1404.26
+```
 
-If generic soft again matches behavior and requires similar or less total context work, the stronger multi-stage claim should be weakened.
+Therefore:
 
-If fixed order performs as efficiently as learned order, the claim that learning the context sequence matters should be weakened.
+```text
+1404.26 / 19660.8 = 0.071424...
+```
 
-If no-recurrence performs equivalently, the recurrent interpretation should be weakened.
+The learned-order sparse system used approximately **7.14%** of generic soft's context-feature evaluations, or roughly one-fourteenth as many, while preserving identical correct-or-abstain behavior.
 
-If no-resistance performs equivalently, the resistance interpretation should be weakened.
+This directly addresses the main weakness exposed by HCT-1.
 
-If hard Top-K handles reversal as well as reversible tapering in the new worlds, the claimed need for reopening would be weakened.
+### 12.3 Learned order versus fixed sparse order
 
-HCT-2 is therefore designed so that several parts of the current theory can fail independently.
+Fixed-order sparse also achieved 100% good behavior, so the learned order was not required for behavioral correctness in this family.
+
+However:
+
+```text
+Fixed-order sparse evaluations:    1485.78
+Learned-order sparse evaluations:  1404.26
+```
+
+The learned order produced an approximately **5.49% evaluation-efficiency advantage**.
+
+The learner also recovered the hidden semantic-depth sequence:
+
+```text
+0 -> 1 -> 2 -> 3
+```
+
+despite receiving context channels in scrambled anonymous order.
+
+This is the first direct evidence in the program that **learned context order carries measurable computational value** under hierarchical conditional context.
+
+### 12.4 Recurrent-field reduction
+
+No taper:
+
+```text
+512 candidates * 8 cycles = 4096 recurrent candidate-cycles
+```
+
+Learned-order sparse:
+
+```text
+16 candidates * 8 cycles = 128 recurrent candidate-cycles
+```
+
+Therefore:
+
+```text
+128 / 4096 = 0.03125
+```
+
+The sparse system used **3.125% of the full-field recurrent candidate-cycle load**.
+
+As before, recurrent candidate-cycles and context-feature evaluations are reported separately. This is not yet a wall-clock superiority claim.
+
+### 12.5 Context reversal
+
+Hard Top-K:
+
+```text
+60 reversal worlds
+60 initial suppressions
+0% reactivation
+```
+
+Learned-order sparse:
+
+```text
+60 reversal worlds
+60 initial suppressions
+100% reactivation
+```
+
+The reversible-suppression result from HCT-1 therefore replicated in a second, larger and structurally different synthetic family.
+
+### 12.6 Unresolved worlds
+
+The learned-order sparse system committed in 0% of the 60 unresolved-branch worlds and achieved 100% good behavior there.
+
+Again:
+
+```text
+winner != knowledge
+```
+
+The system can retain an internal ranking while correctly refusing to convert insufficient evidence into commitment.
+
+---
+
+## 13. HCT-2 Ablations: What Each Component Actually Contributed
+
+The HCT-2 ablations are among the most scientifically valuable results because they separate components that the full-system score alone cannot distinguish.
+
+### 13.1 Removing recurrence: major functional loss
+
+The no-recurrence condition retained the correct candidate through tapering in 100% of episodes. Yet good behavior fell from 100% to 45%.
+
+Aggregate comparison:
+
+```text
+Full learned-order sparse:
+  correct rate             90.33%
+  commit rate              80.0%
+  good behavior           100.0%
+  correct survival        100.0%
+  reversal reactivation   100.0%
+
+No recurrence:
+  correct rate             85.0%
+  commit rate              25.0%
+  good behavior            45.0%
+  correct survival        100.0%
+  reversal reactivation    81.67%
+```
+
+The crucial observation is that **survival remained perfect while appropriate behavior collapsed**.
+
+That means contextual tapering successfully preserved the relevant candidate but did not, by itself, create enough relational discrimination to support appropriate commitment.
+
+The recurrence stage therefore appears to perform a distinct downstream function:
+
+```text
+Taper preserves a good search field.
+Recurrence resolves interactions inside that field.
+Commitment reads the resulting evidence state.
+```
+
+This materially strengthens the state-dependent recurrence component of the theory.
+
+### 13.2 Removing learned resistance: no behavioral loss
+
+The no-resistance ablation achieved:
+
+```text
+correct rate             91.33%
+commit rate              80.0%
+good behavior           100.0%
+correct survival        100.0%
+reversal reactivation   100.0%
+```
+
+This matched the full learned-resistance system on every primary behavioral outcome.
+
+The slightly higher raw correct rate should not be interpreted as evidence that resistance is harmful, because the difference is largely compatible with winner variation inside deliberately unresolved cases where both systems appropriately abstain.
+
+The correct interpretation is narrower:
+
+> **HCT-2 did not demonstrate a need for learned resistance.**
+
+This matters because it prevents the architecture from preserving an attractive mechanism merely because earlier experiments supported it. Learned resistance should remain separately testable and should earn its place by adding value in tasks where evidence-source reliability genuinely varies across history or context.
+
+### 13.3 Component status after HCT-2
+
+```text
+Reversible sparse contextual tapering:
+STRONGLY SUPPORTED IN HCT-1/HCT-2 FAMILIES
+
+Learned context ordering:
+SUPPORTED AS AN EFFICIENCY ADVANTAGE IN HCT-2
+
+State-dependent recurrence:
+STRONGLY SUPPORTED BY HCT-2 ABLATION
+
+Explicit abstention / commitment separation:
+SUPPORTED BY UNRESOLVED-WORLD BEHAVIOR
+
+Context-driven reopening:
+SUPPORTED ACROSS HCT-1 AND HCT-2 REVERSAL TESTS
+
+Learned resistance:
+PROMISING FROM EARLIER ASSAYS
+NOT NECESSARY IN HCT-2
+REQUIRES TASK-SPECIFIC JUSTIFICATION
+```
+
+---
+
+## 14. Current Theory Status After HCT-2
+
+The strongest current formulation of the theory is now:
+
+> **A large candidate field can be narrowed through learned, reversible contextual settling before recurrent relational deliberation. In hierarchically conditional fields, learning the order of contextual settling can reduce evaluation cost while preserving behavior. Recurrence then performs a distinct and necessary downstream role in resolving interactions among the surviving serious alternatives, while commitment remains separate from winner ranking and can abstain when evidence is insufficient.**
+
+This is stronger and more specific than the post-HCT-1 formulation.
+
+### Discounted or failed mechanisms
+
+```text
+automatic clock-driven progressive Top-K
+single global confidence gate as sufficient solution
+stochastic winner consensus as evidence of truth
+irreversible hard deletion under changing context
+```
+
+### Repeatedly supported mechanisms
+
+```text
+soft reversible suppression
+context-driven reopening
+explicit commitment/abstention separation
+state-dependent recurrence when relational interaction matters
+identity-independent structural transfer
+```
+
+### Newly strengthened by HCT-2
+
+```text
+sparse conditional context evaluation
+learned context ordering as an efficiency mechanism
+recurrence as functionally distinct from tapering
+```
+
+### Still conditional / unresolved
+
+```text
+learned resistance as a generally necessary mechanism
+semantic interpretation of context channels
+generalization beyond synthetic task families
+real wall-clock compute advantage
+fully learned state-conditioned cognitive-operation policy
+```
 
 ---
 
 ## 15. Long-Term Architecture Hypothesis
 
-The broader Synrheon architecture remains:
+The broader Synrheon architecture should now be written with learned resistance as optional rather than assumed universal:
 
 ```text
 VERY LARGE LEARNED KNOWLEDGE FIELD
@@ -837,7 +895,9 @@ one or more reversible soft contextual settlements
 TRACTABLE SERIOUS-CANDIDATE FIELD
         |
         v
-learned-resistance state-dependent recurrence
+state-dependent recurrent deliberation
+        |
+        +--> optional learned pathway reliability / resistance
         |
         v
 evidence + uncertainty accumulation
@@ -848,7 +908,7 @@ evidence + uncertainty accumulation
         +--> REOPEN BROADER CONTEXT
 ```
 
-The four computational questions remain:
+The computational questions are:
 
 ```text
 Policy:
@@ -857,40 +917,97 @@ What mental operation should I perform?
 Taper:
 What portion of the knowledge field should remain strongly active?
 
+Order:
+Which contextual dimension should be evaluated next?
+
 Recurrence:
 How do serious alternatives change one another's support?
+
+Reliability:
+Should some evidence pathways be trusted more or less from learned history?
 
 Commitment:
 Do I know enough to act?
 ```
 
-The long-term goal is not to hand-code these answers. The architecture should expose learnable operations and allow experience to shape which operations are selected, which pathways resist activation, which context is useful, what order context should be applied, when narrowing is justified, and when prior suppression should be reopened.
+The long-term goal is not to hand-code these answers. The architecture should expose learnable operations and allow experience to shape which operations are selected, which context is useful, what order context should be applied, when recurrence is needed, when source reliability should matter, when narrowing is justified, and when prior suppression should be reopened.
 
 ---
 
-## 16. Scientific Boundary
+## 16. What HCT-2 Does and Does Not Prove
 
-The current Synrheon evidence does **not** establish:
+### HCT-2 supports, within its synthetic family
+
+- learned-order sparse tapering can preserve 100% correct-or-abstain behavior while using far fewer context evaluations than a strong generic-soft control;
+- learned stage ordering can provide measurable efficiency benefit over fixed stage order;
+- correct candidates can survive aggressive sparse narrowing without being permanently deleted;
+- context reversal can reactivate previously suppressed candidates when suppression is reversible;
+- hard Top-K remains brittle under context reversal;
+- recurrence contributes substantial downstream function beyond tapering;
+- unresolved cases can retain a winner without forcing commitment;
+- the learned structure transfers across opaque candidate renaming.
+
+### HCT-2 does not establish
 
 - biological hippocampal equivalence;
 - a new mathematical law;
 - superiority to transformers, attention, mixture-of-experts, associative-memory, learned-retrieval, or modern routing systems;
-- general reasoning;
 - natural-language benefit;
 - learned semantic representations;
 - autonomous cognition;
 - production integration of the hippocampal-inspired branch;
-- lower total compute than simpler soft-routing systems;
-- necessity of multiple context-specific taper stages;
-- a final HCT-2 result.
+- lower total wall-clock compute without a calibrated cost model;
+- that ordered settling is necessary for correctness in all tasks;
+- that learned resistance is generally necessary;
+- generalization to substantially different world generators or real knowledge distributions.
 
-The current evidence supports a narrower experimental direction: learned pathway resistance can transfer structural reliability in a synthetic family; state-dependent recurrence can matter when candidate interactions genuinely change later evidence; hard pruning can destroy recoverable alternatives; reversible soft narrowing can preserve those alternatives while substantially shrinking the field entering recurrence; and uncertainty should remain explicit rather than being converted automatically into commitment.
-
-HCT-2 is the current attempt to determine whether **ordered conditional context settling** adds a measurable computational advantage beyond generic reversible soft narrowing.
+The resistance ablation is especially important to this boundary. The theory should not become a bundle in which every historically promising mechanism is treated as necessary. Components must continue to earn their place independently.
 
 ---
 
-## 17. Experimental Sequence and Continuation Protocol
+## 17. Next Falsifiable Question: HCT-3
+
+The next experiment should not merely make HCT-2 larger. It should attack **generality**.
+
+The central question should be:
+
+> **Does the same learned ordered reversible taper + recurrent deliberation mechanism continue to discover useful context order and preserve appropriate behavior when the structure of the problem changes substantially?**
+
+A strong HCT-3 should vary factors that HCT-2 held fixed, for example:
+
+```text
+number of context levels
+candidate count
+branching factor
+channel scrambling
+context noise
+context missingness
+relation topology
+excitation/inhibition density
+reversal depth
+relative evidence reliability
+```
+
+The mechanism should not be redesigned separately for each family.
+
+Important HCT-3 controls should include:
+
+```text
+generic soft
+fixed-order sparse
+learned-order sparse
+no recurrence
+learned resistance on/off where reliability is manipulated
+hard deletion
+```
+
+The learned-resistance component should receive a particularly fair test by including worlds in which evidence-channel reliability changes systematically across history or context. If resistance then produces a reproducible advantage, its role becomes clearer. If it again does nothing, the theory should simplify further.
+
+The strongest next evidence would therefore be **transfer of the computational principle across different structural families**, not merely another perfect score on one generator.
+
+---
+
+## 18. Experimental Sequence and Continuation Protocol
 
 Repository: `Logancarton/Synrheon`  
 Research branch: `experiment/hippocampal-sparse-settling`
@@ -935,28 +1052,29 @@ all frozen HCT-1 gates passed
 formal verdict: REINFORCED within the synthetic experimental family
 ```
 
-HCT-2 status:
+HCT-2 v1 status:
 
 ```text
-DESIGNED
-IMPLEMENTED
-PREREGISTERED
-DEVELOPMENT-CALIBRATED
-FINAL 300-WORLD SPLIT NOT YET RUN
+COMPLETE
+300 final held-out worlds
+all frozen HCT-2 gates passed
+formal verdict: REINFORCED within the synthetic ordered-context family
 ```
 
-Scientific interpretation before HCT-2 final evaluation:
+Current strongest mechanistic interpretation:
 
 ```text
-Strongest supported claim:
-reversible soft narrowing > irreversible hard pruning under context change
+learned reversible contextual tapering
+    + learned ordering when context is conditional
+    + state-dependent recurrence
+    + explicit abstention / reopening
 
-Current open claim:
-learned ordered conditional sparse settling > simpler generic soft taper
-on efficiency while preserving behavior
+are jointly promising.
+
+Learned resistance remains optional pending stronger task-specific evidence.
 ```
 
-The next scientific action is the untouched HCT-2 final assay. Its result should be interpreted against the frozen gate without post-hoc threshold changes.
+The next scientific action should be a frozen HCT-3 generalization assay rather than post-hoc modification of HCT-2.
 
 ---
 
