@@ -12,8 +12,6 @@ This file records what actually exists. It does not turn research evidence into 
 
 ## Ground 0 Research Status
 
-Ground 0 is the current research foundation:
-
 ```text
 learned context routing
     ↓
@@ -67,20 +65,52 @@ These are controlled synthetic results, not live-organism verification.
 | Computational time | Integrated | Episode, sequence, timestamp, elapsed time |
 | Ordered experience + provenance | Integrated | Observed/injected experience thread exists in-process |
 | E011-A trainable operation/target policy | Built experimentally | Controlled Level-1 transfer passed |
+| Ground 0 checkpoint contract | Built | `Ground0Checkpoint` defines observable phase/disposition boundaries |
 | Ground 0 contextual tapering | Research only | Not live-integrated |
 | Ground 0 recurrent deliberation | Research only | Not live-integrated |
-| Ground 0 commit/abstain/reopen logic | Research only | Not live-integrated |
+| Ground 0 commit/abstain/reopen behavior | Research only | Contract exists; behavior not live-integrated |
 | Durable memory | Not Started | Current experience is process-local |
-| Learned retrieval | Not Started | Future |
-| Recursive autonomous cognition | Not Started | Future |
+| Learned retrieval | Not Started | Future architecture only; no placeholder source file |
+| Recursive autonomous cognition | Not Started | Future architecture only; no placeholder source file |
+
+## Source Ownership After Ground 0 Revamp
+
+```text
+state.py
+    explicit organism / substrate state
+
+cognition.py
+    Ground 0 cognitive-cycle checkpoint contract
+
+policy.py
+    retained E011-A operation/target policy
+
+policy_learning.py
+    retained E011-A outcome-driven policy updates
+
+learning.py
+    temporary compatibility export for frozen E011-A imports
+
+experience.py
+    ordered current-episode experience
+
+temporal.py
+    time / sequence / episode coordinates
+
+runtime.py
+    thin sequencing
+
+dev_server.py
+    local HTTP/UI transport
+```
+
+The previous placeholder-only `memory.py`, `retrieval.py`, `scratchpad.py`, `problem_solving.py`, `consolidation.py`, `abstraction.py`, and `autonomy.py` files were removed. Those capabilities remain planned, not implemented.
 
 ## E011-A Status After Ground 0
 
 E011-A remains valid controlled evidence that a policy can learn cognitive operation/target preferences from visible state without using opaque identity or hidden answer features.
 
-It should no longer be treated as the whole cognition architecture.
-
-Its current role is:
+Its role is now:
 
 ```text
 E011-A
@@ -98,11 +128,13 @@ Live flow today:
 ```text
 Chat / injected developer thought
         ↓
-runtime
+dev_server.py
         ↓
-time + ordered experience
+runtime.py
         ↓
-OrganismState / trace
+temporal.py + experience.py
+        ↓
+state.py / trace
         ↓
 UI
 ```
@@ -112,22 +144,20 @@ What is not yet true:
 ```text
 Chat does not invoke Ground 0 cognition
 Think One Step does not perform contextual taper + recurrence
-runtime does not expose a Ground 0 checkpoint
+runtime does not yet emit live Ground0Checkpoint transitions
 UI does not yet show taper stages / recurrent field / commit state
 ```
 
 ## Next Integration Boundary
 
-The next live cognition design should prove the smallest real version of:
-
 ```text
-legitimate live CognitiveState
+legitimate live state
         ↓
 broad candidate field
         ↓
 learned context/order choice
         ↓
-reversible sparse taper
+reversible sparse taper checkpoint
         ↓
 small recurrent field
         ↓
@@ -137,7 +167,7 @@ commit / abstain / reopen checkpoint
         ↓
 runtime sequencing
         ↓
-OrganismState / trace / UI
+state / trace / UI
 ```
 
 The HCT synthetic generator, hidden correct identity, and scoring machinery must remain outside production cognition.
@@ -155,5 +185,3 @@ wall-clock compute superiority
 autonomous cognition
 production integration
 ```
-
-The next implementation should preserve that distinction visibly in code, tests, trace, and UI.
