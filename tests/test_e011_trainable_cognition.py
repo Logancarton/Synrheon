@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from experiments.e011a import assess_pass_gate, full_assay, generate_world
-from synrheon.cognition import CognitiveAction, CognitiveState, LinearCognitivePolicy, RevealedNode
+from synrheon.policy import CognitiveAction, CognitiveState, LinearCognitivePolicy, RevealedNode
 from synrheon.runtime import SynrheonRuntime
 
 
