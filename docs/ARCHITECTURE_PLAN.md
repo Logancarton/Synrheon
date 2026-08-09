@@ -26,8 +26,6 @@ Ground 0 is a **research foundation**, not a claim that this path is already liv
 
 ## Why This Is Ground 0
 
-The architecture is grounded in the experimental sequence, including failures:
-
 ```text
 clock-driven progressive Top-K     failed
 confidence-only narrowing          limited
@@ -39,7 +37,7 @@ state-dependent recurrence         strongly supported by ablation
 explicit abstention / reopening    reinforced
 ```
 
-The purpose of future architecture is no longer to invent a cognitive route from scratch. It is to determine how to express, generalize, and train this reinforced process inside the persistent organism.
+The purpose of future architecture is no longer to invent a cognitive route from scratch. It is to express, generalize, train, and falsify this reinforced process inside the persistent organism.
 
 ## Core Architectural Principle
 
@@ -75,43 +73,29 @@ when to reopen broader context
 
 ## Ground 0 Computational Responsibilities
 
-### 1. Candidate Field
+### Candidate field
 
-Synrheon needs an explicit or representable field of currently plausible knowledge, memories, hypotheses, goals, or operations.
+Synrheon needs an explicit or representable field of currently plausible knowledge, memories, hypotheses, goals, or operations. Expensive reasoning should not operate over the whole field by default.
 
-The field may be very large, but expensive reasoning should not operate over the whole field by default.
+### Learned context routing
 
-### 2. Learned Context Routing
+Context should not be a permanently hand-written sequence. HCT-2 supports learning a useful order as an efficiency mechanism when context is hierarchical and conditional.
 
-Context should not be a permanently hand-written sequence.
-
-The system should learn which contextual dimension is useful next from outcome evidence and state structure.
-
-HCT-2 supports learned ordering as an efficiency mechanism when context is hierarchical and conditional.
-
-### 3. Reversible Sparse Taper
-
-Narrowing is provisional.
+### Reversible sparse taper
 
 ```text
 suppressed ≠ deleted
 ```
 
-A low-activation candidate may become important after new evidence or context change.
+A low-activation candidate may become important after new evidence or context change. HCT-1/HCT-2 reversal tests support this over hard deletion.
 
-This principle is supported by HCT-1/HCT-2 reversal tests in which hard Top-K could not recover deleted correct candidates while reversible mechanisms could.
+### Recurrent deliberation
 
-### 4. Recurrent Deliberation
+Once the field is small enough, serious candidates may interact through recurrent excitation/inhibition or another state-dependent relational process. HCT-2 showed that removing recurrence reduced good behavior to 45% even though correct-candidate survival remained 100%.
 
-Once the field is small enough, serious candidates may interact through recurrent excitation/inhibition or another state-dependent relational process.
+Taper and recurrence therefore remain separate architectural responsibilities.
 
-HCT-2 showed that removing recurrence reduced good behavior to 45% even though correct-candidate survival remained 100%.
-
-Therefore taper and recurrence should remain distinct architectural responsibilities.
-
-### 5. Commitment
-
-Ranking and knowledge are separate.
+### Commitment
 
 ```text
 winner ≠ sufficient evidence
@@ -126,30 +110,81 @@ SEEK DISCRIMINATING EVIDENCE
 REOPEN BROADER CONTEXT
 ```
 
-### 6. Optional Reliability Learning
+### Optional reliability learning
 
-Historical source/pathway reliability may modify evidence flow when a task actually benefits from it.
-
-Do not make learned resistance universal by assumption. Future experiments should manipulate reliability directly and test whether the component earns its cost.
+Historical source/pathway reliability may modify evidence flow when a task actually benefits from it. Do not make learned resistance universal by assumption.
 
 ## Relationship to Existing E011 Work
 
-E011-A proved a separate but compatible principle:
+E011-A proved a separate but compatible principle: a model can learn which valid cognitive operation/target to choose from visible state and transfer that preference across unseen and renamed worlds.
 
-> A model can learn which valid cognitive operation/target to choose from visible state and transfer that preference across unseen and renamed worlds.
+Its implementation now lives in:
 
-This remains useful for Ground 0 because learned context selection, taper selection, recurrence decisions, evidence seeking, and stopping can all eventually be represented as learnable cognitive operations.
+```text
+policy.py
+policy_learning.py
+```
 
-However, E011-A's `EXPAND(target)` / `STOP` task is narrower than Ground 0.
+Its `EXPAND(target)` / `STOP` task is narrower than Ground 0, so it is a donor mechanism rather than the architecture itself.
 
-Therefore the previous direct E011-B plan is not automatically the next step. Integration should first reconcile the learned policy surface with Ground 0.
+## Production Ownership Now
+
+The source tree should contain real implementation, not roadmap placeholders.
+
+`state.py`  
+Explicit organism/world state, concepts, relations, activation, stimuli, and trace records.
+
+`cognition.py`  
+Ground 0 cognitive-cycle contract and future production cognition owner. It currently defines observable process checkpoints; the actual HCT mechanism is not yet integrated.
+
+`policy.py`  
+Retained E011-A trainable operation/target policy primitives.
+
+`policy_learning.py`  
+Outcome-driven updates for the retained policy.
+
+`temporal.py`  
+Computational time and event coordinates.
+
+`experience.py`  
+Ordered current-episode autobiographical experience and provenance.
+
+`runtime.py`  
+Thin sequencing only; never owns candidate preference or answer selection.
+
+`dev_server.py`  
+Local browser/API transport only.
+
+`ui/`  
+Observation/control only.
+
+`experiments/`  
+Scientific generators, hidden truth, scoring, and falsification assays only.
+
+A small compatibility export remains in `learning.py` for the frozen E011-A experiment. New code should use `policy_learning.py` directly. `cognition.py` also temporarily re-exports the E011 policy classes so the frozen experiment remains reproducible while the real ownership has moved to `policy.py`.
+
+## Future Capabilities Do Not Get Empty Source Files
+
+Durable memory, retrieval, scratchpad cognition, problem/trial learning, consolidation, abstraction, and autonomy remain planned architecture. Their former placeholder-only source files were removed.
+
+A new source owner should be created only when implementation exists and its responsibility is clear.
+
+```text
+planned capability
+        ↓
+architecture / experiment proves need
+        ↓
+real implementation appears
+        ↓
+source owner earns a file
+```
 
 ## Next Live Architecture Slice
 
 Build the smallest observable production path that contains the essential Ground 0 separation:
 
 ```text
-live CognitiveState
+live state
         ↓
 construct legitimate broad candidate field
         ↓
@@ -165,44 +200,12 @@ commit / abstain / reopen checkpoint
         ↓
 runtime sequences handoff
         ↓
-OrganismState / trace
+state / trace
         ↓
 UI
 ```
 
-The first implementation does not need natural language semantics or the entire HCT synthetic mechanism. It must preserve the functional contracts and make every stage observable.
-
-## Production Ownership
-
-`core.py`  
-Explicit organism/world state and substrate.
-
-`cognition.py`  
-Cognitive-state/action policy and future Ground 0 routing/taper/deliberation ownership unless real complexity justifies splitting owners.
-
-`learning.py`  
-Outcome/credit-driven changes to cognitive skill.
-
-`memory.py`  
-Future durable evidence store; existence remains separate from activation and route usefulness.
-
-`retrieval.py`  
-Future learned retrieval operations and leveled search.
-
-`scratchpad.py`  
-Future bounded working state/checkpoints.
-
-`runtime.py`  
-Thin sequencing only; never owns candidate preference or answer selection.
-
-`interfaces.py`  
-Transport only.
-
-`ui/`  
-Observation/control only.
-
-`experiments/`  
-Scientific generators, hidden truth, scoring, and falsification assays only.
+The first implementation does not need natural-language semantics or the entire HCT synthetic mechanism. It must preserve the functional contracts and make every stage observable.
 
 ## Development Dependency Order From Ground 0
 
@@ -217,7 +220,7 @@ durable memory
         ↓
 learned sparse retrieval
         ↓
-recursive scratchpad cognition
+recursive working-state cognition
         ↓
 problem / trial / revision learning
         ↓
@@ -249,8 +252,6 @@ observable production boundary if integrated
 Do not preserve a mechanism because it is elegant. Preserve it because it repeatedly earns a role.
 
 ## Generalization Ladder
-
-Claims should continue to distinguish:
 
 ```text
 Level 0 — training fit
