@@ -1,4 +1,4 @@
-"""Stage 0B regression plus Stage 1 substrate and experience-process tests."""
+"""Stage 0B regression plus current substrate, experience, and Ground 0 contracts."""
 
 from __future__ import annotations
 
@@ -9,29 +9,42 @@ from urllib.request import Request, urlopen
 
 import pytest
 
-from synrheon.core import CognitiveSubstrate, Concept, WorldRelation
-from synrheon.interfaces import create_development_server
+from synrheon.cognition import Ground0Checkpoint
+from synrheon.dev_server import create_development_server
 from synrheon.runtime import SynrheonRuntime
+from synrheon.state import CognitiveSubstrate, Concept, WorldRelation
 
 
 def test_scaffold_imports() -> None:
     import synrheon
-    import synrheon.abstraction
-    import synrheon.autonomy
     import synrheon.cognition
-    import synrheon.consolidation
-    import synrheon.core
+    import synrheon.dev_server
     import synrheon.experience
-    import synrheon.interfaces
-    import synrheon.learning
-    import synrheon.memory
-    import synrheon.problem_solving
-    import synrheon.retrieval
+    import synrheon.policy
+    import synrheon.policy_learning
     import synrheon.runtime
-    import synrheon.scratchpad
-    import synrheon.time
+    import synrheon.state
+    import synrheon.temporal
 
     assert synrheon.__version__ == "0.0.1"
+
+
+def test_ground0_checkpoint_is_explicit_and_bounded() -> None:
+    checkpoint = Ground0Checkpoint(
+        phase="recurrent_deliberation",
+        broad_candidate_count=512,
+        serious_candidate_count=16,
+        recurrent_cycle=2,
+        disposition="continue",
+    )
+    assert checkpoint.to_dict()["serious_candidate_count"] == 16
+
+    with pytest.raises(ValueError):
+        Ground0Checkpoint(
+            phase="tapering",
+            broad_candidate_count=12,
+            serious_candidate_count=13,
+        )
 
 
 def test_runtime_records_ordered_experience_with_distinct_provenance() -> None:
