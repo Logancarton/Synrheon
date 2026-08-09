@@ -1,5 +1,8 @@
 from dataclasses import replace
+import json
+import sys
 
+import experiments.hippocampal_contextual_taper_full_system as experiment_module
 from experiments.hippocampal_contextual_taper_full_system import (
     CONDITIONS,
     GATE,
@@ -166,3 +169,24 @@ def test_scientific_verdict_can_reinforce_discount_or_be_inconclusive() -> None:
 
     assert decision.startswith(("REINFORCED:", "DISCOUNTED:", "INCONCLUSIVE:"))
     assert any(key.endswith("_pass") for key in checks)
+
+
+def test_cli_quick_flag_selects_only_the_requested_mode(monkeypatch, capsys) -> None:
+    calls: list[bool] = []
+
+    def fake_run_assay(*, quick: bool = False) -> dict[str, bool]:
+        calls.append(quick)
+        return {"quick": quick}
+
+    monkeypatch.setattr(experiment_module, "run_assay", fake_run_assay)
+
+    monkeypatch.setattr(sys, "argv", ["hct1"])
+    experiment_module.main()
+    assert calls == [False]
+    assert json.loads(capsys.readouterr().out) == {"quick": False}
+
+    calls.clear()
+    monkeypatch.setattr(sys, "argv", ["hct1", "--quick"])
+    experiment_module.main()
+    assert calls == [True]
+    assert json.loads(capsys.readouterr().out) == {"quick": True}
