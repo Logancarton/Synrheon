@@ -2,189 +2,258 @@
 
 ## Canonical Repository
 
-Synrheon's canonical repository is:
-
 ```text
 https://github.com/Logancarton/Synrheon
 ```
 
-Repository full name:
+Repository full name: `Logancarton/Synrheon`
 
-```text
-Logancarton/Synrheon
-```
-
-Default branch:
-
-```text
-main
-```
+Default branch: `main`
 
 Do not ask the user which repository Synrheon belongs in.
 
-When working locally, verify the repository's `origin` points to the canonical Synrheon repository before pushing.
-
-If no `origin` exists and the working tree is clearly the Synrheon project, add the canonical repository as `origin`.
-
-If `origin` points to a different repository, stop before any push and report the mismatch rather than silently replacing it.
+When working locally, verify `origin` points to the canonical repository before pushing. If no `origin` exists and the tree is clearly Synrheon, add it. If `origin` points elsewhere, stop before push and report the mismatch rather than silently replacing it.
 
 ## Primary Development Principle
 
-Synrheon is developed bottom-up, but the development organism must be observable from the beginning.
+Synrheon is developed bottom-up with observable state and explicit ownership.
 
-Before sophisticated cognition is built, establish a running Synrheon runtime and development UI that allow real behavior to be stimulated, stepped, observed, and inspected.
+Stage 0B — the runtime/UI organism — already exists and is **Verified**. Do not treat runtime/UI construction as the current first priority anymore.
 
-Automated tests are useful regression tools.
+The active scientific target is now **E011-A v1**, a fully preregistered controlled process-transfer assay. Its purpose is to test whether a small learned policy can acquire reusable bounded cognitive search behavior without hidden-answer leakage or developer-selected target routing.
 
-They are not sufficient proof that Synrheon actually behaves correctly.
+A controlled experiment may be built and evaluated before live runtime integration when isolation is necessary to answer the causal research question. Such a result is **experimental evidence only**.
 
-A cognitive capability is not **Verified** merely because unit or integration tests pass. Verification requires observable behavior through the live Synrheon runtime, preferably through the development UI, with the relevant internal state or trace inspected.
+It becomes `Integrated` only through **E011-B**, where the real live path reaches the learned owner:
 
-The UI is a microscope for cognition.
+```text
+legitimate live CognitiveState
+        ↓
+cognition.py
+learned operation + target
+        ↓
+bounded checkpoint
+        ↓
+thin runtime
+        ↓
+OrganismState / trace
+        ↓
+Organism UI
+```
 
-It must not become the owner of cognition.
+The UI is a microscope for cognition. It must not become the owner of cognition or scientific scoring truth.
 
 ## Startup Sequence
 
-Begin by reviewing `README.md` to understand Synrheon’s purpose, cognitive goals, core architectural principles, and development philosophy.
+Before material work, read and reconcile:
 
-Then review `docs/SCAFFOLD.md` to understand repository structure, file ownership boundaries, and where different kinds of project truth belong. Reconcile it with the actual repository and update it if structure or ownership has materially changed.
+```text
+README.md
+        ↓
+docs/SCAFFOLD.md
+        ↓
+docs/ARCHITECTURE_PLAN.md
+        ↓
+docs/IMPLEMENTATION_STATUS.md
+        ↓
+docs/CURRENT_STAGE.md
+        ↓
+docs/EXPERIMENTS.md
+        ↓
+docs/SIGNAL_FLOW.md
+```
 
-Then review `docs/ARCHITECTURE_PLAN.md` against the current codebase and live behavior.
+Read `docs/PROJECT_GUIDE.md` for the human-readable project map and keep it synchronized when meaningful responsibility or structure changes.
 
-Then review `docs/IMPLEMENTATION_STATUS.md` and reconcile it with what is actually:
-- designed
-- built
-- reachable through the live runtime
-- observable in the UI
-- verified through real organism behavior
-
-Then review `docs/CURRENT_STAGE.md` so work remains focused on the active bottom-up layer.
-
-When work touches runtime wiring or owner-to-owner handoffs, review `docs/SIGNAL_FLOW.md`.
-
-`docs/PROJECT_GUIDE.md` is the human-facing plain-English code guide. Keep it synchronized when a file gains, loses, or changes a meaningful responsibility, class, function, command, UI control, or major internal section.
-
-Finally, load and follow the canonical repo-local workflow:
+Then load and follow:
 
 ```text
 .agents/skills/synrheon-development-workflow/SKILL.md
 ```
 
-Only after these project truths are understood and synchronized should implementation begin.
+Only after current truth is understood should implementation begin.
 
 ## Status Vocabulary
 
-Use these status levels:
+Use:
 
 - **Not Started** — no meaningful implementation exists.
-- **Designed** — architecture or design is defined, but functional implementation does not yet exist.
-- **Built** — the mechanism exists and works in isolation.
-- **Integrated** — the live Synrheon runtime reaches and uses the mechanism.
-- **Verified** — the intended behavior has been demonstrated through the running organism and its relevant state/trace has been inspected. Automated tests alone cannot grant this status.
+- **Designed** — architecture/experiment contract exists, but functional implementation does not.
+- **Built** — mechanism exists and works in isolation.
+- **Integrated** — the real Synrheon runtime reaches and uses it.
+- **Verified** — intended live behavior has been demonstrated through the running organism with relevant state/trace inspected.
 
-Keep cognitive effect separate from implementation status:
+Keep cognitive effect separate:
 
-- **Infrastructure** — enables development, observation, persistence, execution, or tooling but does not itself improve cognition.
-- **Supporting cognition** — improves the conditions under which cognition works but does not yet demonstrate a smarter cognitive mechanism.
-- **Cognitive improvement** — changes Synrheon’s actual reasoning, retrieval, learning, memory use, abstraction, prediction, or adaptive behavior.
+- **Infrastructure**
+- **Supporting cognition**
+- **Cognitive improvement**
+
+A successful controlled E011-A model may represent experimental cognitive improvement, but it is not `Integrated` until E011-B.
 
 ## Broad-to-Narrow Review
 
-For every proposed feature, behavior, or fix, identify:
+For each proposed change identify:
 
-1. **Cognitive objective** — What capability should Synrheon gain?
-2. **Current bottleneck** — What underlying mechanism prevents that capability?
-3. **Affected architecture** — Which owners, state, runtime, memory, retrieval, time, learning, UI observation, or signal paths are involved?
-4. **Candidate mechanisms** — What reasonable architectural approaches could solve the bottleneck?
-5. **System effects** — How would each approach affect the rest of Synrheon?
-6. **Failure modes** — What brittleness, instability, duplicate authority, hidden coupling, or fixation could each approach introduce?
-7. **Best owner** — Where should the mechanism actually belong?
-8. **Live proof** — What real stimulus, runtime state transition, and UI/trace observation would prove the mechanism works?
+1. Cognitive objective.
+2. Current bottleneck.
+3. Affected owners/state/signal path.
+4. Candidate mechanisms.
+5. System effects.
+6. Failure modes.
+7. Correct owner or coordinated owners.
+8. The observation that would prove or falsify the mechanism.
 
-Prefer changes that improve an underlying mechanism and therefore solve a class of problems.
+Prefer changes that improve an underlying mechanism and solve a class of problems.
 
 Do not begin with:
-- a stimulus-specific patch
-- hardcoded phrase recognition
-- a special-case route
-- arbitrary score adjustment
-- a scripted answer
-- a test-only behavior
-- a UI-side cognitive shortcut
+- stimulus-specific patches;
+- hardcoded phrase recognition;
+- world-specific routes;
+- arbitrary score changes;
+- scripted answers;
+- test-only production behavior;
+- UI-side cognitive shortcuts.
 
-unless the architecture itself genuinely requires it.
+## E011-A v1 Frozen Scientific Contract
 
-## UI-First / Live-Organism Rule
+Before E011-A implementation, treat `docs/EXPERIMENTS.md` as binding experiment truth.
 
-The first implementation priority is a minimal running organism with a development UI.
-
-The early UI should make it possible to:
+The first problem family is:
 
 ```text
-start Synrheon
-send a stimulus
-think one step
-continue thinking
-pause
-inspect current cognitive state
-inspect active concepts / activation
-inspect temporal state as it is added
-inspect retrieval path as it is added
-inspect scratchpad state as it is added
-inspect problem / trial / outcome state as it is added
+bounded partial graph discovery
+10–14 opaque nodes
+1 visible start
+1 hidden goal marker
+unique shortest route 3–5 edges
+2–4 distractor branches
+0–2 cross/back edges
+10-action hard budget
 ```
 
-The UI may initially display empty or minimal panels before later mechanisms exist.
+The first action vocabulary is exactly:
 
-That is acceptable.
+```text
+EXPAND(target)
+STOP
+```
 
-The purpose is to give every later cognitive stage a real observation surface.
+The environment may enumerate valid action-target candidates. It must not choose which target is cognitively preferable.
 
-When implementing a cognitive mechanism, wire it through the real runtime and make the relevant state observable rather than proving it only through a test fixture.
+Policy-visible state is limited to revealed information. It must never receive:
+
+```text
+unrevealed graph structure
+hidden goal location
+shortest path
+shortest-path distance
+on-solution-path labels
+correct next action / target
+future frontier
+solver/scorer output
+world seed as predictive input
+```
+
+Frozen world/model seeds are:
+
+```text
+train                    1000–4999
+development validation   5000–5999
+final Level-1 held-out   10000–10999
+paired renaming          20000–20999
+future Level-2           30000–30999
+model seeds              11, 22, 33, 44, 55
+```
+
+Do not tune against the final held-out split. Once final results are inspected, a material model/feature/reward/generator change requires a new experiment revision and fresh untouched final split.
+
+Do not move pass thresholds after seeing the result.
+
+## E011-A Failure Discipline
+
+Classify failure before changing the mechanism:
+
+```text
+failed learning
+memorization / overfit
+identity shortcut
+structural overfit
+inefficient cognition
+insufficient / misleading representation
+answer leakage
+```
+
+If multiple small models fit training but fail untouched transfer, if renaming repeatedly collapses, if gains require near-total budget use, or if success requires solver-derived features, stop local tuning and revisit the state/action/task architecture.
+
+Never make the benchmark pass by adding:
+- distance-to-goal;
+- on-solution-path labels;
+- correct-action hints;
+- a hidden target router;
+- special branches for known seeds/worlds.
 
 ## Runtime Principle
 
 `src/synrheon/runtime.py` is the thin live integration layer.
 
 Runtime may:
-- start the organism
-- sequence cognitive owners
-- route typed handoffs
-- accept external stimuli
-- trigger one cognitive step
-- continue or pause recursion
-- expose observable state to the UI
-- return outcomes and feedback
+- start/stop/pause/step the organism;
+- sequence owners;
+- route typed handoffs;
+- accept stimuli;
+- invoke a learned cognition owner during E011-B;
+- expose observable state;
+- return outcomes/feedback.
 
 Runtime must not:
-- become the primary cognition owner
-- duplicate memory, retrieval, learning, abstraction, autonomy, or problem-solving logic
-- contain large cognitive mechanisms because integration is convenient
+- become the primary cognition owner;
+- choose preferred E011 targets;
+- duplicate learning, memory, retrieval, abstraction, or autonomy;
+- contain hidden experiment solver logic.
+
+## UI Principle
+
+The Organism UI should show:
+- what stage is actually integrated;
+- what state/evidence that stage owns right now;
+- later backend-owned learning/generalization history.
+
+It must not manufacture cognition or calculate the scientific result itself.
 
 ## Documentation Synchronization
 
-After meaningful work:
-- update `docs/IMPLEMENTATION_STATUS.md`
-- update `docs/CURRENT_STAGE.md` when active-stage truth changes
-- update `docs/ARCHITECTURE_PLAN.md` when intended architecture changes
-- record durable architectural decisions in `docs/DECISIONS.md`
-- record real experiment setup and observations in `docs/EXPERIMENTS.md`
-- update `docs/SCAFFOLD.md` when repository structure, file placement, or ownership boundaries change
-- update `docs/SIGNAL_FLOW.md` whenever the real runtime/UI/owner-to-owner signal path changes
-- update `docs/PROJECT_GUIDE.md` whenever meaningful file responsibility or internal code structure changes, keeping explanations understandable to a non-programmer
+After meaningful work, update only affected truth owners:
+
+- `docs/IMPLEMENTATION_STATUS.md`
+- `docs/CURRENT_STAGE.md`
+- `docs/ARCHITECTURE_PLAN.md`
+- `docs/DECISIONS.md`
+- `docs/EXPERIMENTS.md`
+- `docs/SCAFFOLD.md`
+- `docs/SIGNAL_FLOW.md`
+- `docs/PROJECT_GUIDE.md`
 
 Documentation must describe observed and implemented truth, not hoped-for behavior.
 
-## Prompt Template Boundary
+## Definition of Architectural Success
 
-`docs/PROMPT_TEMPLATES.md` is a human-facing dispatch aid.
+Before calling a stage complete, confirm:
 
-It may help the user choose a concise prompt for a type of work.
-
-It is not project truth and does not override:
-- this Architecture Steward
-- `AGENTS.md`
-- `.agents/skills/synrheon-development-workflow/SKILL.md`
-
-Do not require the user to restate canonical workflow rules when a short goal-oriented prompt is sufficient.
+```text
+correct owner
++
+no duplicate cognitive authority
++
+no hidden answer leakage
++
+real behavior/evidence
++
+honest status
++
+reproducible experiment or live stimulus
++
+thin runtime when integration occurs
++
+UI/trace observation when live
+```
