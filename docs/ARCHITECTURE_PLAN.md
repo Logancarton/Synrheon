@@ -2,13 +2,15 @@
 
 ## Development Principle
 
-Synrheon is developed bottom-up. Stage 0B established the verified running organism; later cognition must be exercised through that live path.
+Synrheon is developed bottom-up. Stage 0B established the verified running organism; later cognition must ultimately be exercised through that live path.
 
 The current architectural hypothesis is:
 
 > **Do not primarily hand-code which cognitive path Synrheon should take. Build explicit state/process boundaries, then train the policy that chooses and evaluates short cognitive transitions.**
 
 The goal is not to remove all designed structure. Synrheon still needs explicit representations, provenance, budgets, training boundaries, safe validation, and owner separation. The change is that useful cognitive routing should increasingly be **learned from outcomes**, not encoded as permanent domain rules.
+
+A controlled scientific assay may precede live runtime integration when necessary to isolate whether the learning mechanism works. Such a result is experimental evidence only until the live organism reaches it.
 
 ## Cognitive Dependency Order
 
@@ -55,6 +57,11 @@ State / Trace observation
 
 The UI controls and observes. Runtime sequences and routes. Neither owns cognition.
 
+The Organism UI is now intended to show both:
+- which stages are actually live;
+- the backend-owned evidence those stages currently produce;
+- later learning/generalization history when a real learning owner exposes it.
+
 ## Stage 1 — Cognitive Substrate
 
 Keep the minimum explicit representations required for learned cognition:
@@ -87,7 +94,7 @@ The fundamental unit is one bounded transition:
 ```text
 S(t)
  +
-available cognitive operations
+available cognitive operation + target candidates
         ↓
 policy selects a(t)
         ↓
@@ -100,9 +107,9 @@ continue / redirect / stop
 
 A checkpoint is an inspectable internal-state boundary. It is not a forced real-time delay.
 
-### Initial cognitive operations
+### General operation families
 
-The first experiment may expose a small operation vocabulary:
+The broader architecture may eventually expose operation families such as:
 
 ```text
 FOCUS
@@ -118,7 +125,7 @@ STOP
 
 These operations define **what kinds of mental work are possible**, not when they should be used. The sequencing policy should be learned.
 
-The initial vocabulary is experimental. Later systems may learn finer operations, compose primitives, compress repeated action sequences into higher-level skills, or replace discrete actions with a continuous action representation.
+The vocabulary is experimental. Later systems may learn finer operations, compose primitives, compress repeated action sequences into higher-level skills, or replace discrete actions with a continuous action representation.
 
 ### Parameterized cognitive actions
 
@@ -133,14 +140,14 @@ PREDICT(target_state_feature)
 REVISE(belief_or_route)
 ```
 
-The model should increasingly learn both the operation and what it should act upon. The first slice may deliberately constrain the parameter space, but the architecture must not require a developer-authored target selector to make the action meaningful.
+The model should increasingly learn both the operation and what it should act upon. Production Python may enumerate valid candidates, but it must not choose the cognitively preferred target after the model selects only a generic verb.
 
 ### Trainable policy
 
 The central policy is conceptually:
 
 ```text
-P(cognitive_action | CognitiveState)
+P(cognitive_action + target | CognitiveState)
 ```
 
 The policy input should describe the current cognitive problem/state, not leak the correct answer.
@@ -169,19 +176,23 @@ Policy, transition prediction, and value may initially share a compact model, bu
 
 ### Training trace
 
-Each trace should preserve:
+Each trace should preserve the current contract:
 
 ```text
 state_before
-available_actions
+available_actions_and_targets
 selected_action
-transition / short path
 state_after
-prediction
-outcome
-error / correction
-credit
+predicted_state_after
+expected_value
+observed_outcome
+compute_cost
+error_or_correction
+credit_assignment
+alternative_action_estimates
 ```
+
+Prediction/value/alternative estimates may initially be deferred or null where the first experiment has not implemented them yet, but the record shape must not prevent later credit analysis.
 
 The training system must distinguish:
 
@@ -209,7 +220,7 @@ unnecessary steps
 invalid or redundant actions
 ```
 
-A hard maximum cognitive budget remains designed infrastructure. Within that ceiling, the learned policy should prefer efficient cognition. Exact utility weights remain experimental rather than permanent architecture constants.
+A hard maximum cognitive budget remains designed infrastructure. Within that ceiling, the learned policy should prefer efficient cognition. Exact utility weights remain experiment configuration rather than permanent architecture constants.
 
 ## What Is Designed vs Learned
 
@@ -228,6 +239,7 @@ training-record schema
 outcome / correction interfaces
 parameter persistence
 validation and failure behavior
+valid candidate enumeration
 ```
 
 ### Learned cognitive skill
@@ -250,6 +262,168 @@ stopping preference within the hard safety ceiling
 ```
 
 This distinction should be reviewed whenever new cognition is proposed. A new production `if/then` rule that says **what thought to have** is a warning sign.
+
+## E011-A — Frozen First Controlled Learning Assay
+
+The first trainable cognition test is now preregistered in `docs/EXPERIMENTS.md` as `E011-A v1`.
+
+### Exact task family
+
+```text
+bounded partial graph discovery
+10–14 opaque nodes
+1 visible start
+1 hidden goal marker
+unique shortest route 3–5 edges
+2–4 distractor branches
+0–2 cross/back edges
+10-action hard budget
+```
+
+The policy learns where to spend limited expansion next and when to stop. This is deliberately narrower than general reasoning.
+
+### First action vocabulary
+
+E011-A v1 uses exactly:
+
+```text
+EXPAND(target)
+STOP
+```
+
+`EXPAND(target)` reveals one currently available frontier target and costs one cognitive action. `STOP` ends the episode and succeeds only after the generated goal marker has legitimately been revealed.
+
+Richer operations such as RETRIEVE, COMPARE, PREDICT, and REVISE remain later additions. They are not needed to answer the first causal question.
+
+### E011-A CognitiveState firewall
+
+Policy-visible state is limited to revealed information:
+
+```text
+action/checkpoint index
+remaining budget
+revealed nodes and edges
+frontier / expanded state
+known depth from the revealed start
+reveal order
+is_goal only after that node is revealed
+available valid operation + target candidates
+previous action summary
+```
+
+The policy must not receive:
+
+```text
+unrevealed graph structure
+hidden goal location
+shortest path
+shortest-path distance
+on-solution-path labels
+correct next action or target
+future frontier structure
+solver output
+world seed as a predictive feature
+```
+
+The experiment generator/scorer may retain hidden truth for scoring and training evidence, but that hidden truth remains outside cognition inputs.
+
+### Frozen seeds
+
+```text
+train worlds                 1000–4999
+development validation       5000–5999
+final Level-1 held-out       10000–10999
+paired renaming seeds        20000–20999
+future Level-2 worlds        30000–30999
+model seeds                  11, 22, 33, 44, 55
+```
+
+Final held-out data is not a tuning surface. Any material post-evaluation change creates a new experiment revision and fresh untouched final split.
+
+### Baselines
+
+E011-A reports:
+
+```text
+random-valid policy
+matched untrained model
+trained model
+exhaustive all-reachable cost reference
+```
+
+A deterministic breadth-first diagnostic may be used for interpretation outside production cognition.
+
+### Frozen first pass gate
+
+The complete numeric gate lives in `docs/EXPERIMENTS.md`. At a high level, it requires:
+
+```text
+real parameter change
+4/5 seeds improve training by ≥20 percentage points
+median held-out success ≥70%
+median held-out gain ≥20 points over random and untrained
+4/5 seeds beat both baselines by ≥15 points
+paired renaming retains ≥95% of held-out performance
+no more than 5-point median renaming drop
+successful cost ≤80% of exhaustive reference
+mean hard-budget consumption ≤80%
+no hidden-answer leakage
+no hand-written target choice
+all five seed results reported
+```
+
+These thresholds are experiment settings, not general architecture constants.
+
+### Stop-tuning rule
+
+Repeated failure should trigger architecture review rather than endless local tuning. In particular, if multiple small models fit training but do not transfer, if renaming repeatedly collapses, if performance rises only by consuming nearly all compute, or if success requires solver-derived features, revisit the state/action/task design.
+
+## E011-B — Live Organism Integration
+
+Passing E011-A proves only that the controlled mechanism is promising.
+
+A policy becomes `Integrated` only through E011-B:
+
+```text
+legitimate live CognitiveState
+        ↓
+cognition.py
+learned operation + target
+        ↓
+bounded transition / checkpoint
+        ↓
+thin runtime sequencing
+        ↓
+OrganismState + trace
+        ↓
+Organism UI
+```
+
+The live path must not include the generated experiment's hidden scorer or solution metadata.
+
+The UI should show the actual integrated stage and backend-owned learning/generalization evidence. It is an observation surface, not the owner of scientific truth.
+
+## Model Persistence and Cognitive Growth History
+
+Every meaningful trained checkpoint should have explicit lineage:
+
+```text
+model_id
+parent_model_id
+experiment/generator/state/action versions
+model seed
+training split
+configuration hash
+episodes seen
+parameter checksum
+source Git commit
+evaluation summary
+generalization level
+```
+
+Evaluation history should preserve success, cost, budget use, baseline comparison, renaming result, and strongest demonstrated generalization level over time.
+
+This allows the Organism UI to show whether Synrheon is becoming better across actual model generations rather than presenting a one-time score.
 
 ## Concept Training
 
@@ -310,106 +484,25 @@ Tokenization may be part of the input adapter. It should not dictate the thought
 
 A future LLM may participate in perception, concept proposal, outside knowledge, simulation, or expression, but Synrheon's persistent state, provenance, cognitive-process traces, and learning effects remain explicit owners.
 
-## Generated Curriculum Requirement
-
-The primary E011 curriculum should come from a deterministic seeded world/task generator rather than a small hand-written set of examples.
-
-A generator may define experiment rules and retain hidden ground truth for scoring while exposing only legitimate task state to the cognitive policy.
-
-Generated variation should include:
-
-```text
-concept identities
-relation identities / encodings
-graph topology
-task targets
-starting focus
-irrelevant distractors
-required cognitive-step count
-```
-
-Hand-authored worlds remain useful for debugging and human interpretation, but cannot be the main evidence for general cognitive skill.
-
-## Required Transfer Experiment
-
-The first model experiment must test **process transfer** rather than answer accuracy alone.
-
-```text
-worlds A / B / C
-       ↓
-learn process
-       ↓
-unseen world D
-       ↓
-useful cognitive-action sequence
-```
-
-### Anti-memorization controls
-
-At minimum:
-
-```text
-held-out concept identities
-randomized / opaque concept names
-concept-name permutation evaluation
-no correct answer embedded in policy features
-no production world-specific branches
-untrained/random baseline
-```
-
-A stronger second evaluation should vary graph/world topology so success cannot come from memorizing one structural template.
-
-### Generalization ladder
+## Generalization Ladder
 
 Claims should name the strongest demonstrated level:
 
 ```text
 Level 0 — Training memorization
-same training worlds/tasks
+same training distribution only
 
-Level 1 — Identity transfer
-new or renamed concepts with comparable structure
+Level 1 — Identity / instance transfer
+unseen generated worlds from the same experiment family + renaming control
 
 Level 2 — Structural transfer
-new concepts + changed topology / relation arrangement
+new concepts + changed topology / relation arrangement distribution
 
 Level 3 — Compositional transfer
 new knowledge + new structure + novel combinations of cognitive demands
 ```
 
 Passing Level 1 does not imply Level 2 or 3.
-
-### Counterfactual credit direction
-
-The learning trace should preserve the alternatives available at a checkpoint so later credit assignment can distinguish:
-
-```text
-action correlated with success
-from
-action likely contributed to success
-```
-
-Counterfactual estimates may initially be approximate or deferred, but the architecture should allow comparison of chosen actions against plausible alternatives rather than reinforcing whatever happened during a successful episode.
-
-### Meaningful pass condition
-
-The experiment is promising only if the learned policy:
-
-```text
-improves with training
-+
-beats baseline on unseen content
-+
-survives concept renaming
-+
-performs useful multi-step action sequences
-+
-produces inspectable checkpoints
-+
-uses cognitive resources more economically than exhaustive search
-```
-
-If it only becomes better at the training worlds, it learned content or shortcuts rather than a reusable cognitive skill.
 
 ## Stage 2 — Computational Time + Experience
 
