@@ -13,6 +13,7 @@ from uuid import uuid4
 
 from synrheon.experience import ExperienceThread
 from synrheon.temporal import ComputationalTime
+from synrheon.token_deck import TokenDeck
 
 RunStatus = Literal["off", "paused", "running"]
 StimulusKind = Literal["external", "internal"]
@@ -122,11 +123,12 @@ class ActivationState:
 
 @dataclass(slots=True)
 class CognitiveSubstrate:
-    """Explicit world/organism knowledge plus current activation state."""
+    """Explicit world/organism knowledge plus lexical and current activation state."""
 
     concepts: dict[str, Concept] = field(default_factory=dict)
     world_relations: list[WorldRelation] = field(default_factory=list)
     self_relations: dict[str, SelfRelation] = field(default_factory=dict)
+    token_deck: TokenDeck = field(default_factory=TokenDeck)
     activation: ActivationState = field(default_factory=ActivationState)
 
     def add_concept(self, concept: Concept) -> None:
@@ -225,6 +227,7 @@ class CognitiveSubstrate:
             "concepts": [concept.to_dict() for concept in self.concepts.values()],
             "world_relations": [relation.to_dict() for relation in self.world_relations],
             "self_relations": [relation.to_dict() for relation in self.self_relations.values()],
+            "token_deck": self.token_deck.snapshot(),
             "activation": self.activation.to_dict(),
         }
 
