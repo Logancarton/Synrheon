@@ -28,9 +28,10 @@ See:
 
 ```text
 docs/REV5_CONTINUATION_STATE.md
+docs/D6_PREREGISTRATION.md
 ```
 
-for the current continuation protocol. Where the older Revision 4 theory document still says EXT-1 is the immediate next gate, the Revision 5 continuation note supersedes that boundary.
+for the current continuation protocol and frozen D6 rules. Where the older Revision 4 theory document still says EXT-1 is the immediate next gate, the Revision 5 continuation note supersedes that boundary.
 
 ## Ground 0
 
@@ -39,7 +40,7 @@ large candidate / knowledge field
     ↓
 learned routing / context selection
     ↓
-reversible contextual tapering
+reversible contextual settling
     ↓
 serious-candidate field
     ↓
@@ -71,8 +72,21 @@ Current source includes:
 ```text
 experiments/external_retrieval_cascade.py
 experiments/ext2_diagnostics.py
+experiments/d6_transition_persistence.py
 tests/test_external_retrieval_cascade.py
 tests/test_ext2_diagnostics.py
+tests/test_d6_transition_persistence.py
+```
+
+D6 status:
+
+```text
+preregistration: FROZEN
+implementation: BUILT
+synthetic smoke: available but NOT EVIDENCE
+SciFact development D6: NOT YET RUN
+reserved final split: UNTOUCHED BY D6
+MT-1: BLOCKED UNTIL D6 INTERPRETATION
 ```
 
 The current external evidence ledger is:
@@ -99,7 +113,7 @@ The current external evidence ledger is:
 
 - Question-guided contextual divergence.
 - Trajectory-based recurrence.
-- Residual-guided tapering.
+- Residual-guided tapering on SciFact D6.
 - Matched-compute multiple-soft-taper necessity.
 
 ## Immediate scientific boundary — D6 only
@@ -108,27 +122,28 @@ The immediate research gate is **D6: Transition Persistence Diagnostic**.
 
 Do not proceed directly to a large multi-taper experiment because the current sequential partial -> full process may already contain a transition-state persistence pathology.
 
-Freeze:
-
-```text
-same 93 SciFact development queries
-same BM25 candidate field
-same current channels
-same learned parameters
-no final split
-no recurrence
-no new semantic channels
-no threshold tuning
-```
-
-Conditions:
+Frozen conditions:
 
 ```text
 A — BM25 / full-query anchor
 B — one full-context soft taper
 C — partial -> full with carried activation, no recurrence
 D — partial -> full, reset before full-context stage
-E — partial -> full, stage two acts only on unresolved residual
+E — partial -> full, stage two uses full-minus-partial feature residuals
+```
+
+Frozen scope:
+
+```text
+same 93 SciFact development queries
+same BM25 top-100 candidate field
+same current channels
+same learned parameters
+minimum 30 transition-evaluable queries
+no final split
+no recurrence
+no new semantic channels
+no threshold tuning
 ```
 
 Diagnostic quantities:
@@ -143,6 +158,32 @@ Frozen interpretation:
 - `D > C` with paired 95% CI excluding zero and `R_reset >= 0.50` -> inappropriate persistence supported as a major contributor.
 - `R_reset < 0.25` -> persistence is not a sufficient explanation.
 - `0.25 <= R_reset < 0.50` -> partial support.
+- `B - C <= 0` -> damage not reproduced; do not force the expected failure to appear.
+
+## Architecture now being built alongside the research
+
+A production-facing reversible candidate-field owner now exists in:
+
+```text
+src/synrheon/contextual_search.py
+```
+
+It implements only the currently defensible cognitive physics:
+
+```text
+complete broad-field prior
+complete activation state
+active vs dormant compute region
+soft suppression without deletion
+context transition provenance
+carry / reset / residual transition contract
+reversible checkpoints
+restore / reactivate / reopen
+```
+
+It deliberately does **not** contain qrels, hidden truth, a hand-written semantic hierarchy, a taper equation, a recurrence rule, or a commitment policy. D6 uses this same transition-state contract so the research begins exercising architecture that can later belong to the organism rather than maintaining a separate synthetic-only mechanism.
+
+This module is **Built, not Integrated**. The live runtime does not yet generate a legitimate broad candidate field, so `runtime.py` must not fabricate one merely to make Ground 0 appear live.
 
 ## Next major experiment — MT-1, blocked on D6
 
@@ -183,7 +224,9 @@ multiple contextual settling stages not supported
 | Ordered experience + provenance | Integrated | Observed/injected experience thread exists in-process |
 | E011-A trainable operation/target policy | Built experimentally | Historical controlled transfer result |
 | Ground 0 checkpoint contract | Built | `Ground0Checkpoint` defines phase/disposition boundaries |
-| Ground 0 tapering | Research only | Not live-integrated |
+| Reversible contextual candidate field | Built | Complete-state/checkpoint/restore/reopen mechanics exist; not live-integrated |
+| Ground 0 learned context selection | Research/design only | No live owner yet |
+| Ground 0 contextual tapering | Research only | Not live-integrated |
 | Ground 0 recurrence | Research only | Not live-integrated |
 | Ground 0 commit/abstain/reopen behavior | Research only | Contract exists; behavior not live-integrated |
 | Durable memory | Not started | Current experience is process-local |
@@ -193,15 +236,16 @@ multiple contextual settling stages not supported
 ## Current production source ownership
 
 ```text
-state.py             explicit organism/substrate state
-cognition.py         Ground 0 checkpoint/cognitive-cycle contract
-policy.py            retained E011-A operation/target policy
-policy_learning.py   retained E011-A policy learning
-learning.py          temporary E011 compatibility export
-experience.py        ordered current-episode experience
-temporal.py          time / sequence / episode coordinates
-runtime.py           thin sequencing
-dev_server.py        local HTTP/UI transport
+state.py               explicit organism/substrate state
+cognition.py           Ground 0 cognitive-cycle + contextual-search exports
+contextual_search.py   reversible candidate field / transition checkpoints
+policy.py              retained E011-A operation/target policy
+policy_learning.py     retained E011-A policy learning
+learning.py            temporary E011 compatibility export
+experience.py          ordered current-episode experience
+temporal.py            time / sequence / episode coordinates
+runtime.py             thin sequencing
+dev_server.py          local HTTP/UI transport
 ```
 
 Placeholder-only future modules remain excluded until implementation exists.
@@ -222,7 +266,7 @@ state.py / trace
 UI
 ```
 
-Ground 0 cognition is not yet in this live path.
+Ground 0 contextual search is not yet in this live path because there is not yet a legitimate learned/retrieved candidate field to feed it.
 
 ## Scientific rule
 
