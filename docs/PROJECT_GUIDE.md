@@ -1,84 +1,177 @@
-# Synrheon Project Guide — Plain English
+# Synrheon Project Guide — Revision 6 Plain English
 
-This is the short human-readable owner's manual for Synrheon.
+This is the owner's short map of what Synrheon is, what has actually been learned, what is built, and what should happen next.
 
 Always separate:
 
 ```text
-Research evidence
-Designed
-Built
-Integrated
-Verified
+scientific evidence
+from
+implementation maturity
 ```
 
-A mechanism can be scientifically reinforced without being live in the organism.
+A mechanism can have meaningful scientific evidence while still being only `Built`, not live.
 
-# Ground 0
+## What Synrheon is trying to become
 
-Ground 0 is the current experimentally reinforced cognitive process future Synrheon architecture should implement, challenge, or improve.
+Synrheon is exploring whether a persistent cognitive system can:
 
 ```text
-large candidate / knowledge field
+keep a very large field of possible knowledge available
         ↓
-learned context routing
+focus computation where the current question needs more detail
         ↓
-ordered reversible soft tapering
+preserve weaker alternatives instead of deleting them
         ↓
-small serious-candidate field
+change or reopen internal state when context changes
         ↓
-state-dependent recurrence
+learn which cognitive operations are worth using
         ↓
-evidence / uncertainty
+remember experiences with provenance
+        ↓
+stop only when evidence is sufficient
+```
+
+The architecture is not treated as proven. Each major piece must earn its place.
+
+## The most important new result — D6
+
+Revision 5 suspected that Synrheon was damaging retrieval because a partial-context state was being carried too strongly into later full context.
+
+D6 tested that directly on the frozen SciFact development partition.
+
+Observed:
+
+```text
+93 development queries
+92 transition-evaluable
+reset control integrity: PASS
+R_reset = 1.0
+verdict: MAJOR_PERSISTENCE_CONTRIBUTION_SUPPORTED
+```
+
+Plain English:
+
+> When Synrheon first settled under incomplete context and blindly carried that settled state forward, performance could collapse. Resetting/re-anchoring before processing the changed context recovered the measured transition damage under the frozen diagnostic.
+
+The lesson is **not** "always reset." The lesson is that previous settled state is conditional on the context that produced it. The future system needs to learn/test when to carry, reset, transform, or reopen.
+
+D6 does not prove that several taper stages are useful. That is what MT-1 must test next.
+
+## Current Ground 0 working idea
+
+```text
+question / unresolved need
+        ↓
+broad legitimate candidate field
+        ↓
+choose context that may discriminate the remaining alternatives
+        ↓
+explicit transition of prior state
+        ↓
+reversible contextual settling
+        ↓
+what is still unresolved?
+        ↓
+optional more refinement / optional recurrence if it earns value
+        ↓
+evidence sufficient?
         ↓
 commit | abstain | seek evidence | reopen
 ```
 
-Plain English: narrow what deserves serious attention without deleting alternatives, let the serious alternatives interact, and do not confuse a first-place candidate with enough evidence to commit.
+Ground 0 is a research program, not a completed production cognition engine.
 
-Learned pathway resistance remains optional. Earlier assays found it useful, but HCT-2 showed it was not required in that task family.
+## Current two-track workflow
 
-The full scientific record lives in `CONTEXT_SETTLED_TAPERING_THEORY.md`.
+Synrheon now develops on two tracks at the same time.
 
-# Why Ground 0 Is Worth Building
-
-Earlier mechanisms provided useful negative evidence:
+### Track A — scientific cognition testing
 
 ```text
-clock-driven Top-K narrowing       failed badly
-confidence-only narrowing          limited savings
-stochastic consensus               false certainty
-hard deletion                      failed under reversal
+D6 completed
+    ↓
+MT-1 preregistration
+    ↓
+MT-1 matched-compute experiment
 ```
 
-HCT-1 showed reversible soft narrowing could preserve uncertainty and restore candidates after context changed.
+MT-1 asks a very specific question:
 
-HCT-2 then passed every frozen criterion on 300 final held-out worlds. Its learned-order sparse system preserved 100% good behavior, 100% candidate survival, 0% unresolved commitment, 100% reversal reactivation, and 100% renaming retention while using 3.125% of full-field recurrent candidate-cycles and about 7.14% of generic-soft context evaluations.
+> Once the known carry-state problem is controlled, do multiple soft contextual settling stages actually outperform one good soft stage?
 
-The recurrence ablation was especially important:
+If the answer is no, we remove multi-stage necessity from the architecture. Hard pruning losing is not enough to save multi-stage tapering.
+
+### Track B — representation / Token Deck
 
 ```text
-correct candidate survived tapering  100%
-good behavior without recurrence      45%
+TD-0 stable token identity          Built
+TD-1 multiple reversible senses     Built
+TD-2 morphology/alias storage       Built
+TD-3 surface segmentation           Next
+TD-4 known/unknown routing          Later
+TD-5 contextual sense learning      Later experiment
 ```
 
-So tapering preserved the useful field while recurrence performed important downstream relational work.
+The Token Deck gives Synrheon stable internal pieces to eventually think with.
 
-# What Exists Live
+Core separation:
 
 ```text
-observable runtime + development UI     Verified
-cognitive substrate / organism state    Built
-computational time                      Integrated
-ordered experience + provenance         Integrated
-E011-A trainable action policy          Built experimentally
-Ground 0 cognition                      Designed / research-backed, not Integrated
+surface word != token != sense != concept/entity != memory episode
 ```
 
-Current live flow:
+For example, `bank` can be one stable token card while keeping financial-bank and river-bank as different possible senses. Context can change which sense is stronger without deleting the other.
+
+## Why a Token Deck matters
+
+Raw text is not a good long-term cognitive substrate. Synrheon needs stable reusable identities so language can later connect to concepts, entities, events, memory, and retrieval.
+
+The intended path is:
 
 ```text
-Chat / injected developer thought
+raw language
+   ↓
+surface segmentation
+   ↓
+Token Deck
+   ↓
+possible senses
+   ↓
+concepts / entities / event structure
+   ↓
+durable memory
+   ↓
+retrieval
+   ↓
+broad candidate field
+   ↓
+Ground 0 cognition
+```
+
+The Token Deck itself is not language understanding. It is the representational foundation for later learning/testing.
+
+## What exists today
+
+```text
+observable runtime + development UI       Verified
+computational time                        Integrated
+ordered experience + provenance           Integrated
+cognitive substrate                       Built
+Token Deck TD-0/1/2                       Built
+reversible candidate field                Built
+E011-A learned action policy              Built experimentally / historical donor
+TD-3 segmenter                            Not Started
+Ground 0 live contextual cognition        Not Integrated
+Durable memory                            Not Started
+Learned retrieval                         Not Started
+Recursive autonomous cognition            Not Started
+```
+
+## Current live flow
+
+```text
+Chat / injected internal thought
         ↓
 dev_server.py
         ↓
@@ -91,112 +184,167 @@ state.py
 UI
 ```
 
-# What E011-A Still Contributes
+The Token Deck is stored inside the cognitive substrate, but normal chat does not yet automatically pass through a real surface segmenter into token observations.
 
-E011-A showed that a small policy could learn which valid cognitive action/target to choose from visible state and transfer that preference across unseen and renamed worlds.
+The reversible candidate field is also not live-integrated because Synrheon does not yet have a legitimate broad memory/retrieval source to feed it.
 
-Its action set was only:
+## Source ownership
 
 ```text
-EXPAND(target)
-STOP
+state.py
+    organism/substrate state; contains TokenDeck
+
+cognition.py
+    Ground 0 public cognitive contracts
+
+contextual_search.py
+    reversible candidate field and context-transition checkpoints
+
+token_deck.py
+    stable token identity, senses, provenance, reversible sense state
+
+policy.py / policy_learning.py
+    retained E011-A donor mechanism and learning
+
+experience.py
+    ordered current-episode experience + provenance
+
+temporal.py
+    computational time and sequence
+
+runtime.py
+    traffic controller only
+
+dev_server.py
+    browser/API transport only
+
+experiments/
+    scientific laboratory; hidden qrels/scorers stay here
+
+ui/
+    microscope / controls only
 ```
 
-That is not the full Ground 0 process. Its reusable lesson is that architecture may expose valid operations while training learns which operation and target are useful.
+## How development should work now
 
-The E011 implementation now lives in `policy.py` and `policy_learning.py`. `cognition.py` is reserved for the broader Ground 0 process.
-
-# Source Ownership
-
-`src/synrheon/state.py`  
-Explicit organism state, concepts, relations, activation, stimuli, and trace records.
-
-`src/synrheon/cognition.py`  
-Ground 0 cognitive-cycle contract. It defines observable phase/disposition checkpoints without importing synthetic hidden truth.
-
-`src/synrheon/policy.py`  
-Retained E011-A trainable operation/target policy primitives.
-
-`src/synrheon/policy_learning.py`  
-Outcome-driven updates for the retained E011-A policy and recorded policy evidence loading.
-
-`src/synrheon/temporal.py`  
-Computational time, episode position, sequence, and elapsed-time coordinates.
-
-`src/synrheon/experience.py`  
-Current ordered autobiographical experience thread and provenance.
-
-`src/synrheon/runtime.py`  
-Traffic controller only. It sequences owners; it must not decide the cognitive answer or route.
-
-`src/synrheon/dev_server.py`  
-Local browser/API transport only.
-
-`ui/`  
-Development microscope. It displays backend-owned state and evidence; it does not perform cognition.
-
-`experiments/`  
-Scientific laboratory. Hidden truth/scorers may exist here for controlled experiments but must never leak into production cognition.
-
-# Why Future Source Files Were Removed
-
-Files for durable memory, retrieval, scratchpad, problem solving, consolidation, abstraction, and autonomy previously contained only roadmap docstrings. They were removed from `src/`.
-
-Those capabilities remain in the architecture plan, but a source file should now appear only when real implementation earns an owner.
+For science:
 
 ```text
-planned capability ≠ implemented source module
+question
+  ↓
+state what would falsify it
+  ↓
+preregister controls/metrics/thresholds
+  ↓
+commit preregistration
+  ↓
+build
+  ↓
+integrity/smoke test
+  ↓
+allowed evidence run
+  ↓
+apply frozen interpretation
+  ↓
+change architecture if needed
 ```
 
-# Next Integration Direction
-
-The old assumption was to wire the narrow E011-A policy directly into the runtime. Ground 0 changes that.
-
-The next live cognition slice should preserve the essential separation:
+For organism capabilities:
 
 ```text
-legitimate live state
-        ↓
-broad candidate field
-        ↓
-learned routing / reversible taper checkpoint
-        ↓
-small serious-candidate field
-        ↓
-state-dependent recurrent checkpoint(s)
-        ↓
-evidence assessment
-        ↓
-commit | abstain | seek evidence | reopen
-        ↓
-runtime → state / trace → UI
+build one capability
+  ↓
+give Synrheon explicit stimuli
+  ↓
+inspect exact internal state
+  ↓
+find where the process failed
+  ↓
+fix the process, not the phrase
+  ↓
+add regression test
+  ↓
+try harder stimuli
 ```
 
-The exact implementation should stay small and observable. Do not copy the synthetic HCT generator/scorer into production.
+This is the main workflow going forward.
 
-# Scientific Guardrails
+## Immediate next work
 
-1. Do not tune frozen final results after inspection and keep the same experiment name.
-2. Hidden correct identity must remain outside inference.
-3. Renaming/permutation should continue to test identity shortcuts.
-4. A mechanism that fails an ablation should lose theoretical status rather than be protected.
-5. Ground 0 may be revised if stronger experiments contradict it.
-6. Do not call Ground 0 Integrated until the real live organism uses it.
+### Scientific
 
-# Files to Read First
+Write and freeze MT-1 before building result-bearing MT-1 behavior.
 
-For implementation:
+The conceptual comparison should include:
 
 ```text
-README.md
-PROJECT_GUIDE.md
+retrieval/no-taper anchor
+single soft
+multi-soft with naive carry
+multi-soft with controlled reset
+scrambled/reversed order
+matched-compute hard stages
+```
+
+Recurrence and Token Deck features should stay out of the primary MT-1 test unless explicitly frozen into a new version before results.
+
+### Architecture
+
+Build TD-3 exact surface segmentation.
+
+The first version should preserve:
+
+```text
+exact raw text
+surface spans
+character offsets
+normalized lookup forms
+```
+
+It should **not** decide meaning yet.
+
+Test with things like:
+
+```text
+Daisy ran to the door.
+Daisy's running.
+Don't open the door.
+The well-known doctor arrived at 8:30.
+I paid $12.50.
+Logan said, "Daisy isn't outside."
+```
+
+Then inspect the actual spans/offsets and turn every failure into a process-level regression test.
+
+## Important scientific guardrails
+
+1. Never change a frozen pass criterion after seeing the result just to make a mechanism win.
+2. Preserve failed experiments and unexpected cases.
+3. Hidden correct answers/qrels may exist in `experiments/` for scoring but must not enter production cognition.
+4. Match compute when claiming a mechanism is better or more efficient.
+5. Do not describe development-set findings as untouched final confirmation.
+6. Do not claim a mechanism is live because an isolated test passes.
+7. Do not patch individual phrases when the general process is wrong.
+8. Keep Token Deck work independent from MT-1 until an experiment intentionally combines them.
+
+## Documents to read first
+
+Current truth:
+
+```text
+REV6_CONTINUATION_STATE.md
+CURRENT_STAGE.md
 IMPLEMENTATION_STATUS.md
 ARCHITECTURE_PLAN.md
+TOKEN_DECK_ROADMAP.md
 ```
 
-For scientific reasoning:
+Plain-English and signal maps:
 
 ```text
-CONTEXT_SETTLED_TAPERING_THEORY.md
-HCT2_PREREGISTRATION.md
+PROJECT_GUIDE.md
+SIGNAL_FLOW.md
+SCAFFOLD.md
 ```
+
+Frozen/historical scientific records remain useful, but older Revision 4/5 theory does not override Revision 6 continuation state.
