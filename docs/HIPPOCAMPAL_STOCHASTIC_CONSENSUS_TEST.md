@@ -71,3 +71,21 @@ It would not prove that the chosen thresholds are optimal, that the method is bi
 python3 -m experiments.hippocampal_consensus_trials --quick
 python3 -m pytest -q tests/test_hippocampal_consensus_trials.py
 ```
+
+## Observed result — recorded 2026-08-09
+
+Reproduced by `tests/test_hippocampal_consensus_trials.py` (marked `historical`).
+
+```text
+seeds                                        40000-40250
+unresolved_close committed_rate              0.78
+preregistered maximum committed_rate         0.50
+unresolved_close correct_or_abstain_rate     0.22
+frozen verdict                               DISCOUNTED
+```
+
+### Standing conclusion
+
+Population consensus manufactured agreement on worlds built to be genuinely unresolvable.
+This is part of why `winner != sufficient evidence` survived into the current architecture.
+Do not adjust the consensus mechanism to force abstention here.

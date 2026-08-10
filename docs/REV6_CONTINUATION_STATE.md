@@ -71,24 +71,33 @@ Condition E in D6 showed mixed query-level behavior and had no preregistered suc
 
 ## Immediate scientific track — MT-1
 
-D6 unlocks specification of **MT-1: Matched-Compute Multi-Taper Falsification**.
+D6 unlocked **MT-1: Matched-Compute Multi-Taper Falsification**, now frozen at
+`docs/MT1_PREREGISTRATION.md`. Conditions, metric, compute rule, thresholds, and data
+boundary may move only through an explicit versioned amendment recorded before further
+results.
 
-MT-1 must be preregistered before result-bearing implementation or data inspection changes its criteria.
+The gap MT-1 closes: D6's staged conditions spent roughly twice the per-query feature
+budget of its single-stage condition, so D6 could establish that *carrying* is harmful but
+not whether *staging* is worth its cost.
 
 Its central question is:
 
 > After controlling the known transition-state persistence pathology, does more than one soft contextual settling stage materially outperform one good soft settling stage under matched computation?
 
-The preregistration should include at least these conceptual controls:
+Frozen conditions:
 
 ```text
-no-taper / retrieval anchor
-single full-context soft settling
-multiple soft stages with naive carry          # known-dangerous transition control
-multiple soft stages with controlled reset
-scrambled/reversed context-order control
-matched-compute hard staged pruning
+M0 no-taper / retrieval anchor
+M1 single full-context soft settling                    primary baseline
+M2 multiple soft stages with naive carry                known-dangerous transition control
+M3 multiple soft stages, reset activation + retained narrowing    primary treatment
+M4 multiple soft stages with full reset                 wasted-stage sanity control
+M5 reversed context-order control
+M6 matched-compute hard staged pruning
 ```
+
+`MULTI_STAGE_SUPPORTED` requires `n >= 30`, `M3 - M1 >= 0.010` nDCG@10, a positive 95%
+paired bootstrap lower bound, and `E(M3) <= 1.10 * E(M1)` measured feature evaluations.
 
 Recurrence should remain outside the primary MT-1 mechanism unless separately preregistered; MT-1 should isolate stage necessity rather than reintroduce a discounted operator.
 
@@ -110,9 +119,9 @@ Current Token Deck state:
 TD-0 stable token identity                 BUILT
 TD-1 multiple reversible senses            BUILT
 TD-2 alias/morphology storage              BUILT (non-inferential)
-TD-3 surface segmentation                  NEXT
-TD-4 known/unknown acquisition             pending
-TD-5 contextual sense disambiguation       pending experiment
+TD-3 surface segmentation                  BUILT + INTEGRATED (td3-exact-surface-v1)
+TD-4 known/unknown acquisition             BUILT + INTEGRATED (td4-acquisition-routing-v1)
+TD-5 contextual sense disambiguation       NEXT; preregister before results
 TD-6 concept/entity bridge                 contract begun; behavior pending
 TD-7 event/semantic-role composition       pending
 TD-8 durable Token Deck                    pending
@@ -128,7 +137,16 @@ surface form != token identity != sense != concept/entity != episode
 
 D6's context lesson applies to sense state as an architectural invariant: context may change sense activation, but a weak alternative must not be silently deleted.
 
-TD-3 should segment raw text into exact observable spans and preserve original offsets. It must not infer meaning, choose a sense, fabricate a concept, or call an LLM as a hidden authority.
+TD-3 is built in `src/synrheon/surface_segmentation.py` under frozen version
+`td3-exact-surface-v1`. It segments raw text into exact observable spans, enforces gap-free
+coverage and exact reconstruction at construction time, and infers no meaning: it selects
+no sense, fabricates no concept, calls no LLM, and creates no token identity. Because it
+owns no identity, a later segmenter may change span boundaries without invalidating any
+token or sense the deck already holds.
+
+Live stimuli are segmented and the observation is attached to the stimulus record, but the
+cognitive substrate remains unchanged by chat. Creating identity from an observed span is
+TD-4's decision, not segmentation's.
 
 ## Build/test workflow
 
@@ -230,6 +248,8 @@ state.py               organism/substrate state; contains TokenDeck
 cognition.py           Ground 0 public contracts / cognitive boundary
 contextual_search.py   reversible candidate field and context-transition checkpoints
 token_deck.py          stable lexical/sense identity and reversible sense state
+surface_segmentation.py  TD-3 exact surface observation; owns no identity
+acquisition_routing.py   TD-4 known/unknown routing; read-only
 policy.py              retained E011-A operation/target donor mechanism
 policy_learning.py     retained E011-A policy learning
 experience.py          ordered current-episode experience + provenance
@@ -289,19 +309,21 @@ Older documents remain evidence history; do not silently rewrite historical prer
 
 ```text
 SCIENTIFIC TRACK
-1. record D6 as completed external-development evidence
-2. write/freeze MT-1 preregistration
-3. implement MT-1 only after the preregistration boundary exists
+1. record D6 as completed external-development evidence        DONE
+2. write/freeze MT-1 preregistration                           DONE — docs/MT1_PREREGISTRATION.md
+3. implement MT-1 against the frozen boundary                  NEXT
 4. run integrity/smoke tests
 5. run the allowed development assay
 6. classify under frozen criteria
 
 REPRESENTATION TRACK
-1. verify current TD-0/1/2 tests locally
-2. implement TD-3 exact surface segmentation
-3. expose segmentation state for stimulus inspection
-4. add adversarial punctuation/contraction/name/number tests
-5. proceed to TD-4 known/unknown routing only after TD-3 is stable
+1. verify current TD-0/1/2 tests locally                       DONE
+2. implement TD-3 exact surface segmentation                   DONE — surface_segmentation.py
+3. expose segmentation state for stimulus inspection           DONE — CLI, /api/segment, state
+4. add adversarial punctuation/contraction/name/number tests   DONE — tests/test_surface_segmentation.py
+5. implement TD-4 known/unknown routing                        DONE — acquisition_routing.py
+6. drive TD-3/TD-4 with your own stimuli and convert failures  OPEN
+7. preregister TD-5 contextual sense experiment                NEXT
 ```
 
 The objective remains: **discover which cognitive operations deserve to survive, and make every surviving experiment leave behind a reusable piece of the organism.**

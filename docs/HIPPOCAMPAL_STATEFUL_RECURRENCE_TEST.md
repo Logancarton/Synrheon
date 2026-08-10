@@ -128,3 +128,36 @@ python3 -m pytest -q tests/test_hippocampal_stateful_recurrence.py
 ## Scientific boundary
 
 The generator intentionally contains relational structure that recurrence can exploit. Therefore a positive result establishes only that state-dependent recurrence can add value under controlled conditions. Later experiments must test changed graph families, learned recurrent relations, noise, reversal, and simpler equivalent baselines.
+
+## Observed result — recorded 2026-08-09
+
+Reproduced by `tests/test_hippocampal_stateful_recurrence.py` (marked `historical`).
+
+```text
+seeds                               20000-20200
+one_pass                            0.000
+recurrent, progressive sparsity     0.255
+recurrent, sparsity disabled        0.980
+progressive advantage over fixed   -0.725
+frozen verdict                      MIXED RESULT
+```
+
+The preregistered gate required recurrent accuracy >= 0.80 with an advantage >= 0.25 over
+one-pass. Progressive sparsity met the advantage criterion and failed the accuracy
+criterion.
+
+### Diagnosis
+
+State-dependent recurrence works. The clock-driven hard-pruning schedule is what fails.
+`keep_k` drops to 2 at step 6 and hard-zeroes one member of a mutually-excitatory triad.
+That removes its excitation into the others, flips the ranking, and zeroes a different
+member on the next cycle, while the previously zeroed member is revived by
+`input_gain * initial_i`. The field enters a limit cycle instead of settling, so the
+reported winner is an artifact of the stopping cycle. Accuracy of 0.255 is below the 0.333
+chance rate among the three triad members, because the lure inhibits the correct candidate
+while leaving `weak_friend` protected.
+
+### Standing conclusion
+
+Progressive/destructive narrowing is **discounted**. This is historical evidence for
+`suppressed != deleted`. Do not repair the schedule to make the original threshold pass.

@@ -35,6 +35,8 @@ from experiments.external_retrieval_cascade import (
     verdict,
 )
 
+pytestmark = pytest.mark.scientific
+
 @pytest.fixture(scope="module")
 def environment():
     dataset = make_smoke_dataset()

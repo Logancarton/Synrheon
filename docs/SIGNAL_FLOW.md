@@ -13,6 +13,8 @@ runtime.py
         ↓
 temporal.py + experience.py
         ↓
+surface_segmentation.py + acquisition_routing.py
+        ↓
 state.py
         ↓
 UI
@@ -26,7 +28,7 @@ Current truth:
 - `CognitiveSubstrate` now contains a `TokenDeck`;
 - runtime sequences and routes;
 - UI observes and controls;
-- raw chat is not yet automatically segmented into Token Deck observations;
+- raw chat is segmented and routed on every stimulus, but creates no token identity;
 - Ground 0 contextual search is not yet live-integrated.
 
 ## Representation path being built
@@ -45,19 +47,42 @@ multiple candidate senses
 reversible context-conditioned sense activation
 ```
 
-Immediate next path — TD-3:
+Live surface path — TD-3, built:
 
 ```text
 raw text
         ↓
-exact surface segmenter
+surface_segmentation.segment_surface   (td3-exact-surface-v1)
         ↓
 spans + character offsets + normalized lookup forms
         ↓
-TokenDeck observe/reuse
+StimulusRecord.segmentation  +  trace event "surface_segmented"
+        ↓
+acquisition_routing.route_segmentation  (td4-acquisition-routing-v1)
+        ↓
+known/unknown + acquisition need + recorded evidence
+        ↓
+StimulusRecord.acquisition  +  trace event "acquisition_routed"
 ```
 
 TD-3 is intentionally surface-only. It must not choose meaning, sense, concept, or answer.
+
+The path deliberately stops before `TokenDeck.observe`. Segmentation observes and routing
+classifies; neither creates identity. A live stimulus leaves the cognitive substrate
+unchanged. `acquisition_routing.acquire_route` is the only path from an observed span to a
+token card, and nothing on the live path calls it.
+
+Inspection points:
+
+```text
+python3 -m synrheon segment "<text>"        TD-3 observation
+python3 -m synrheon route "<text>"          TD-4 routing against an empty deck
+POST /api/segment {"text": ...}
+POST /api/acquisition {"text": ...}         TD-4 routing against the live deck
+POST /api/acquire {"text": ..., "needs": [...]}   explicit acquisition; the only mutation
+state.stimuli[].segmentation
+state.stimuli[].acquisition
+```
 
 Future representation path:
 
@@ -239,6 +264,12 @@ This is historical evidence that action preference can be learned. It is not the
 ```text
 token_deck.py
     lexical/sense identity + reversible sense state
+
+surface_segmentation.py
+    TD-3 exact surface observation; owns no identity
+
+acquisition_routing.py
+    TD-4 known/unknown routing; read-only, acquires only when called
 
 contextual_search.py
     reversible broad candidate field + context transitions

@@ -11,7 +11,9 @@ from dataclasses import asdict, dataclass, field
 from typing import Literal
 from uuid import uuid4
 
+from synrheon.acquisition_routing import AcquisitionReport
 from synrheon.experience import ExperienceThread
+from synrheon.surface_segmentation import SurfaceSegmentation
 from synrheon.temporal import ComputationalTime
 from synrheon.token_deck import TokenDeck
 
@@ -23,16 +25,36 @@ OrganismRelationOrigin = Literal["injected", "learned"]
 
 @dataclass(slots=True)
 class StimulusRecord:
-    """One external chat stimulus or explicitly injected internal thought."""
+    """One external chat stimulus or explicitly injected internal thought.
+
+    ``segmentation`` is the TD-3 observation of the exact stimulus text. ``acquisition``
+    is the TD-4 routing of that observation against the deck as it stood at this moment.
+    Both record what was observed, not what it means: no token identity, sense, or
+    concept is created here.
+    """
 
     sequence: int
     kind: StimulusKind
     text: str
     created_at: str
     experience_event_id: str
+    segmentation: SurfaceSegmentation | None = None
+    acquisition: AcquisitionReport | None = None
 
     def to_dict(self) -> dict[str, object]:
-        return asdict(self)
+        return {
+            "sequence": self.sequence,
+            "kind": self.kind,
+            "text": self.text,
+            "created_at": self.created_at,
+            "experience_event_id": self.experience_event_id,
+            "segmentation": (
+                self.segmentation.to_dict() if self.segmentation is not None else None
+            ),
+            "acquisition": (
+                self.acquisition.to_dict() if self.acquisition is not None else None
+            ),
+        }
 
 
 @dataclass(slots=True)

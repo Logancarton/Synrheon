@@ -1,3 +1,6 @@
+
+import pytest
+
 import json
 import sys
 from dataclasses import replace
@@ -18,6 +21,8 @@ from experiments.hippocampal_ordered_context import (
     run_condition,
     sparse_context_cascade,
 )
+
+pytestmark = pytest.mark.historical
 
 
 def _small_parameters():

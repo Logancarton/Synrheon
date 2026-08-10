@@ -1,3 +1,26 @@
+"""Historical reproduction — confidence-gated adaptive sparsity assay.
+
+Superseded research generation. These tests verify that the preserved historical result is
+still reproduced; they do not assert that the original hypothesis is true.
+
+Preserved outcome on seeds 30000-30500:
+
+```text
+adaptive accuracy                   0.850
+fixed-width accuracy                0.852
+active state savings vs fixed       0.0761  <- fails its own >= 0.10 criterion
+frozen verdict                      MIXED RESULT
+```
+
+Recorded conclusion: adaptive gating preserved accuracy but did not deliver the
+preregistered efficiency benefit. The hypothesis failed on cost, not on correctness. Do
+not retune the gate to reach 0.10.
+"""
+
+from __future__ import annotations
+
+import pytest
+
 from experiments.hippocampal_confidence_gated import (
     WORLD_TYPES,
     adaptive_recurrent,
@@ -5,6 +28,11 @@ from experiments.hippocampal_confidence_gated import (
     generate_mixed_world,
     verdict,
 )
+
+pytestmark = pytest.mark.historical
+
+#: Frozen efficiency criterion from the original preregistration, preserved verbatim.
+PREREGISTERED_MINIMUM_STATE_SAVINGS = 0.10
 
 
 def test_stability_compares_to_immediately_prior_state() -> None:
@@ -39,12 +67,24 @@ def test_misleading_early_worlds_rarely_false_prune() -> None:
     assert misleading.false_prune_rate <= 0.10
 
 
-def test_adaptive_gating_preserves_accuracy_and_saves_state_cost() -> None:
+def test_adaptive_gating_preserved_accuracy_but_failed_its_efficiency_criterion() -> None:
+    """Reproduce the recorded outcome: accuracy held, the efficiency gate did not."""
+
     result = evaluate(range(30000, 30500))
     adaptive = result["confidence_gated"]
     fixed = result["fixed_width"]
+    savings = result["active_state_savings_vs_fixed"]
+
+    # The half of the hypothesis that held.
     assert adaptive.accuracy >= fixed.accuracy - 0.05
-    assert result["active_state_savings_vs_fixed"] >= 0.10
+    assert adaptive.accuracy == pytest.approx(0.85)
+    assert fixed.accuracy == pytest.approx(0.852)
+
+    # The half that failed, with the preregistered threshold preserved beside it.
+    assert savings == pytest.approx(0.07611111111111113, abs=1e-9)
+    assert savings < PREREGISTERED_MINIMUM_STATE_SAVINGS
+
+    assert verdict(result) == "MIXED RESULT"
 
 
 def test_renaming_does_not_change_adaptive_summary() -> None:

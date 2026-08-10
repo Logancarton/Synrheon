@@ -1,3 +1,6 @@
+
+import pytest
+
 from dataclasses import replace
 import json
 import sys
@@ -15,6 +18,8 @@ from experiments.hippocampal_contextual_taper_full_system import (
     soft_context_cascade,
     verdict,
 )
+
+pytestmark = pytest.mark.historical
 
 
 def test_learned_parameters_are_identity_free_and_nonuniform() -> None:

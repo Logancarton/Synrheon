@@ -1,9 +1,37 @@
+"""Historical reproduction — stochastic multi-trial consensus assay.
+
+Superseded research generation. These tests verify that the preserved historical result is
+still reproduced; they do not assert that the original hypothesis is true.
+
+Preserved outcome on seeds 40000-40250, `unresolved_close` worlds:
+
+```text
+committed_rate                      0.78   <- fails its own <= 0.50 criterion
+overall_correct_or_abstain_rate     0.22
+frozen verdict                      DISCOUNTED
+```
+
+Recorded conclusion: population consensus manufactured agreement on worlds built to be
+genuinely unresolvable. This is part of why `winner != sufficient evidence` survived into
+the current architecture. Do not adjust the consensus mechanism to force abstention here.
+"""
+
+from __future__ import annotations
+
+import pytest
+
 from experiments.hippocampal_confidence_gated import generate_mixed_world
 from experiments.hippocampal_consensus_trials import (
     consensus_trials,
     evaluate,
     perturb_world,
+    verdict,
 )
+
+pytestmark = pytest.mark.historical
+
+#: Frozen abstention criterion from the original preregistration, preserved verbatim.
+PREREGISTERED_MAXIMUM_UNRESOLVED_COMMITMENT = 0.50
 
 
 def test_perturbation_preserves_identity_and_answer_contract() -> None:
@@ -39,10 +67,19 @@ def test_consensus_does_not_materially_underperform_fixed_recurrence_on_resolvab
     assert resolvable.committed_accuracy >= float(baseline["resolvable_accuracy"]) - 0.05
 
 
-def test_unresolved_worlds_are_not_forced_to_commit_most_of_the_time() -> None:
+def test_unresolved_worlds_still_reproduce_the_false_consensus_failure() -> None:
+    """Reproduce the recorded outcome: consensus commits where it should abstain."""
+
     result = evaluate(range(40000, 40250))
     unresolved = result["unresolved_close"]
-    assert unresolved.committed_rate <= 0.50
+
+    assert unresolved.committed_rate == pytest.approx(0.78)
+    assert unresolved.overall_correct_or_abstain_rate == pytest.approx(0.22)
+
+    # The preregistered abstention criterion is preserved and still fails.
+    assert unresolved.committed_rate > PREREGISTERED_MAXIMUM_UNRESOLVED_COMMITMENT
+
+    assert verdict(result).startswith("DISCOUNTED")
 
 
 def test_candidate_renaming_preserves_population_behavior() -> None:

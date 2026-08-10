@@ -6,6 +6,8 @@ import pytest
 
 from synrheon.token_deck import TokenDeck
 
+pytestmark = pytest.mark.current
+
 
 def test_repeated_surface_observation_reuses_stable_token_identity() -> None:
     deck = TokenDeck()

@@ -16,6 +16,8 @@ from experiments.external_retrieval_cascade import (
     queries_for_split,
 )
 
+pytestmark = pytest.mark.scientific
+
 
 def test_d6_reset_control_returns_to_the_same_full_context_state_as_B() -> None:
     dataset = make_hard_corpus(seed=41, clusters=18, queries=80, informative_features=True)

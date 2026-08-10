@@ -8,12 +8,18 @@ Synrheon is now in a **dual-track build/test stage**:
 TRACK A — Ground 0 science
 D6 COMPLETE
     ↓
-MT-1 PREREGISTRATION — immediate scientific boundary
+MT-1 PREREGISTRATION FROZEN — docs/MT1_PREREGISTRATION.md
+    ↓
+MT-1 IMPLEMENTATION — immediate scientific boundary
 
 TRACK B — Representation architecture
 TD-0/1/2 BUILT
     ↓
-TD-3 EXACT SURFACE SEGMENTATION — immediate build boundary
+TD-3 EXACT SURFACE SEGMENTATION BUILT + INTEGRATED
+    ↓
+TD-4 KNOWN/UNKNOWN ROUTING BUILT + INTEGRATED
+    ↓
+TD-5 CONTEXTUAL SENSE EXPERIMENT — immediate boundary; preregister first
 ```
 
 The old direct E011-B integration path is not the active priority. E011-A remains donor evidence for learned operation selection, not the current architecture target.
@@ -64,57 +70,83 @@ commit | abstain | seek evidence | reopen
 
 Multiple stages and recurrence are hypotheses, not guaranteed production components.
 
-## Immediate scientific task — MT-1 preregistration
+## Immediate scientific task — implement frozen MT-1
 
-MT-1 should test whether more than one soft contextual settling stage adds value after the known transition persistence pathology is controlled.
+The preregistration is frozen at `docs/MT1_PREREGISTRATION.md`. Conditions, metric,
+compute rule, thresholds, and data boundary may no longer move except through an explicit
+versioned amendment recorded before further results.
 
-The preregistration must freeze the actual equations/conditions, matched-compute definition, primary metric, paired uncertainty method, success threshold, failure/partial/inconclusive rules, leakage boundary, and allowed data before result-bearing implementation.
-
-Conceptual controls should include:
+Frozen conditions:
 
 ```text
-retrieval/no-taper anchor
-single full-context soft
-multi-soft with naive carry       # known pathology control
-multi-soft with controlled reset
-scrambled/reversed context order
-matched-compute hard staged pruning
+M0 retrieval anchor                          BM25 top-100, no taper
+M1 single full-context soft                  primary baseline
+M2 multi-soft, naive carry                   D6 pathology control
+M3 multi-soft, reset + retained narrowing    primary treatment
+M4 multi-soft, full reset                    wasted-stage sanity control
+M5 reversed stage order                      order control
+M6 matched-compute hard staged pruning       reversibility control
 ```
+
+Frozen primary decision:
+
+```text
+MULTI_STAGE_SUPPORTED requires all of:
+  n >= 30
+  (M3 - M1) >= 0.010 nDCG@10
+  95% paired CI lower bound > 0
+  E(M3) <= 1.10 * E(M1)
+```
+
+The essential thing D6 left open, and MT-1 closes: D6's staged conditions spent roughly
+twice the feature budget of its single-stage condition, so D6 could show that *carrying*
+is harmful but not whether *staging* is worth its cost.
 
 Hard pruning losing is not evidence that multi-soft is necessary. Multi-soft must materially beat single-soft under the frozen matched-compute rule to earn a permanent architectural role.
 
-Keep recurrence and Token Deck improvements out of the primary MT-1 comparison unless explicitly preregistered before results.
+Recurrence and Token Deck output are excluded from every MT-1 condition.
 
-## Immediate architecture task — TD-3
+## Immediate architecture task — preregister TD-5
 
-Current Token Deck implementation already provides:
-
-```text
-stable token identity
-surface forms / aliases
-provenance
-multiple senses
-optional concept links
-reversible context-conditioned sense activation
-checkpoint / restore / reopen
-non-inferential morphology storage
-```
-
-Next build:
+TD-3 and TD-4 are built and integrated:
 
 ```text
 raw text
    ↓
-exact surface spans + character offsets
+exact surface spans + character offsets     (gap-free; exact reconstruction enforced)
    ↓
-normalized lookup forms
+normalized lookup forms                     (lexical spans only)
    ↓
-known/unknown status later
+known/unknown routing + acquisition need    (read-only; evidence recorded)
+   ↓
+explicit acquisition -> token identity      (never automatic)
+   ↓
+contextual sense disambiguation             ← TD-5, next
 ```
 
-TD-3 must not infer meaning, choose a sense, fabricate a concept/entity, or use an LLM as hidden authority.
+Frozen versions `td3-exact-surface-v1` and `td4-acquisition-routing-v1`. Neither creates
+identity on its own, so both can be replaced without invalidating anything the deck owns.
 
-First stimulus families should include punctuation, contractions, possessives, hyphens, quotes, decimals/currency, times, symbols, names, case variants, and exact offset reconstruction.
+Stimulus inspection paths now available:
+
+```text
+python3 -m synrheon segment "<text>"        TD-3 observation
+python3 -m synrheon route "<text>"          TD-4 routing against an empty deck
+POST /api/segment {"text": ...}
+POST /api/acquisition {"text": ...}         TD-4 routing against the live deck
+POST /api/acquire {"text": ..., "needs": [...]}   explicit acquisition; the only mutation
+StimulusRecord.segmentation / .acquisition in the live state snapshot
+```
+
+TD-5 is the first serious language-learning experiment, so it is preregistered like MT-1
+rather than built like TD-3/TD-4. Required before results: held-out contexts, ambiguous
+cases where abstention is correct, context reversals, preservation of initially suppressed
+senses, a simple frequency/default-sense baseline, no answer identity in routing, and raw
+per-case failures. A learned disambiguator must output support *over* the sense inventory
+without overwriting it.
+
+Still missing before TD-5 can run: a sense-annotated data source, and a frozen decision
+about which contexts are held out.
 
 ## Current live status
 
@@ -123,13 +155,20 @@ observable runtime/UI                    Verified
 computational time                       Integrated
 ordered experience + provenance          Integrated
 cognitive substrate                      Built
-TokenDeck in substrate                   Built; not auto-fed by chat yet
+TokenDeck in substrate                   Built; still not auto-fed with identity
 reversible candidate field               Built; not live-integrated
 Ground 0 contextual cognition            Not Integrated
-MT-1 mechanism                           Not Started; preregistration next
-TD-3 segmenter                           Not Started; build next
+MT-1 mechanism                           Not Started; preregistration frozen
+TD-3 segmenter                           Built + Integrated; awaiting stimulus verification
+TD-4 acquisition router                  Built + Integrated; awaiting stimulus verification
+TD-5 sense disambiguation                Not Started; preregistration next
 Durable memory / learned retrieval       Not Started
 ```
+
+Observation is integrated without identity on purpose: a live stimulus is segmented and
+routed, and both records are attached to the stimulus, but no token card is created, so
+`cognitive_substrate` is unchanged by chat. `acquire_route` is the only path from
+observation to identity, and nothing calls it automatically.
 
 ## Development method
 
@@ -175,16 +214,17 @@ The current stage advances when both immediate boundaries are resolved independe
 
 ### Scientific gate
 
-- MT-1 preregistration exists and is frozen before results;
-- implementation obeys the frozen information/compute boundary;
-- allowed development result is classified without post-hoc threshold movement.
+- [x] MT-1 preregistration exists and is frozen before results;
+- [ ] implementation obeys the frozen information/compute boundary;
+- [ ] allowed development result is classified without post-hoc threshold movement.
 
 ### Representation gate
 
-- TD-3 exact segmentation exists in the correct owner;
-- exact text and offsets are preserved;
-- adversarial surface tests pass;
-- live/observable stimulus path is added only when it can be done without fabricating meaning;
-- observed failures become process-level regression tests.
+- [x] TD-3 exact segmentation exists in the correct owner;
+- [x] exact text and offsets are preserved;
+- [x] adversarial surface tests pass;
+- [x] live/observable stimulus path added without fabricating meaning;
+- [x] TD-4 routes known/unknown with recorded evidence and acquires nothing implicitly;
+- [ ] observed failures from human stimulus testing become process-level regression tests.
 
 The two tracks may later converge through token/sense/event representation -> memory/retrieval -> legitimate broad candidate fields, but they remain scientifically separate today.

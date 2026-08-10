@@ -39,6 +39,31 @@ class DevelopmentRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:  # noqa: N802
         try:
             payload = self._read_json()
+            if self.path == "/api/segment":
+                # Inspection only: returns the TD-3 observation without recording a
+                # stimulus, so it has no state to send back.
+                self._send_json(
+                    HTTPStatus.OK,
+                    {
+                        "ok": True,
+                        "segmentation": self.runtime.inspect_segmentation(
+                            self._required_text(payload)
+                        ),
+                    },
+                )
+                return
+            if self.path == "/api/acquisition":
+                # Inspection only: TD-4 routing is read-only and acquires nothing.
+                self._send_json(
+                    HTTPStatus.OK,
+                    {
+                        "ok": True,
+                        "acquisition": self.runtime.inspect_acquisition(
+                            self._required_text(payload)
+                        ),
+                    },
+                )
+                return
             if self.path == "/api/start":
                 state = self.runtime.start()
             elif self.path == "/api/pause":
@@ -51,6 +76,11 @@ class DevelopmentRequestHandler(BaseHTTPRequestHandler):
                 state = self.runtime.send_external_stimulus(self._required_text(payload))
             elif self.path == "/api/thought":
                 state = self.runtime.inject_internal_thought(self._required_text(payload))
+            elif self.path == "/api/acquire":
+                state = self.runtime.acquire_from_text(
+                    self._required_text(payload),
+                    needs=self._optional_needs(payload),
+                )
             elif self.path == "/api/concept":
                 state = self.runtime.define_concept(
                     self._required_string(payload, "concept_id"),
@@ -104,6 +134,15 @@ class DevelopmentRequestHandler(BaseHTTPRequestHandler):
         value = payload.get(field)
         if not isinstance(value, str) or not value.strip():
             raise ValueError(f"A non-empty {field} field is required.")
+        return value
+
+    @staticmethod
+    def _optional_needs(payload: dict[str, object]) -> list[str] | None:
+        value = payload.get("needs")
+        if value is None:
+            return None
+        if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+            raise ValueError("The needs field must be a list of acquisition need names.")
         return value
 
     @staticmethod

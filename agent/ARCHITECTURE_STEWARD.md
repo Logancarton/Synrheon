@@ -126,9 +126,9 @@ Keep recurrence outside the primary MT-1 mechanism unless separately preregister
 TD-0 stable token cards               BUILT
 TD-1 reversible sense inventory       BUILT
 TD-2 alias/morphology storage         BUILT
-TD-3 exact surface segmentation       NEXT
-TD-4 known/unknown acquisition        PENDING
-TD-5 contextual sense learning        PENDING EXPERIMENT
+TD-3 exact surface segmentation       BUILT + INTEGRATED
+TD-4 known/unknown acquisition        BUILT + INTEGRATED
+TD-5 contextual sense learning        NEXT; PREREGISTER FIRST
 ```
 
 The tracks may progress in parallel, but Token Deck improvements must not alter MT-1 conditions unless a future preregistration explicitly combines them.
@@ -253,6 +253,8 @@ state.py               explicit organism/substrate state; contains TokenDeck
 cognition.py           Ground 0 public contracts / cognitive boundary
 contextual_search.py   reversible candidate field + transition checkpoints
 token_deck.py          stable token/sense identity + reversible sense state
+surface_segmentation.py  TD-3 exact surface observation; owns no identity
+acquisition_routing.py   TD-4 known/unknown routing; read-only
 policy.py              retained E011-A donor policy
 policy_learning.py     retained E011-A learning
 experience.py          ordered current-episode experience + provenance
@@ -379,3 +381,54 @@ Before declaring a bounded change complete, confirm:
 - negative results simplify rather than trigger post-hoc tuning;
 - docs match actual current truth;
 - intended files were committed without disturbing unrelated work.
+
+## Test taxonomy and failure triage
+
+A plain `python3 -m pytest` runs everything and **must be green**. Markers select and
+report; they are never permission for a test to fail.
+
+```text
+@pytest.mark.current      production architecture, invariants, live integration
+                          failure = defect; blocks the stage
+
+@pytest.mark.scientific   implementation/integrity of a current preregistered experiment
+                          must pass; verifies the experiment runs correctly and its frozen
+                          classifier behaves — NOT that its hypothesis is true
+
+@pytest.mark.historical   reproduction of a superseded experiment's preserved result
+                          passes when the recorded outcome is still reproduced,
+                          including a recorded negative outcome
+```
+
+The repository separates experimental outcomes from software outcomes:
+
+```text
+experiment
+    ↓
+measure observations
+    ↓
+frozen classifier evaluates the hypothesis
+    ↓
+scientific verdict: SUPPORTED / DISCOUNTED / MIXED / INCONCLUSIVE
+    ↓
+software test verifies the classifier and the preserved result behave correctly
+    ↓
+pytest stays green
+```
+
+A preregistered hypothesis must never be encoded directly as a bare pytest assertion.
+Encode the observation and the frozen threshold separately, so a failed hypothesis reads as
+a recorded verdict rather than a red test.
+
+When a test fails:
+
+```text
+1. Identify its category.
+2. Never modify current production code merely to make a superseded
+   scientific hypothesis pass.
+3. For a historical reproduction, compare against the preserved record in
+   the test's module docstring. A changed observation is the finding.
+4. Only current regression/integrity failures block the stage.
+```
+
+> **Never modify the current organism to make an obsolete scientific hypothesis come true.**

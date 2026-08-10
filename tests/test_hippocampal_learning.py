@@ -1,3 +1,6 @@
+
+import pytest
+
 from experiments.hippocampal_learning import (
     CHANNEL_COUNT,
     evaluate,
@@ -5,6 +8,8 @@ from experiments.hippocampal_learning import (
     infer,
     train_resistance,
 )
+
+pytestmark = pytest.mark.historical
 
 
 def test_learning_creates_expected_resistance_profile() -> None:

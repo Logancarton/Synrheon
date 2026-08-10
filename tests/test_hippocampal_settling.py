@@ -1,4 +1,9 @@
+
+import pytest
+
 from experiments.hippocampal_settling import daisy_leash_scenario, settle, Candidate
+
+pytestmark = pytest.mark.historical
 
 
 def test_recurrence_can_overturn_initial_winner() -> None:

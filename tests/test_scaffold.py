@@ -14,6 +14,8 @@ from synrheon.dev_server import create_development_server
 from synrheon.runtime import SynrheonRuntime
 from synrheon.state import CognitiveSubstrate, Concept, WorldRelation
 
+pytestmark = pytest.mark.current
+
 
 def test_scaffold_imports() -> None:
     import synrheon

@@ -62,11 +62,11 @@ Do not infer from D6 that multi-taper processing is necessary, residual refineme
 Immediate boundary:
 
 ```text
-D6 result preserved
+D6 result preserved                                    DONE
     ↓
-MT-1 preregistration
+MT-1 preregistration — docs/MT1_PREREGISTRATION.md     FROZEN
     ↓
-matched-compute multi-taper implementation
+matched-compute multi-taper implementation             NEXT
     ↓
 integrity + synthetic smoke
     ↓
@@ -87,10 +87,15 @@ Current Token Deck state:
 TD-0 stable token cards               Built
 TD-1 multiple reversible senses       Built
 TD-2 alias/morphology storage         Built, non-inferential
-TD-3 exact surface segmentation       Next
-TD-4 known/unknown acquisition        Pending
-TD-5 contextual sense learning        Pending experiment
+TD-3 exact surface segmentation       Built + Integrated (td3-exact-surface-v1)
+TD-4 known/unknown acquisition        Built + Integrated (td4-acquisition-routing-v1)
+TD-5 contextual sense learning        Next; preregister before results
 ```
+
+TD-3 owner is `src/synrheon/surface_segmentation.py`. It observes surface structure and
+assigns no token, sense, or concept identity, so it can be replaced without invalidating
+anything the Token Deck owns. Inspect it with `python3 -m synrheon segment "<text>"`,
+`POST /api/segment`, or `state.stimuli[].segmentation`.
 
 The representation track may advance while MT-1 is designed, but it may not change MT-1 inputs, feature channels, thresholds, data, or interpretation after the MT-1 boundary is frozen.
 
@@ -294,6 +299,58 @@ live stimulus test if integrated
 
 Do not equate passing pytest with cognitive verification.
 
+## Test taxonomy and failure triage
+
+A plain `python3 -m pytest` runs everything and **must be green**. Markers select and
+report; they are never permission for a test to fail.
+
+```text
+@pytest.mark.current      production architecture, invariants, live integration
+                          failure = defect; blocks the stage
+
+@pytest.mark.scientific   implementation/integrity of a current preregistered experiment
+                          must pass; verifies the experiment runs correctly and its frozen
+                          classifier behaves — NOT that its hypothesis is true
+
+@pytest.mark.historical   reproduction of a superseded experiment's preserved result
+                          passes when the recorded outcome is still reproduced,
+                          including a recorded negative outcome
+```
+
+The repository separates experimental outcomes from software outcomes:
+
+```text
+experiment
+    ↓
+measure observations
+    ↓
+frozen classifier evaluates the hypothesis
+    ↓
+scientific verdict: SUPPORTED / DISCOUNTED / MIXED / INCONCLUSIVE
+    ↓
+software test verifies the classifier and the preserved result behave correctly
+    ↓
+pytest stays green
+```
+
+A preregistered hypothesis must never be encoded directly as a bare pytest assertion.
+Encode the observation and the frozen threshold separately, so a failed hypothesis reads as
+a recorded verdict rather than a red test.
+
+When a test fails:
+
+```text
+1. Identify its category.
+2. Never modify current production code merely to make a superseded
+   scientific hypothesis pass.
+3. For a historical reproduction, compare against the preserved record in
+   the test's module docstring. A changed observation is the finding.
+4. Only current regression/integrity failures block the stage.
+```
+
+> **Never modify the current organism to make an obsolete scientific hypothesis come true.**
+
+
 ## Step 9 — stimulus-test process, not phrases
 
 For organism-facing work:
@@ -424,7 +481,10 @@ Run relevant focused tests first, then broader gates as appropriate:
 
 ```bash
 python3 -m pytest -q <focused tests>
-python3 -m pytest -q
+python3 -m pytest -q                 # everything; must be green
+python3 -m pytest -q -m current      # production architecture and invariants
+python3 -m pytest -q -m scientific   # current experiment implementation/integrity
+python3 -m pytest -q -m historical   # reproduction of preserved historical results
 python3 -m compileall -q src tests experiments
 git diff --check
 git status --short

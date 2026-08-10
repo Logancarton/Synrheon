@@ -20,6 +20,55 @@ experiment/hippocampal-sparse-settling
 
 Do not silently move scientific work back to `main` or to the historical hippocampal branch.
 
+## Governing principle
+
+> **Never modify the current organism to make an obsolete scientific hypothesis come true.**
+
+A scientific experiment can run correctly and conclude that its hypothesis failed. That is a
+successful experiment, not a defect. As Synrheon accumulates failed experiments this
+distinction becomes more important, not less.
+
+## Test taxonomy
+
+A plain `python3 -m pytest` runs everything and **must be green**. Markers are for selection
+and reporting; they are never permission for a test to fail.
+
+```text
+@pytest.mark.current      production architecture, invariants, live integration
+                          failure = defect; blocks the stage
+
+@pytest.mark.scientific   implementation/integrity of a current preregistered experiment
+                          must pass; verifies the experiment runs correctly and its frozen
+                          classifier behaves — NOT that its hypothesis is true
+
+@pytest.mark.historical   reproduction of a superseded experiment's preserved result
+                          passes when the recorded outcome is still reproduced,
+                          including a recorded negative outcome
+```
+
+MT-1 and TD-5 belong to `scientific`. If MT-1 concludes that multi-stage settling provides
+no advantage, MT-1 **succeeded** as an experiment even though the hypothesis failed, and no
+test should turn red.
+
+### When a test fails
+
+```text
+1. Identify its category: current architecture, current preregistered
+   experiment, or historical evidence.
+
+2. Never modify current production code merely to make a superseded
+   scientific hypothesis pass.
+
+3. For a historical reproduction, check whether the observed value still
+   matches the preserved record in the test's module docstring. A changed
+   value is the finding; a failed original threshold is not.
+
+4. Only current regression/integrity failures block the stage.
+```
+
+Report results by category. `224 passed` with a category breakdown, never
+`220 passed, 4 bugs remain`.
+
 ## Read first
 
 Before material work, read in this order:
@@ -63,18 +112,18 @@ D6 does **not** establish multi-taper necessity, residual refinement, recurrence
 SCIENTIFIC TRACK
 D6 complete
     ↓
-MT-1 preregistration
+MT-1 preregistration FROZEN — docs/MT1_PREREGISTRATION.md
     ↓
-matched-compute multi-taper falsification
+matched-compute multi-taper falsification   ← implement next
 
 REPRESENTATION TRACK
 TD-0/1/2 Token Deck built
     ↓
-TD-3 exact surface segmentation
+TD-3 exact surface segmentation BUILT + INTEGRATED (td3-exact-surface-v1)
     ↓
-TD-4 known/unknown routing
+TD-4 known/unknown routing BUILT + INTEGRATED (td4-acquisition-routing-v1)
     ↓
-TD-5 contextual sense experiment
+TD-5 contextual sense experiment            ← preregister next
 ```
 
 Keep the tracks separate until an experiment explicitly preregisters their integration.
@@ -128,6 +177,8 @@ state.py               organism/substrate state; contains TokenDeck
 cognition.py           Ground 0 public contracts / cognitive boundary
 contextual_search.py   reversible candidate field / transition checkpoints
 token_deck.py          stable token/sense identity and reversible sense state
+surface_segmentation.py  TD-3 exact surface observation; owns no identity
+acquisition_routing.py   TD-4 known/unknown routing; read-only
 policy.py              retained E011-A donor policy
 policy_learning.py     retained E011-A learning
 experience.py          ordered experience + provenance
@@ -161,8 +212,22 @@ Automated tests can support `Built` or `Integrated`; they do not independently g
 
 ## Immediate priorities
 
-1. Preserve D6 as completed development evidence.
-2. Freeze MT-1 before implementing result-bearing changes.
-3. Verify Token Deck TD-0/1/2 locally.
-4. Build TD-3 exact segmentation without meaning inference.
-5. Continue stimulus-test development by inspecting backend-owned state and converting failures into process-level regression tests.
+1. Implement MT-1 exactly against the frozen preregistration; do not move a threshold.
+2. Drive TD-3/TD-4 with new stimuli, inspect the exact spans and routes, and convert any
+   failure into a process-level regression test.
+3. Preregister TD-5 before any result-bearing sense-learning implementation.
+4. Keep observation identity-free: `acquire_route` is the only path to a token card, and it
+   must be called explicitly.
+5. Keep the tracks separate — MT-1 forbids Token Deck output in every condition.
+
+Stimulus inspection paths:
+
+```text
+python3 -m synrheon segment "<text>"        TD-3 observation
+python3 -m synrheon route "<text>"          TD-4 routing against an empty deck
+POST /api/segment {"text": ...}
+POST /api/acquisition {"text": ...}         TD-4 routing against the live deck
+POST /api/acquire {"text": ..., "needs": [...]}   explicit acquisition
+state.stimuli[].segmentation
+state.stimuli[].acquisition
+```

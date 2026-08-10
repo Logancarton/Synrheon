@@ -1,3 +1,6 @@
+
+import pytest
+
 from experiments.hippocampal_equivalence import (
     compare_episode,
     evaluate_equivalence,
@@ -11,6 +14,8 @@ from experiments.hippocampal_learning import (
     train_resistance,
 )
 from experiments.hippocampal_settling import settle
+
+pytestmark = pytest.mark.historical
 
 
 def test_exact_one_pass_matches_first_cycle_winner() -> None:

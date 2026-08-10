@@ -60,3 +60,21 @@ This is not a test designed to make the theory pass. A failure means the propose
 python3 -m experiments.hippocampal_confidence_gated --quick
 python3 -m pytest -q tests/test_hippocampal_confidence_gated.py
 ```
+
+## Observed result — recorded 2026-08-09
+
+Reproduced by `tests/test_hippocampal_confidence_gated.py` (marked `historical`).
+
+```text
+seeds                           30000-30500
+adaptive accuracy               0.850
+fixed-width accuracy            0.852
+active state savings vs fixed   0.0761
+preregistered minimum savings   0.10
+frozen verdict                  MIXED RESULT
+```
+
+### Standing conclusion
+
+Adaptive gating preserved accuracy and **failed** its preregistered efficiency criterion.
+The hypothesis failed on cost, not on correctness. Do not retune the gate to reach 0.10.

@@ -108,9 +108,9 @@ If the answer is no, we remove multi-stage necessity from the architecture. Hard
 TD-0 stable token identity          Built
 TD-1 multiple reversible senses     Built
 TD-2 morphology/alias storage       Built
-TD-3 surface segmentation           Next
-TD-4 known/unknown routing          Later
-TD-5 contextual sense learning      Later experiment
+TD-3 surface segmentation           Built + Integrated
+TD-4 known/unknown routing          Built + Integrated
+TD-5 contextual sense learning      Next; preregistered experiment
 ```
 
 The Token Deck gives Synrheon stable internal pieces to eventually think with.
@@ -161,7 +161,8 @@ cognitive substrate                       Built
 Token Deck TD-0/1/2                       Built
 reversible candidate field                Built
 E011-A learned action policy              Built experimentally / historical donor
-TD-3 segmenter                            Not Started
+TD-3 segmenter                            Built + Integrated, not Verified
+TD-4 acquisition router                   Built + Integrated, not Verified
 Ground 0 live contextual cognition        Not Integrated
 Durable memory                            Not Started
 Learned retrieval                         Not Started
@@ -202,6 +203,14 @@ contextual_search.py
 
 token_deck.py
     stable token identity, senses, provenance, reversible sense state
+
+surface_segmentation.py
+    TD-3 exact surface observation; spans, offsets, normalized lookup forms
+    owns no token, sense, or concept identity
+
+acquisition_routing.py
+    TD-4 known/unknown routing with recorded evidence; read-only
+    acquire_route is the only path from observation to identity
 
 policy.py / policy_learning.py
     retained E011-A donor mechanism and learning
@@ -290,9 +299,9 @@ Recurrence and Token Deck features should stay out of the primary MT-1 test unle
 
 ### Architecture
 
-Build TD-3 exact surface segmentation.
+TD-3 exact surface segmentation is built and integrated as `td3-exact-surface-v1`.
 
-The first version should preserve:
+It preserves:
 
 ```text
 exact raw text
@@ -301,20 +310,27 @@ character offsets
 normalized lookup forms
 ```
 
-It should **not** decide meaning yet.
+It does **not** decide meaning, and it creates no token identity.
 
-Test with things like:
+Drive it with your own stimuli:
 
-```text
-Daisy ran to the door.
-Daisy's running.
-Don't open the door.
-The well-known doctor arrived at 8:30.
-I paid $12.50.
-Logan said, "Daisy isn't outside."
+```bash
+python3 -m synrheon segment "Daisy's running."
 ```
 
-Then inspect the actual spans/offsets and turn every failure into a process-level regression test.
+or `POST /api/segment {"text": ...}`, or read `state.stimuli[].segmentation` after sending
+a live stimulus. Inspect the actual spans/offsets and turn every failure into a
+process-level regression test in `tests/test_surface_segmentation.py`.
+
+TD-4 known/unknown routing is built on top of `SurfaceSegmentation.lookup_spans()`. Drive
+it with `python3 -m synrheon route "<text>"`, `POST /api/acquisition`, or
+`state.stimuli[].acquisition`. Routing is read-only; `acquire_route` is the only path to a
+token card. Names and entities are never silently treated as dictionary words, and any
+dictionary, parser, or LLM assistance stays a proposal with provenance rather than truth.
+
+Next is TD-5, the first serious language-learning experiment. Preregister it before any
+result-bearing implementation: held-out contexts, ambiguous cases where abstention is
+correct, context reversals, and a simple frequency/default-sense baseline.
 
 ## Important scientific guardrails
 

@@ -94,26 +94,39 @@ Interpretation:
 
 The result does not establish that multiple stages are useful. D6-E residual refinement remains diagnostic/mixed and had no preregistered success threshold.
 
-## Immediate scientific boundary — MT-1 preregistration
+## Immediate scientific boundary — MT-1 implementation
 
-MT-1 is now unblocked for specification, not for ad-hoc tuning.
+Frozen source:
+
+```text
+docs/MT1_PREREGISTRATION.md
+```
+
+Status: **preregistration frozen; implementation Not Started**
 
 Central question:
 
 > After controlling transition-state persistence, does more than one soft contextual settling stage materially outperform one good soft stage under matched computation?
 
-Conceptual controls to freeze precisely before result-bearing implementation:
+Frozen conditions:
 
 ```text
-retrieval/no-taper anchor
-single full-context soft
-multi-soft with naive carry
-multi-soft with controlled reset
-scrambled/reversed context order
-matched-compute hard staged pruning
+M0 retrieval anchor
+M1 single full-context soft                  primary baseline
+M2 multi-soft with naive carry               pathology control
+M3 multi-soft, reset + retained narrowing    primary treatment
+M4 multi-soft with full reset                wasted-stage sanity control
+M5 reversed stage order                      order control
+M6 matched-compute hard staged pruning       reversibility control
 ```
 
-Keep recurrence and Token Deck improvements outside the primary comparison unless explicitly preregistered before results.
+Frozen compute rule: one candidate x channel feature evaluation is the unit; every
+condition receives eight nominal channel-cycle sweeps; `E(M3) <= 1.10 * E(M1)` gates any
+supportive reading. Frozen material effect: `M3 - M1 >= 0.010` nDCG@10 with a positive
+95% paired bootstrap lower bound over at least 30 transition-evaluable queries.
+
+Recurrence and Token Deck output are excluded from every condition. Thresholds may now
+move only through an explicit versioned amendment recorded before further results.
 
 ## Production-facing contextual search
 
@@ -143,16 +156,18 @@ D6 used this same transition-state contract. The live runtime still lacks a legi
 
 ## Token Deck
 
-Owner:
+Owners:
 
 ```text
-src/synrheon/token_deck.py
+src/synrheon/token_deck.py            token/sense identity and reversible sense state
+src/synrheon/surface_segmentation.py  TD-3 exact surface observation
 ```
 
-Integrated storage owner:
+Integrated storage owners:
 
 ```text
-CognitiveSubstrate.token_deck in src/synrheon/state.py
+CognitiveSubstrate.token_deck in src/synrheon/state.py    identity
+StimulusRecord.segmentation in src/synrheon/state.py      per-stimulus observation
 ```
 
 Current status:
@@ -161,9 +176,9 @@ Current status:
 TD-0 stable token identity                 Built
 TD-1 multiple reversible senses            Built
 TD-2 alias/morphology storage              Built, non-inferential
-TD-3 exact surface segmentation            Not Started — next build
-TD-4 known/unknown acquisition              Not Started
-TD-5 contextual sense disambiguation       Not Started
+TD-3 exact surface segmentation            Built + Integrated, not Verified
+TD-4 known/unknown acquisition              Built + Integrated, not Verified
+TD-5 contextual sense disambiguation       Not Started — preregistration next
 TD-6 concept/entity bridge                  Contract begun; behavior pending
 TD-7 event/role composition                 Not Started
 TD-8 durable Token Deck                     Not Started
@@ -181,7 +196,34 @@ newly discovered senses reopen the inventory rather than inheriting permanent ze
 provenance remains inspectable
 ```
 
-The live chat path does not yet automatically segment input into Token Deck observations.
+TD-3 invariants, enforced at construction rather than only tested:
+
+```text
+every character of the input belongs to exactly one span
+spans rejoin into the exact original string
+offsets always index the original text, never a normalized form
+the segmenter assigns no token, sense, or concept identity
+```
+
+Frozen segmenter version: `td3-exact-surface-v1`.
+
+The live chat path now segments each stimulus and records the observation on the stimulus,
+but it still creates **no** token cards. The cognitive substrate is unchanged by chat, and
+a regression test asserts that. Turning an observed span into an identity is TD-4's
+decision.
+
+Stimulus inspection paths:
+
+```text
+python3 -m synrheon segment "<text>"       JSON observation; no session, no state change
+python3 -m synrheon route "<text>"          TD-4 routing against a fresh empty deck
+POST /api/segment {"text": ...}             inspection only; records nothing
+POST /api/acquisition {"text": ...}         TD-4 routing against the live deck
+POST /api/acquire {"text": ..., "needs": [...]}   explicit acquisition; the only mutation
+state.stimuli[].segmentation                observation attached to each live stimulus
+state.stimuli[].acquisition                 routing attached to each live stimulus
+trace events "surface_segmented" / "acquisition_routed" / "tokens_acquired"
+```
 
 ## Live organism status
 
@@ -194,8 +236,10 @@ The live chat path does not yet automatically segment input into Token Deck obse
 | E011-A operation/target policy | Built experimentally | Historical controlled transfer donor mechanism |
 | Ground 0 checkpoint contract | Built | Public phase/disposition contract exists |
 | Reversible candidate field | Built | Not live-integrated; no legitimate broad source yet |
-| Token Deck TD-0/1/2 | Built | Stored in substrate; not yet auto-fed by language |
-| TD-3 segmentation | Not Started | Immediate representation build target |
+| Token Deck TD-0/1/2 | Built | Stored in substrate; identity still not auto-created |
+| TD-3 segmentation | Built + Integrated | Live stimuli observed exactly; awaiting human stimulus verification |
+| TD-4 acquisition routing | Built + Integrated | Read-only known/unknown routing; acquisition stays explicit |
+| TD-5 sense disambiguation | Not Started | First serious language-learning experiment; preregister first |
 | Learned context selection | Not Started | Must be earned/tested |
 | Production multi-taper controller | Not Started | Blocked on MT-1 evidence |
 | Production recurrence | Not Started | Must earn task-specific role |
@@ -211,6 +255,8 @@ state.py               explicit organism/substrate state; contains TokenDeck
 cognition.py           Ground 0 public cognitive contracts
 contextual_search.py   reversible candidate field / context-transition checkpoints
 token_deck.py          stable token/sense identity + reversible sense state
+surface_segmentation.py  TD-3 exact surface observation; assigns no identity
+acquisition_routing.py   TD-4 known/unknown routing; read-only, acquires only when called
 policy.py              retained E011-A operation/target donor policy
 policy_learning.py     retained E011-A learning
 learning.py            temporary E011 compatibility export
@@ -231,14 +277,16 @@ dev_server.py
         ↓
 runtime.py
         ↓
-temporal.py + experience.py
+temporal.py + experience.py + surface_segmentation.py
         ↓
 state.py / trace
         ↓
 UI
 ```
 
-Token Deck storage exists inside state, but raw chat is not yet automatically segmented into token observations. Ground 0 contextual search is not yet in the live path.
+Raw chat is now segmented into exact surface observations, but no identity is created from
+it. Ground 0 contextual search is still not in the live path, and no legitimate broad
+candidate source exists yet.
 
 ## Development rule
 

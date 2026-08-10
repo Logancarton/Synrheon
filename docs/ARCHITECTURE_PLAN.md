@@ -194,24 +194,28 @@ Condition E residual refinement remains unresolved. Do not promote `full - parti
 
 ## Architecture slice 3 — MT-1 multi-stage necessity
 
-Status: **Next scientific gate; preregistration required before result-bearing implementation**
+Status: **Preregistration frozen at `docs/MT1_PREREGISTRATION.md`; implementation next**
 
 Central question:
 
 > Once transition-state persistence is controlled, does more than one soft contextual settling stage add material value over one good soft stage under matched computation?
 
-Conceptual conditions:
+Frozen conditions:
 
 ```text
-retrieval/no-taper anchor
-single full-context soft
-multi-soft with naive carry       # known pathology control
-multi-soft with controlled reset
-scrambled/reversed context order
-matched-compute hard staged pruning
+M0 retrieval/no-taper anchor
+M1 single full-context soft                  primary baseline
+M2 multi-soft with naive carry               known pathology control
+M3 multi-soft, reset + retained narrowing    primary treatment
+M4 multi-soft with full reset                wasted-stage sanity control
+M5 reversed context order
+M6 matched-compute hard staged pruning
 ```
 
-The exact equations, compute matching, metric, statistics, thresholds, and failure rules must be frozen in the MT-1 preregistration.
+The compute unit is one candidate x channel feature evaluation. `MULTI_STAGE_SUPPORTED`
+requires `n >= 30`, `M3 - M1 >= 0.010` nDCG@10, a positive 95% paired bootstrap lower
+bound, and `E(M3) <= 1.10 * E(M1)`. These may move only through an explicit versioned
+amendment recorded before further results.
 
 Critical rule:
 
@@ -223,12 +227,14 @@ Recurrence stays outside the primary MT-1 mechanism unless separately preregiste
 
 ## Architecture slice 4 — Token Deck representation
 
-Status: **TD-0/1/2 Built; TD-3 next**
+Status: **TD-0/1/2/3/4 Built; TD-5 next (preregister first)**
 
-Owner:
+Owners:
 
 ```text
-src/synrheon/token_deck.py
+src/synrheon/token_deck.py            identity
+src/synrheon/surface_segmentation.py  observation
+src/synrheon/acquisition_routing.py   known/unknown routing
 ```
 
 Stored inside:
@@ -262,7 +268,7 @@ D6's context lesson applies here as a representational invariant: one context ma
 
 ## TD-3 — exact surface segmentation
 
-Immediate representation build target:
+Status: **Built + Integrated** as `td3-exact-surface-v1`.
 
 ```text
 raw input
@@ -274,7 +280,12 @@ character offsets
 normalized lookup forms
 ```
 
-TD-3 should preserve the exact original text and be replaceable later without invalidating stable token/sense identity.
+Two invariants are enforced at construction, not merely tested: every character belongs to
+exactly one span, and the spans rejoin into the exact original string. Offsets always index
+the original text, never a normalized form.
+
+TD-3 preserves the exact original text and remains replaceable without invalidating stable
+token/sense identity, because it assigns no identity at all.
 
 TD-3 must not:
 
@@ -287,9 +298,30 @@ ask an LLM for an answer
 collapse punctuation/offset provenance
 ```
 
-Tests should include punctuation, contractions, possessives, hyphenation, decimals/currency, times, quotes, symbols, names, case variants, and reconstruction from offsets.
+Its only joining rule is positional: a punctuation or symbol character joins a lexical span
+when, and only when, lexical characters flank it on both sides. Every absorbed mark is
+recorded with its offset, so a later stage can re-split without the segmenter guessing that
+a span is an abbreviation, an address, or a URL.
+
+Regression coverage includes punctuation, contractions, possessives, hyphenation,
+decimals/currency, times, quotes, symbols, names, case variants, whitespace and layout,
+compatibility normalization, invisible characters, emoji, and reconstruction from offsets.
 
 ## TD-4 — known/unknown acquisition boundary
+
+Status: **Built + Integrated** as `td4-acquisition-routing-v1`.
+
+Routing is read-only. `acquire_route` is the only path from an observed span to a token
+card, and nothing on the live path calls it, so observing language never silently becomes
+identity.
+
+Each route carries every mechanical signal observed for the span, including signals that
+did not decide the proposed need, so a learned router can later be compared against this
+one on identical observations.
+
+Where orthography does not isolate a class the router abstains with `unresolved` rather
+than guessing: sentence-initial capitals and all-capital forms both fall here. Acquiring a
+routed name creates identity and **no sense** — deciding what a token can mean is TD-5.
 
 After stable segmentation:
 
@@ -440,9 +472,9 @@ Integration should proceed only as legitimate dependencies appear:
 
 ```text
 1. Token Deck representation                         TD-0/1/2 Built
-2. exact segmentation                                TD-3 Next
-3. known/unknown acquisition                         TD-4
-4. contextual sense learning                         TD-5 experiment
+2. exact segmentation                                TD-3 Built + Integrated
+3. known/unknown acquisition                         TD-4 Built + Integrated
+4. contextual sense learning                         TD-5 Next; preregister first
 5. concept/entity/event representation               later
 6. durable memory                                    later
 7. legitimate retrieval/candidate source             later

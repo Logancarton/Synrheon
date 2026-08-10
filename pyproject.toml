@@ -23,8 +23,19 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# A plain `python3 -m pytest` runs everything and must be green. Markers are for
+# selection and reporting; they are never permission for a test to fail.
+#   python3 -m pytest                    everything; must be green
+#   python3 -m pytest -m current         production architecture and invariants
+#   python3 -m pytest -m scientific      current experiment implementation/integrity
+#   python3 -m pytest -m historical      reproduction of preserved historical results
 addopts = "-ra"
 pythonpath = ["src"]
+markers = [
+    "current: production architecture, invariants, and live integration. A failure is a defect and blocks the stage.",
+    "scientific: implementation and integrity of a current preregistered experiment. These must pass. They verify the experiment runs correctly and its frozen classifier behaves; they do NOT assert that its hypothesis is true. A hypothesis may pass, fail, or be inconclusive without any test turning red.",
+    "historical: reproduction of a superseded experiment's preserved result. The test passes when the recorded historical outcome is still reproduced, including a recorded negative outcome. Never modify production code or an assay mechanism to reverse one of these conclusions.",
+]
 
 [tool.ruff]
 line-length = 100

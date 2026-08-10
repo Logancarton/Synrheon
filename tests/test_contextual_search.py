@@ -4,6 +4,8 @@ import pytest
 
 from synrheon.contextual_search import ReversibleCandidateField
 
+pytestmark = pytest.mark.current
+
 
 def test_soft_suppression_never_deletes_dormant_candidate_state() -> None:
     field = ReversibleCandidateField({"a": 0.6, "b": 0.3, "c": 0.1})

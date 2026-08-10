@@ -9,9 +9,12 @@ from __future__ import annotations
 from pathlib import Path
 from threading import Event, RLock, Thread
 from time import sleep
+from typing import Sequence
 
+from synrheon.acquisition_routing import AcquisitionNeed, acquire_route, route_segmentation
 from synrheon.policy_learning import load_recorded_learning_metrics
 from synrheon.state import Concept, OrganismState, StimulusKind, StimulusRecord, TraceEvent, WorldRelation
+from synrheon.surface_segmentation import segment_surface
 from synrheon.temporal import utc_now
 
 _E011A_EVIDENCE_FILE = Path(__file__).resolve().parents[2] / "data" / "e011a_v1_evidence.json"
@@ -119,6 +122,74 @@ class SynrheonRuntime:
             )
             return self._state.snapshot()
 
+    def inspect_segmentation(self, text: str) -> dict[str, object]:
+        """Segment text for inspection without recording a stimulus or mutating state.
+
+        This is the stimulus-testing entry point for TD-3. It observes surface
+        structure only; it creates no token card, sense, or concept.
+        """
+        return segment_surface(text).to_dict()
+
+    def inspect_acquisition(self, text: str) -> dict[str, object]:
+        """Route text against the live deck without recording or acquiring anything.
+
+        This is the stimulus-testing entry point for TD-4. Routing is read-only:
+        acquisition is a separate explicit decision.
+        """
+        with self._lock:
+            return route_segmentation(
+                segment_surface(text), self._state.substrate.token_deck
+            ).to_dict()
+
+    def acquire_from_text(
+        self,
+        text: str,
+        *,
+        needs: Sequence[AcquisitionNeed] | None = None,
+    ) -> dict[str, object]:
+        """Explicitly admit routed unknown forms from text into the Token Deck.
+
+        This is the deliberate developer decision that TD-4 routing deliberately withholds.
+        Nothing on the stimulus path calls it. ``needs`` optionally restricts which
+        acquisition classes are admitted, so `unresolved` forms can be left alone.
+
+        Identity only: no sense is created, because deciding what a token can mean is a
+        TD-5 question.
+        """
+
+        cleaned = text.strip()
+        if not cleaned:
+            raise ValueError("Acquisition text cannot be empty.")
+
+        with self._lock:
+            self._require_started()
+            deck = self._state.substrate.token_deck
+            report = route_segmentation(segment_surface(cleaned), deck)
+            admitted = [
+                route
+                for route in report.unknown()
+                if needs is None or route.acquisition_need in set(needs)
+            ]
+
+            coordinate = self._state.computational_time.next_coordinate()
+            acquired: list[str] = []
+            for route in admitted:
+                card = acquire_route(
+                    deck,
+                    route,
+                    evidence_id=f"acquisition-{coordinate.sequence}-{route.span_index}",
+                    origin="observed",
+                    context_id=self._state.session_id,
+                )
+                acquired.append(f"{route.surface}={route.acquisition_need}->{card.token_id}")
+
+            self._trace(
+                "tokens_acquired",
+                f"Explicitly acquired {len(acquired)} of {len(report.unknown())} unknown "
+                f"form(s) with no senses: {', '.join(acquired) if acquired else 'none'}.",
+            )
+            return self._state.snapshot()
+
     def snapshot(self) -> dict[str, object]:
         with self._lock:
             return self._state.snapshot()
@@ -143,6 +214,8 @@ class SynrheonRuntime:
                 coordinate=coordinate,
             )
 
+            segmentation = segment_surface(cleaned)
+            acquisition = route_segmentation(segmentation, self._state.substrate.token_deck)
             sequence = self._state.next_event_sequence()
             self._state.stimuli.append(
                 StimulusRecord(
@@ -151,6 +224,8 @@ class SynrheonRuntime:
                     text=cleaned,
                     created_at=coordinate.occurred_at,
                     experience_event_id=experience_event.event_id,
+                    segmentation=segmentation,
+                    acquisition=acquisition,
                 )
             )
             label = "chat_stimulus_received" if kind == "external" else "thought_injected"
@@ -166,6 +241,18 @@ class SynrheonRuntime:
                     detail=detail,
                     created_at=coordinate.occurred_at,
                 )
+            )
+            self._trace(
+                "surface_segmented",
+                f"{segmentation.segmenter_version} observed {len(segmentation.spans)} spans "
+                f"({len(segmentation.lookup_spans())} lookup candidates) in stimulus "
+                f"#{sequence}; no sense or concept was assigned.",
+            )
+            self._trace(
+                "acquisition_routed",
+                f"{acquisition.router_version} routed {len(acquisition.routes)} lookup spans: "
+                f"{len(acquisition.known())} known, {len(acquisition.unknown())} unknown "
+                f"{acquisition.need_counts()}; no token card was created.",
             )
             return self._state.snapshot()
 

@@ -65,9 +65,9 @@ a fixed semantic ontology
 TD-0 stable token-card contract             BUILT
 TD-1 multiple reversible senses             BUILT
 TD-2 alias/morphology storage               BUILT — non-inferential
-TD-3 exact surface segmentation             NEXT
-TD-4 known/unknown acquisition              NOT STARTED
-TD-5 contextual sense disambiguation        NOT STARTED
+TD-3 exact surface segmentation             BUILT + INTEGRATED — not yet Verified
+TD-4 known/unknown acquisition              BUILT + INTEGRATED — not yet Verified
+TD-5 contextual sense disambiguation        NEXT — SCIENTIFIC EXPERIMENT
 TD-6 concept/entity bridge                  CONTRACT BEGUN; BEHAVIOR NOT STARTED
 TD-7 event/semantic-role composition        NOT STARTED
 TD-8 durable Token Deck                     NOT STARTED
@@ -75,17 +75,24 @@ TD-9 candidate-source bridge                NOT STARTED
 TD-10 learned vocabulary growth             NOT STARTED
 ```
 
-Current owner:
+Current owners:
 
 ```text
-src/synrheon/token_deck.py
+src/synrheon/token_deck.py            token/sense identity and reversible sense state
+src/synrheon/surface_segmentation.py  TD-3 exact surface observation
+src/synrheon/acquisition_routing.py   TD-4 known/unknown routing; read-only
 ```
 
 Current substrate integration:
 
 ```text
-CognitiveSubstrate.token_deck
+CognitiveSubstrate.token_deck         identity storage
+StimulusRecord.segmentation           TD-3 observation of each live stimulus
+StimulusRecord.acquisition            TD-4 routing of each live stimulus
 ```
+
+Identity and observation are deliberately separate owners: the segmenter assigns no token
+ID, so it can be replaced without invalidating anything the Token Deck already owns.
 
 ## TD-0 — stable token-card contract
 
@@ -138,26 +145,62 @@ Morphology metadata may be stored, but automatic lemmatization or morphological 
 
 ## TD-3 — exact surface segmentation
 
-Status: **NEXT BUILD**
+Status: **BUILT + INTEGRATED — not Verified**
 
-Goal:
-
-Convert raw input into observable surface spans while preserving exact original text and character offsets.
-
-Required output should include at least:
+Owner:
 
 ```text
-original text
-ordered surface spans
-start/end character offsets
-exact span text
-normalized lookup form when applicable
-surface category metadata only when mechanically observable
+src/synrheon/surface_segmentation.py
 ```
 
-TD-3 must not decide meaning.
+Frozen segmenter version:
 
-It must not:
+```text
+td3-exact-surface-v1
+```
+
+### Structural invariants
+
+Both are enforced at construction time, not only in tests:
+
+```text
+every character of the input belongs to exactly one span
+"".join(span.text for span in spans) == original text
+```
+
+A segmentation whose spans have a gap, an overlap, or text that disagrees with its own
+offsets cannot be constructed.
+
+### Output per span
+
+```text
+index                ordinal position
+start / end          character offsets into the exact original string
+text                 exact source slice
+category             alpha | numeric | alphanumeric | whitespace | punctuation | symbol | other
+normalized           lookup form for lexical spans only; None otherwise
+is_lookup_candidate  mechanical eligibility, not a claim of being a known word
+internal_marks       punctuation/symbol characters absorbed inside the span, with offsets
+```
+
+Categories come from Unicode character classes alone. `%` reports as punctuation and `$`
+as symbol because that is what Unicode says, not because of what they mean.
+
+### Segmentation rules
+
+```text
+whitespace runs      one span (layout stays recoverable)
+lexical runs         letters/digits/combining marks
+standalone marks     one span per character (no grouping judgement required)
+internal marks       a mark joins a lexical span only when directly flanked by
+                     lexical characters on both sides
+```
+
+The flanking rule is the whole of the joining policy. It is purely positional, so it
+requires no list of "word-forming" characters — such a list would be a linguistic
+judgement, which TD-3 is not allowed to make.
+
+### What TD-3 still does not do
 
 ```text
 select a sense
@@ -165,32 +208,76 @@ fabricate a concept/entity
 infer truth
 force part of speech
 call an LLM to decide what a span means
-silently discard punctuation or offset provenance
+create a token card or any stable identity
+strip clitics, expand abbreviations, or lemmatize
+silently discard punctuation, whitespace, invisible characters, or offset provenance
 ```
 
-First adversarial stimulus set should include:
+`Daisy's` reports an internal apostrophe. It does not report a possessive.
+
+### Frozen consequences of the flanking rule
+
+These are documented and locked by regression tests so a later change is visible rather
+than silent:
 
 ```text
-Daisy ran to the door.
-Daisy's running.
-Don't open the door.
-The well-known doctor arrived at 8:30.
-I paid $12.50.
-Logan said, "Daisy isn't outside."
-email@example.com
-A/B testing improved 3.5%.
-BANK Bank bank
+Daisy's / Don't / isn't      one span, internal apostrophe recorded
+dogs'                        word and apostrophe split (no right-hand lexical flank)
+well-known                   one span; well--known splits into four
+8:30 / 3.5 / 12.50           numeric compounds; no time or percentage is claimed
+$12.50                       symbol span separate from the numeric span
+U.S.                         "U.S" + "."  (no abbreviation inference)
+email@example.com            one span, marks "@." recorded
+https://example.com/path?q=1 "https" ":" "/" "/" then one long compound span
 ```
 
-Verification should prove that spans can be traced back to the exact source string.
+The last case is the rule at its least flattering, and it is kept deliberately. Splitting
+a URL into components is structure recognition, which belongs to TD-4 and later, and every
+absorbed mark is recorded so a later stage can re-split without re-reading the source.
 
-The segmenter should be replaceable later without invalidating stable token/sense identities.
+### Known limitations of `td3-exact-surface-v1`
+
+```text
+no UAX-29 grapheme clustering: emoji modifier and ZWJ sequences split into
+several symbol spans (reconstruction still exact)
+NFKC lookup forms may differ in length from the source ("3½" -> "31⁄2");
+offsets always index the original string, never the normalized form
+```
+
+### Exposure for stimulus testing
+
+```text
+python3 -m synrheon segment "<text>"    exact observation as JSON, no session, no state
+POST /api/segment {"text": ...}          inspection only; records nothing
+StimulusRecord.segmentation              every live stimulus carries its own observation
+trace event "surface_segmented"          span and lookup counts per stimulus
+```
+
+Live stimuli are segmented but create **no** token cards. The cognitive substrate is
+byte-identical before and after a stimulus, and a test asserts it.
+
+### Remaining gate to Verified
+
+Automated tests grant `Built` and `Integrated` only. `Verified` requires observing the
+intended behaviour through the running organism on your own stimuli.
 
 ## TD-4 — known / unknown acquisition boundary
 
-Status: **NOT STARTED**
+Status: **BUILT + INTEGRATED — not Verified**
 
-After segmentation, each relevant surface form asks whether Synrheon already has a usable representation.
+Owner:
+
+```text
+src/synrheon/acquisition_routing.py
+```
+
+Frozen router version:
+
+```text
+td4-acquisition-routing-v1
+```
+
+After segmentation, each lookup span asks whether Synrheon already has a usable representation.
 
 ```text
 surface span
@@ -205,13 +292,111 @@ known token?
                └─ unresolved
 ```
 
-Names/entities must not automatically be treated as dictionary words.
+### Routing is read-only
 
-External dictionary/parser/LLM assistance may later propose candidates with provenance. Proposal is not truth.
+`route_segmentation(segmentation, deck)` creates no token card, no sense, and no concept,
+and it mutates nothing. `acquire_route(deck, route, evidence_id=...)` is the only path from
+observation to identity, and it must be called explicitly.
+
+This keeps the earned invariant intact: observing language never silently becomes identity.
+A live stimulus is segmented and routed, and the cognitive substrate is unchanged.
+
+### Proposal, not truth
+
+Each route carries every mechanical signal observed for the span, including signals that
+did not decide the proposed need:
+
+```text
+known_form / unknown_form         deck resolution
+surface_category                  TD-3 category
+contains_digits                   numeric or alphanumeric
+contains_known_part               a mark-delimited part resolves in the deck
+mark_delimited_structure          internal marks present, no part known
+capitalised                       with sentence-initial or interior position
+uninformative_capital             sentence-initial: the capital carries no name evidence
+all_capitals                      acronym, emphasis, and name are not distinguished
+```
+
+Recording the non-deciding signals is deliberate: a learned router can later be compared
+against this one on identical observations.
+
+### Decision order
+
+```text
+known                                            -> none
+has digits                                       -> number_symbol_or_code
+mark-delimited part resolves in the deck         -> variant_candidate
+internal marks but no known part                 -> unresolved
+capitalised, interior position, not all-capitals -> likely_name_or_entity
+capitalised, sentence-initial or all-capitals    -> unresolved
+lowercase alpha                                  -> ordinary_unknown_word
+otherwise                                        -> unresolved
+```
+
+Names and entities never fall through to `ordinary_unknown_word`.
+
+### The router abstains where orthography is uninformative
+
+```text
+"Logan said, ..."        Logan     unresolved      sentence-initial capital
+'"Rex isn't outside."'   Rex       unresolved      opening quote is skipped, still initial
+"I met BANK yesterday."  BANK      unresolved      all-capitals
+"I met Bank yesterday."  Bank      likely_name_or_entity
+```
+
+A capital at the start of a sentence carries no information about whether a form is a name,
+so the router refuses to guess there. Abstaining is cheap; a confident wrong class would
+propagate into identity.
+
+`SENTENCE_FINAL_MARKS` is the one orthographic convention hard-coded here. It is a frozen,
+inspectable set, and the asymmetry is safe: widening it only widens abstention.
+
+### Containment is not morphology
+
+`variant_candidate` reports that a mark-delimited part of an unknown form resolves in the
+deck — `Daisy's` contains a known `Daisy`. It asserts no lemma, stem, inflection, or
+possessive relationship. TD-2 remains storage-only, and automatic morphological inference
+is still not cognitive truth.
+
+### Acquisition creates identity, never meaning
+
+`acquire_route` calls `TokenDeck.observe` with provenance and creates **no sense**.
+Deciding what a token can mean is TD-5's job. External dictionary/parser/LLM assistance may
+later propose candidates with provenance. Proposal is not truth.
+
+### Exposure for stimulus testing
+
+```text
+python3 -m synrheon route "<text>"        routing against a fresh empty deck
+POST /api/acquisition {"text": ...}        routing against the live deck; acquires nothing
+StimulusRecord.acquisition                 routing of each live stimulus at that moment
+trace event "acquisition_routed"           known/unknown counts and need histogram
+```
+
+### Driving acquisition explicitly
+
+```text
+POST /api/acquire {"text": ..., "needs": [...]}   admit routed unknown forms
+runtime.acquire_from_text(text, needs=...)         same, in process
+trace event "tokens_acquired"                      exactly what was admitted
+```
+
+`needs` optionally restricts which acquisition classes are admitted, so `unresolved` forms
+can be left out of identity entirely. Nothing on the stimulus path calls this.
 
 ## TD-5 — contextual sense disambiguation
 
-Status: **NOT STARTED; SCIENTIFIC EXPERIMENT REQUIRED**
+Status: **NEXT; SCIENTIFIC EXPERIMENT REQUIRED — preregister before results**
+
+This is the first serious language-learning experiment, so it is preregistered like MT-1
+rather than built like TD-3/TD-4.
+
+Prerequisites now satisfied: exact spans with provenance (TD-3), known/unknown resolution
+against stable identity (TD-4), and a reversible multi-sense inventory that a learned
+disambiguator can supply support over without deleting alternatives (TD-1).
+
+Still missing before it can run: a sense-annotated data source, and a frozen decision about
+which contexts are held out.
 
 Goal:
 
@@ -373,21 +558,26 @@ The tracks remain separate:
 
 ```text
 GROUND 0 SCIENCE
-D6 result -> MT-1 preregistration -> matched-compute stage test
+D6 result -> MT-1 preregistration FROZEN -> matched-compute stage test
 
 REPRESENTATION
-TD-0/1/2 -> TD-3 segmentation -> TD-4 acquisition -> TD-5 sense learning
+TD-0/1/2 -> TD-3 segmentation BUILT -> TD-4 acquisition BUILT -> TD-5 sense learning
 ```
 
-Token Deck improvements must not be used to rescue or reinterpret MT-1 after its criteria are frozen.
+`docs/MT1_PREREGISTRATION.md` explicitly forbids Token Deck output from entering any MT-1
+condition. Token Deck improvements must not be used to rescue or reinterpret MT-1 after
+its criteria are frozen.
 
 ## Near-term completion gate
 
-The representation track moves past TD-3 only when:
+The representation track moves past TD-3 when:
 
-- exact source text is preserved;
-- spans and offsets are deterministic under the frozen segmenter version;
-- punctuation/contractions/names/numbers/symbols have explicit tests;
-- no meaning inference leaks into segmentation;
-- failures from stimulus testing become regression tests;
-- Token Deck identity remains stable independent of the segmenter's implementation details.
+- [x] exact source text is preserved — enforced at construction, not only tested;
+- [x] spans and offsets are deterministic under the frozen segmenter version;
+- [x] punctuation/contractions/names/numbers/symbols have explicit tests;
+- [x] no meaning inference leaks into segmentation;
+- [x] Token Deck identity remains stable independent of the segmenter's implementation details;
+- [ ] failures from your own stimulus testing become regression tests.
+
+The last item is open by construction: it stays open until TD-3 has been driven with
+stimuli that were not chosen by the person who wrote it.

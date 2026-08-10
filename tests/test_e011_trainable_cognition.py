@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import pytest
+
 from experiments.e011a import assess_pass_gate, full_assay, generate_world
 from synrheon.policy import CognitiveAction, CognitiveState, LinearCognitivePolicy, RevealedNode
 from synrheon.runtime import SynrheonRuntime
+
+pytestmark = pytest.mark.scientific
 
 
 def _state(prefix: str) -> CognitiveState:

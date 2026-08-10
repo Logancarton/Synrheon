@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+import pytest
+
 import math
 from experiments.ext2_diagnostics import (
     anchored_taper, d1_prior_retention, d3_residual_signal,
@@ -7,6 +10,8 @@ from experiments.ext2_diagnostics import (
 from experiments.external_retrieval_cascade import (
     FeatureMeter, build_environment, learn_parameters, queries_for_split, soft_taper,
 )
+
+pytestmark = pytest.mark.scientific
 
 
 def env(informative=True):

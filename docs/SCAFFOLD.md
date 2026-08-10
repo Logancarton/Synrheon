@@ -16,6 +16,8 @@ src/synrheon/
 ├── cognition.py
 ├── contextual_search.py
 ├── token_deck.py
+├── surface_segmentation.py
+├── acquisition_routing.py
 ├── policy.py
 ├── policy_learning.py
 ├── learning.py          # temporary E011-A compatibility export only
@@ -49,6 +51,18 @@ token_deck.py
     non-inferential morphology metadata
     context-conditioned reversible sense activation
 
+surface_segmentation.py
+    TD-3 exact surface observation (td3-exact-surface-v1)
+    ordered spans, character offsets, normalized lookup forms
+    gap-free coverage and exact reconstruction enforced at construction
+    assigns no token, sense, or concept identity
+
+acquisition_routing.py
+    TD-4 known/unknown acquisition routing (td4-acquisition-routing-v1)
+    read-only: proposes an acquisition need with the evidence that produced it
+    abstains where orthography is uninformative
+    acquire_route is the only observation-to-identity path
+
 policy.py
     retained E011-A trainable operation/target donor mechanism
 
@@ -80,14 +94,20 @@ experiments/
 └── d6_transition_persistence.py
 ```
 
-Current science continues from D6 into MT-1 specification. MT-1 does not yet earn a source file until its preregistration is frozen.
+Current science continues from D6 into MT-1. Its preregistration is now frozen at
+`docs/MT1_PREREGISTRATION.md`, so MT-1 has earned an experiment source file; it does not
+yet exist.
 
 ## Current working architecture
 
 ```text
 raw stimulus
     ↓
-Token Deck representation path            # beginning now
+exact surface segmentation                # TD-3, live
+    ↓
+known/unknown acquisition routing          # TD-4, live and read-only
+    ↓
+Token Deck identity                        # explicit acquisition only
     ↓
 concept/entity/event structure             # future
     ↓
@@ -126,18 +146,18 @@ UI observes; it does not choose
 TRACK A — SCIENCE
 D6 completed
     ↓
-MT-1 preregistration
+MT-1 preregistration frozen
     ↓
-matched-compute stage-necessity experiment
+matched-compute stage-necessity experiment   ← next
 
 TRACK B — REPRESENTATION
 TD-0/1/2 built
     ↓
-TD-3 exact surface segmentation
+TD-3 exact surface segmentation built + integrated
     ↓
-TD-4 known/unknown acquisition
+TD-4 known/unknown acquisition built + integrated
     ↓
-TD-5 contextual sense learning
+TD-5 contextual sense learning          ← preregister next
 ```
 
 Do not let Track B improvements alter Track A after MT-1 is frozen unless a new versioned experiment explicitly combines them.
@@ -147,9 +167,7 @@ Do not let Track B improvements alter Track A after MT-1 is frozen unless a new 
 These remain planned until real implementation earns an owner:
 
 ```text
-surface segmenter                    TD-3 next
-known/unknown acquisition            TD-4
-learned contextual sense selector    TD-5
+learned contextual sense selector    TD-5 next; preregister first
 entity/event composition             later
 durable memory                       later
 learned retrieval                    later

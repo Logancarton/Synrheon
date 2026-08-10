@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import pytest
+
 from synrheon.state import CognitiveSubstrate, OrganismState
+
+pytestmark = pytest.mark.current
 
 
 def test_cognitive_substrate_owns_observable_token_deck_state() -> None:

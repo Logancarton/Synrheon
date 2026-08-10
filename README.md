@@ -97,9 +97,9 @@ Hard pruning losing is not sufficient evidence for multiple soft stages.
 TD-0 stable token identity          Built
 TD-1 multiple reversible senses     Built
 TD-2 alias/morphology storage       Built
-TD-3 exact surface segmentation     Next
-TD-4 known/unknown acquisition      Later
-TD-5 contextual sense learning      Later experiment
+TD-3 exact surface segmentation     Built + Integrated
+TD-4 known/unknown acquisition      Built + Integrated
+TD-5 contextual sense learning      Next; preregistered experiment
 ```
 
 The Token Deck begins the path from raw language to stable internal representations.
