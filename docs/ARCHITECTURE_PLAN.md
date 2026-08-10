@@ -1,14 +1,12 @@
-# Synrheon Architecture Plan — Revision 5 Build/Test Program
+# Synrheon Architecture Plan — Revision 6
 
-## Current architectural thesis
+## Current thesis
 
-Synrheon is no longer treating the historical HCT-2 pipeline as a production blueprint that must be integrated intact.
+Synrheon is being developed as a **question-guided, context-conditional cognitive architecture** with explicit state, provenance, reversible alternatives, and progressively learned cognitive skill.
 
-The current research question is narrower:
+The architecture is not a frozen diagram. Every major mechanism must continue to earn its place through controlled falsification.
 
-> Can a cognitive system keep broad alternatives recoverable while increasing contextual resolution only where the unresolved question earns more computation?
-
-The current working flow is therefore:
+The current working flow is:
 
 ```text
 question / unresolved state
@@ -17,7 +15,10 @@ legitimate broad candidate field
         ↓
 select a potentially discriminating context operation
         ↓
-reversible contextual state transition
+explicit context transition
+    carry | reset/re-anchor | residual/transform | reopen
+        ↓
+reversible contextual settling
         ↓
 re-evaluate what remains unresolved
         ↓
@@ -28,73 +29,79 @@ evidence sufficiency
 COMMIT | ABSTAIN | SEEK EVIDENCE | REOPEN
 ```
 
-This is a research architecture, not a claim that every box is established or live.
+The new Revision 6 addition is important:
+
+> **A settled activation distribution is context-conditional state, not permanently accumulated evidence.**
+
+D6 supports this on SciFact development: reset recovered the measured transition damage under the frozen protocol (`R_reset = 1.0`) while the reset control reproduced the one-pass full-context state to floating-point precision.
 
 ## Evidence boundary
 
-Current external-development evidence requires architectural restraint.
+Current external-development evidence supports restraint.
 
 ```text
-reversible suppression
-    strong synthetic support; external value still open
-
 single full-context soft taper
-    approximately preserves BM25 on SciFact development
+    approximately preserves BM25
 
-multiple ordered context stages
-    NOT established
+partial -> full naive carried activation
+    major transition pathology supported by D6
+
+controlled reset/re-anchor
+    justified as an explicit transition operation
+
+multiple contextual soft stages
+    still NOT established
 
 current static recurrence
     discounted on SciFact development
 
-current four hand-designed context channels
-    insufficient residual signal on BM25 errors
+current four hand-designed lexical channels
+    insufficient residual discrimination
 
 current commitment calibration
     discounted
 
 question-guided contextual divergence
-    untested
-
-trajectory-based recurrence
-    untested
+    still untested as a complete mechanism
 ```
 
-Historical HCT-1/HCT-2 results remain evidence records. They do not force production mechanisms that stronger external tests fail to support.
+D6 does not prove the full architecture. It sharpens one state-transition rule.
 
-## Build/Test rule
+## Development philosophy
 
-Synrheon should now grow through a repeating loop:
+Synrheon should grow through a repeatable build/test loop:
 
 ```text
-smallest defensible cognitive invariant
+smallest defensible invariant
         ↓
 build reusable production-facing primitive
         ↓
-use that primitive in a falsifiable experiment
+preregister/falsify the cognitive skill around it
         ↓
 negative result?
-    yes → simplify / remove assumption
-    no  → earn the next architectural layer
+    yes -> simplify architecture
+    no  -> earn next layer
         ↓
-only then integrate farther into the organism
+integrate only when legitimate upstream data exists
 ```
 
-This prevents a separate "research toy" and "production architecture" from drifting apart while also preventing an unvalidated experiment from becoming live cognition merely because code exists.
+This prevents research code and production architecture from diverging while also preventing unvalidated mechanisms from being declared live simply because code exists.
 
 ## Cognitive physics vs cognitive skill
 
 ### Designed cognitive physics may define
 
 ```text
-candidate identity and complete-state representation
+stable identities and representation boundaries
+complete-state preservation
 reversible suppression semantics
-active vs dormant compute regions
-checkpoint / restore / reopen mechanics
+active vs dormant regions
+checkpoint / restore / reopen
 context-transition provenance
-compute and safety ceilings
-valid evidence / abstain / seek / reopen interfaces
+legal operation interfaces
+compute / safety ceilings
 observable trace boundaries
+provenance and evidence lineage
 ```
 
 ### Learned or experimentally earned cognitive skill should determine
@@ -103,23 +110,24 @@ observable trace boundaries
 which candidate field to retrieve
 which context matters
 which context to evaluate next
+which context-transition mode is appropriate
 how strongly to settle
-whether multiple settling stages help
+whether another settling stage is useful
 which region deserves more compute
-whether recurrence adds useful information
+whether recurrence adds new information
 when evidence is sufficient
 when to seek evidence
 when to reopen
 when to stop
 ```
 
-The design principle remains:
+The design rule remains:
 
 > **We code the cognitive physics. Synrheon must earn or learn the cognitive skill.**
 
 ## Architecture slice 1 — reversible candidate field
 
-Status: **BUILT, NOT LIVE-INTEGRATED**
+Status: **Built, not live-integrated**
 
 Owner:
 
@@ -127,13 +135,13 @@ Owner:
 src/synrheon/contextual_search.py
 ```
 
-The first production-facing primitive now implements:
+Current mechanics:
 
 ```text
 complete broad-field retrieval prior
-complete current activation vector
+complete activation vector
 active candidate region
-dormant but recoverable candidate state
+dormant but recoverable candidates
 carry / reset / residual transition provenance
 reversible checkpoints
 restore
@@ -141,21 +149,19 @@ reactivate
 reopen-all
 ```
 
-Its central invariant is:
+Core invariant:
 
 ```text
 suppressed != deleted
 ```
 
-It rejects silent candidate deletion during soft state replacement. It contains no qrels, correct identity, semantic hierarchy, taper equation, recurrence rule, or commitment rule.
+The candidate field contains no qrels, hidden target identity, hard-coded semantic hierarchy, recurrence rule, or commitment policy.
 
-The primitive is exported through `cognition.py`, but `runtime.py` does not fabricate a candidate field merely to claim integration.
+## Architecture slice 2 — D6 context-transition isolation
 
-## Architecture slice 2 — transition isolation through D6
+Status: **Completed external-development diagnostic**
 
-Status: **PREREGISTERED + BUILT; SCIFACT DEVELOPMENT RESULT NOT YET OBSERVED**
-
-Scientific owners:
+Owners:
 
 ```text
 docs/D6_PREREGISTRATION.md
@@ -163,104 +169,191 @@ experiments/d6_transition_persistence.py
 tests/test_d6_transition_persistence.py
 ```
 
-D6 uses the same reversible candidate-field contract to compare:
+Observed:
 
 ```text
-A  BM25 anchor
-B  one full-context soft taper
-C  partial -> full with carried activation
-D  partial -> full with reset
-E  partial -> full with full-minus-partial residual evidence
+93 development queries
+92 transition-evaluable
+reset integrity PASS
+max reset activation diff 2.220446049250313e-16
+R_reset = 1.0
+verdict = MAJOR_PERSISTENCE_CONTRIBUTION_SUPPORTED
 ```
 
-No recurrence is allowed. No final split is accessible through the D6 interface.
-
-The immediate purpose is not to improve performance. It is to determine whether carried settled state is a major cause of the existing sequential failure.
-
-## Architecture slice 3 — multi-taper necessity
-
-Status: **BLOCKED ON D6**
-
-MT-1 will ask whether more than one context-settled soft taper actually earns a role after transition pathology is controlled.
-
-Primary comparison:
+Architectural consequence:
 
 ```text
-single soft
-vs
-multiple soft
-vs
-multiple soft + reset
-vs
-scrambled-order multiple soft
-vs
-matched-compute hard stages
+previous settled state
+    is not automatically
+valid prior for changed context
 ```
 
-Clock-driven Top-K may appear only as a negative control.
+The architecture therefore needs explicit transition semantics rather than invisible cumulative carry.
 
-Frozen interpretation principle:
+Condition E residual refinement remains unresolved. Do not promote `full - partial` residualization to production truth merely because D6 isolated carry damage.
 
-> **Hard pruning losing does not establish that multiple soft tapers are necessary.**
+## Architecture slice 3 — MT-1 multi-stage necessity
 
-If multi-soft ~= single-soft while hard pruning loses reversal recovery, keep reversibility and remove multi-stage necessity from the architecture.
+Status: **Next scientific gate; preregistration required before result-bearing implementation**
 
-## What should be built now vs withheld
+Central question:
 
-### Build now
+> Once transition-state persistence is controlled, does more than one soft contextual settling stage add material value over one good soft stage under matched computation?
 
-Only mechanisms that remain useful under both positive and negative D6 outcomes:
+Conceptual conditions:
 
 ```text
-reversible candidate-state ownership
-context-transition checkpoints
-explicit provenance of carry / reset / residual operations
-raw compute accounting
-observable state boundaries
-experiment-to-production compatible interfaces
+retrieval/no-taper anchor
+single full-context soft
+multi-soft with naive carry       # known pathology control
+multi-soft with controlled reset
+scrambled/reversed context order
+matched-compute hard staged pruning
 ```
 
-### Withhold until evidence earns them
+The exact equations, compute matching, metric, statistics, thresholds, and failure rules must be frozen in the MT-1 preregistration.
+
+Critical rule:
+
+> **Hard pruning losing does not establish multi-soft necessity.**
+
+If controlled multi-soft ~= single-soft under the frozen criterion, remove multiple-stage necessity from the architecture while preserving reversibility and explicit transition control.
+
+Recurrence stays outside the primary MT-1 mechanism unless separately preregistered.
+
+## Architecture slice 4 — Token Deck representation
+
+Status: **TD-0/1/2 Built; TD-3 next**
+
+Owner:
 
 ```text
-fixed multi-level context hierarchy
-production multi-taper controller
-production recurrence operator
-learned recurrence resistance as a universal mechanism
-hard-coded semantic context routes
-custom commitment thresholds
-live autonomous Ground 0 loop
+src/synrheon/token_deck.py
 ```
 
-This is deliberate. Building these now would optimize implementation toward the preferred theory before MT-1 has had a chance to falsify it.
-
-## Next legitimate production dependency — candidate source
-
-The live organism cannot use contextual search until it has a legitimate broad candidate field.
-
-Today the live system has concepts, relations, current activation storage, ordered experience, provenance, and computational time, but it does not yet have durable memory or learned retrieval.
-
-Therefore the next production dependency is not "turn on tapering." It is to establish a candidate-source interface that can eventually receive candidates from memory/retrieval without knowing the correct answer.
-
-Required contract:
+Stored inside:
 
 ```text
-question / current cognitive need
-        ↓
-candidate source
-        ↓
+CognitiveSubstrate.token_deck
+```
+
+Core invariant:
+
+```text
+surface form != token identity != sense != concept/entity != episode
+```
+
+Current implementation owns:
+
+```text
+stable token IDs
+observed surface forms / explicit aliases
+provenance
+open-ended morphology metadata
+multiple candidate senses
+optional concept links
+context-conditioned reversible sense activation
+sense checkpoints / restore / reopen
+```
+
+The Token Deck does not own truth, world relations, memory truth, natural-language generation, or Ground 0 commitment.
+
+D6's context lesson applies here as a representational invariant: one context may suppress a sense, but that sense remains available when context changes.
+
+## TD-3 — exact surface segmentation
+
+Immediate representation build target:
+
+```text
+raw input
+    ↓
+exact surface spans
+    ↓
+character offsets
+    ↓
+normalized lookup forms
+```
+
+TD-3 should preserve the exact original text and be replaceable later without invalidating stable token/sense identity.
+
+TD-3 must not:
+
+```text
+choose meaning
+choose part of speech as truth
+select a sense
+create a concept/entity
+ask an LLM for an answer
+collapse punctuation/offset provenance
+```
+
+Tests should include punctuation, contractions, possessives, hyphenation, decimals/currency, times, quotes, symbols, names, case variants, and reconstruction from offsets.
+
+## TD-4 — known/unknown acquisition boundary
+
+After stable segmentation:
+
+```text
+surface span
+   ↓
+known token?
+ ┌───────┴───────┐
+yes              no
+ ↓                ↓
+retrieve       classify acquisition need
+senses            ↓
+             name/entity?
+             morphology/variant?
+             ordinary unknown word?
+             number/symbol/code?
+```
+
+Dictionary, parser, or LLM assistance may later propose candidates with provenance. External proposals are not truth and must remain distinguishable from user-confirmed, observed, inferred, or Synrheon-learned structure.
+
+## TD-5 — contextual sense learning
+
+This should be a real experiment, not hand-written disambiguation.
+
+Required scientific behavior should include:
+
+```text
+held-out contexts
+ambiguous cases where abstention is correct
+context reversal
+preservation/reactivation of initially suppressed senses
+simple frequency/default-sense baseline
+no answer identity in routing
+```
+
+The output should be support over senses, not destructive rewriting of the sense inventory.
+
+## Candidate-source dependency
+
+The live organism cannot use Ground 0 contextual search legitimately until it can obtain a broad candidate field without planted answer identity.
+
+The evolving intended path is:
+
+```text
+raw stimulus
+   ↓
+Token Deck / surface-sense representation
+   ↓
+concept/entity/event representation
+   ↓
+durable memory
+   ↓
+retrieval / candidate source
+   ↓
 opaque candidate IDs + provenance + initial support
-        ↓
+   ↓
 ReversibleCandidateField
 ```
 
-The interface may be built before a sophisticated retriever exists, but production tests must use legitimate visible state rather than planted correct identity.
+Do not fabricate a candidate field merely to make contextual search appear Integrated.
 
 ## Question and unresolved-state controller
 
-Revision 5 proposes that context resolution should be controlled by what remains unanswered rather than by a universal stage count.
-
-Future architecture therefore needs an explicit representation of:
+The future cognitive controller needs explicit representation of:
 
 ```text
 current question
@@ -269,20 +362,19 @@ what remains unresolved
 candidate disagreements relevant to that unresolved portion
 possible next context operations
 expected information gain / cost
+transition history / provenance
 ```
 
-This owner is **not yet built** because D6/MT-1 may change what a transition should preserve. Do not hard-code an ontology of semantic, temporal, identity, causal, or social levels as a mandatory sequence.
-
-Those may become available context operations; they should not become a universal ladder by assumption.
+Do not hard-code semantic, temporal, identity, causal, social, or goal dimensions as a universal stage ladder. They may become available operations if later data show they are useful.
 
 ## Recurrence boundary
 
-Recurrence is now optional, not part of the guaranteed funnel.
+Recurrence is optional.
 
-A future recurrence owner must earn its role by operating on a question-relative relation such as:
+Static lexical similarity was not sufficient on SciFact development. A future recurrence operator must earn its role with question-relative relations such as:
 
 ```text
-complementary evidence
+complementarity
 contradiction / support
 causal dependence
 temporal sequence
@@ -290,21 +382,19 @@ trajectory compatibility
 missing-aspect coverage
 ```
 
-Generic static lexical similarity is not enough evidence for production recurrence.
-
-A recurrence experiment must compare against a matched no-recurrence condition and measure whether recurrence reduces unresolved uncertainty or improves external behavior enough to justify its cost.
+A matched no-recurrence condition is mandatory for a recurrence claim.
 
 ## Commitment boundary
 
-The architectural separation remains valuable:
+Architectural separation remains:
 
 ```text
-winner != knowledge
+winner != sufficient evidence
 ```
 
-But the current commitment signal is not externally established.
+But the current external commitment signal is discounted. A future commitment owner should be evaluated against strong calibration/confidence baselines and may consume provenance, unresolved alternatives, evidence quality, and task-specific risk.
 
-Production commitment should eventually consume explicit evidence sufficiency, provenance, unresolved alternatives, and calibration evidence. Until a mechanism passes external tests, the architecture should preserve the actions without pretending the policy is solved:
+Valid dispositions remain conceptual interfaces:
 
 ```text
 COMMIT
@@ -316,7 +406,7 @@ CONTINUE DELIBERATION
 
 ## Relationship to E011-A
 
-E011-A remains evidence that an operation/target policy can learn transferable preferences from visible state without memorizing candidate identity.
+E011-A remains historical controlled evidence that an operation/target policy can learn transferable preferences from visible state without memorizing opaque identity.
 
 Owners:
 
@@ -325,84 +415,67 @@ policy.py
 policy_learning.py
 ```
 
-Its role is donor evidence for learned cognitive routing. It is not the Ground 0 architecture and should not be directly wired into contextual search until the state/action contract being learned is justified.
+Treat E011-A as a donor mechanism. Do not directly force its narrow `EXPAND/STOP` contract into Ground 0 or Token Deck unless a new state/action experiment justifies that reuse.
 
-## Production ownership
+## Current production ownership
 
 ```text
-state.py
-    explicit organism/world state
-
-cognition.py
-    public Ground 0 contracts and cognitive boundary
-
-contextual_search.py
-    reversible candidate field and context-transition checkpoints
-
-policy.py
-    retained trainable operation/target policy primitives
-
-policy_learning.py
-    outcome-driven policy updates
-
-experience.py
-    ordered current-episode experience + provenance
-
-temporal.py
-    computational time and sequence
-
-runtime.py
-    thin sequencing only
-
-dev_server.py
-    browser/API transport only
-
-experiments/
-    falsification assays, external qrels, hidden evaluation truth, scientific scoring
+state.py               organism/world state; contains TokenDeck
+cognition.py           public Ground 0 contracts / cognitive boundary
+contextual_search.py   reversible candidate field / transition checkpoints
+token_deck.py          token/sense identity and reversible sense state
+policy.py              retained E011-A donor policy
+policy_learning.py     retained E011-A learning
+experience.py          ordered current-episode experience + provenance
+temporal.py            computational time + sequence
+runtime.py             thin sequencing only
+dev_server.py          transport only
+experiments/           falsification assays, qrels, hidden scoring
+ui/                    observation/control only
 ```
-
-Hidden evaluation truth must never cross from `experiments/` into production cognition.
 
 ## Live integration sequence
 
-Do not integrate an entire presumed architecture at once.
-
-The current dependency order is:
+Integration should proceed only as legitimate dependencies appear:
 
 ```text
-1. reversible candidate field                         BUILT
-2. D6 transition isolation                            BUILT / NOT YET RUN
-3. interpret D6                                       PENDING
-4. MT-1 multi-taper falsification                     BLOCKED
-5. legitimate production candidate-source contract    NEXT BUILDABLE DEPENDENCY
-6. question / unresolved-state representation         PENDING EVIDENCE
-7. learned context-operation selection                PENDING SIGNAL
-8. optional recurrence                                MUST EARN ROLE
-9. evidence sufficiency / commitment calibration      MUST EARN ROLE
-10. runtime + UI integration of earned mechanisms     LATER
+1. Token Deck representation                         TD-0/1/2 Built
+2. exact segmentation                                TD-3 Next
+3. known/unknown acquisition                         TD-4
+4. contextual sense learning                         TD-5 experiment
+5. concept/entity/event representation               later
+6. durable memory                                    later
+7. legitimate retrieval/candidate source             later
+8. ReversibleCandidateField live handoff              later
+9. question-guided context controller                later
+10. optional recurrence if earned                    later
+11. commitment calibration if earned                 later
+12. broader recursive/autonomous cognition           later
 ```
 
-Durable memory, retrieval, scratchpad cognition, problem/trial learning, consolidation, abstraction, and autonomy should receive implementation owners only when real code and a clear responsibility exist.
+In parallel, MT-1 continues the scientific mechanism track without using Token Deck changes to alter its frozen comparison.
 
-## Scientific development rule
+## Scientific rule
 
-Every major mechanism must declare before evidence inspection:
+Every major result-bearing mechanism should declare before evidence inspection:
 
 ```text
 hypothesis
-strong baseline
-matched information access
+baseline/control
+information boundary
 matched compute where relevant
+primary metric
+uncertainty/statistical method
 success threshold
-failure interpretation
+partial/inconclusive/failure interpretation
 ablation
-identity / leakage safeguards
-held-out boundary
-raw metrics
+identity/leakage safeguards
+held-out policy
+raw failure output
 ```
 
-Negative and unexpected results are research assets. Do not lower a threshold or add a patch merely to preserve the preferred architecture.
+Negative and unexpected results are research assets. Change the theory before changing a frozen threshold.
 
-The objective is not to build the historical Ground 0 diagram.
+## Governing objective
 
-> **The objective is to discover which cognitive operations continue to deserve a place in Synrheon, and build only those operations strongly enough that the organism and the experiments can share them.**
+> **Build increasingly rich cognition, but only one falsifiable layer at a time. Preserve alternatives, provenance, failures, and scientific chronology so that every surviving mechanism becomes a trustworthy part of the organism rather than another brittle patch.**
