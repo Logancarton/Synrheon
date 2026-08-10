@@ -6,10 +6,15 @@ still reproduced; they do not assert that the original hypothesis is true.
 Preserved outcome on seeds 40000-40250, `unresolved_close` worlds:
 
 ```text
-committed_rate                      0.78   <- fails its own <= 0.50 criterion
+committed_rate                      0.78   <- preregistered criterion is <= 0.35
+max_trial_rate                      0.22
 overall_correct_or_abstain_rate     0.22
 frozen verdict                      DISCOUNTED
 ```
+
+Two preregistered criteria fail. The classifier reports the sampling-exercise criterion
+first (`max_trial_rate < 0.50`), so that is the verdict string returned; the commitment
+criterion (`committed_rate > 0.35`) fails independently and is asserted separately here.
 
 Recorded conclusion: population consensus manufactured agreement on worlds built to be
 genuinely unresolvable. This is part of why `winner != sufficient evidence` survived into
@@ -30,8 +35,13 @@ from experiments.hippocampal_consensus_trials import (
 
 pytestmark = pytest.mark.historical
 
-#: Frozen abstention criterion from the original preregistration, preserved verbatim.
-PREREGISTERED_MAXIMUM_UNRESOLVED_COMMITMENT = 0.50
+#: Frozen abstention criterion from the original preregistration, preserved verbatim:
+#: "more than 35% of unresolved-close worlds are forced into commitment" discounts the
+#: hypothesis. This matches the `> 0.35` branch in the frozen `verdict()` classifier.
+PREREGISTERED_MAXIMUM_UNRESOLVED_COMMITMENT = 0.35
+
+#: The sampling-exercise criterion the classifier checks first.
+PREREGISTERED_MINIMUM_UNRESOLVED_MAX_TRIAL_RATE = 0.50
 
 
 def test_perturbation_preserves_identity_and_answer_contract() -> None:
@@ -74,12 +84,17 @@ def test_unresolved_worlds_still_reproduce_the_false_consensus_failure() -> None
     unresolved = result["unresolved_close"]
 
     assert unresolved.committed_rate == pytest.approx(0.78)
+    assert unresolved.max_trial_rate == pytest.approx(0.22)
     assert unresolved.overall_correct_or_abstain_rate == pytest.approx(0.22)
 
-    # The preregistered abstention criterion is preserved and still fails.
+    # Both preregistered criteria are preserved and both still fail.
     assert unresolved.committed_rate > PREREGISTERED_MAXIMUM_UNRESOLVED_COMMITMENT
+    assert unresolved.max_trial_rate < PREREGISTERED_MINIMUM_UNRESOLVED_MAX_TRIAL_RATE
 
-    assert verdict(result).startswith("DISCOUNTED")
+    # The classifier reports the sampling-exercise criterion, which it checks first.
+    assert verdict(result) == (
+        "DISCOUNTED: genuinely unresolved worlds too often produced a false population consensus."
+    )
 
 
 def test_candidate_renaming_preserves_population_behavior() -> None:

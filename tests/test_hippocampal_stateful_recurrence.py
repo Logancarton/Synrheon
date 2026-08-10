@@ -32,6 +32,7 @@ from experiments.hippocampal_stateful_recurrence import (
     generate_world,
     one_pass,
     recurrent,
+    run_assay,
 )
 
 pytestmark = pytest.mark.historical
@@ -83,6 +84,12 @@ def test_progressive_sparsity_reproduces_its_failed_preregistered_gate() -> None
     # Without hard pruning the same gate would have passed. That contrast is the finding.
     assert fixed.accuracy >= PREREGISTERED_MINIMUM_ACCURACY
     assert fixed.accuracy >= one.accuracy + PREREGISTERED_MINIMUM_ADVANTAGE
+
+
+def test_frozen_classifier_still_returns_the_preserved_verdict() -> None:
+    """Lock observation, threshold, and frozen classifier together."""
+
+    assert run_assay(quick=True)["verdict"] == "MIXED RESULT"
 
 
 def test_candidate_renaming_preserves_result() -> None:
