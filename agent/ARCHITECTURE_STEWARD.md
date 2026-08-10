@@ -1,65 +1,61 @@
 # Synrheon Architecture Steward
 
-## Canonical Repository
+## Canonical repository and branch discipline
 
 ```text
-https://github.com/Logancarton/Synrheon
+Repository: Logancarton/Synrheon
+Canonical:  https://github.com/Logancarton/Synrheon
+Current scientific branch: experiment/external-retrieval-cascade
+Historical synthetic branch: experiment/hippocampal-sparse-settling
 ```
 
-Repository: `Logancarton/Synrheon`
+Do not ask which repository Synrheon belongs in. Do not silently continue current science from `main` or the historical hippocampal branch. Preserve historical branches as evidence records.
 
-Default branch: `main`
+## Primary development principle
 
-Do not ask the user which repository Synrheon belongs in.
+Synrheon is now developed as a **scientific build/test organism** rather than as a fixed stage ladder.
 
-When working locally, verify `origin` points to the canonical repository before pushing. If no origin exists and the tree is clearly Synrheon, add it. If origin points elsewhere, stop before push and report the mismatch.
+The objective is not to implement the old Ground 0 diagram intact. The objective is to identify which cognitive operations survive falsification and make each surviving operation reusable by the organism.
 
-# Primary Development Principle
-
-Synrheon is developed bottom-up with explicit ownership, explicit state, controlled learning evidence, and observable live behavior.
-
-Stage 0B — the runtime/UI organism — is **Verified**.
-
-E011-A v1 — the first controlled trainable-cognition experiment — is now **Built** and its frozen five-seed Level-1 numeric gate passed.
-
-That is genuine controlled cognitive evidence, but it is not live integration.
-
-The active target is now **E011-B — Live Organism Integration**:
+Core loop:
 
 ```text
-recorded E011-A artifact
+scientific question / architectural need
         ↓
-legitimate live CognitiveState
+smallest defensible invariant
         ↓
-cognition.py
-learned operation + target
+predeclared falsifier / preregistration when needed
         ↓
-bounded checkpoint
+reusable implementation
         ↓
-thin runtime sequencing
+integrity + behavioral tests
         ↓
-OrganismState / trace
+raw failure inspection
         ↓
-Organism UI
+scientific classification
+        ↓
+architecture shrinks or earns next layer
+        ↓
+project truth synchronized
 ```
 
-The hidden E011 generator/scorer remains outside production cognition.
+## Startup sequence
 
-# Startup Sequence
-
-Before material work, read and reconcile:
+Before material work, read and reconcile in this order:
 
 ```text
 README.md
-docs/SCAFFOLD.md
-docs/ARCHITECTURE_PLAN.md
-docs/IMPLEMENTATION_STATUS.md
+docs/REV6_CONTINUATION_STATE.md
 docs/CURRENT_STAGE.md
-docs/EXPERIMENTS.md
+docs/IMPLEMENTATION_STATUS.md
+docs/ARCHITECTURE_PLAN.md
+docs/TOKEN_DECK_ROADMAP.md
+docs/PROJECT_GUIDE.md
 docs/SIGNAL_FLOW.md
+docs/SCAFFOLD.md
 ```
 
-Read `docs/PROJECT_GUIDE.md` for the human-readable project map.
+Use older theory/preregistration documents for historical evidence and frozen experiment rules, not as the active continuation authority when Revision 6 supersedes them.
 
 Then follow:
 
@@ -67,220 +63,319 @@ Then follow:
 .agents/skills/synrheon-development-workflow/SKILL.md
 ```
 
-Only after the affected ownership/signal path is understood should implementation begin.
+Only after the affected ownership, scientific boundary, and signal path are understood should implementation begin.
 
-# Status Vocabulary
+## Revision 6 evidence boundary
 
-Use:
+D6 has been run on the frozen SciFact development partition.
 
-- **Not Started** — no meaningful implementation exists.
-- **Designed** — architecture/experiment contract is defined.
-- **Built** — mechanism exists and works in isolation/controlled assay.
-- **Integrated** — the live runtime reaches and uses it.
-- **Verified** — intended live behavior was demonstrated through the running organism with relevant state/trace inspected.
-
-Keep cognitive effect separate:
-
-- **Infrastructure**
-- **Supporting cognition**
-- **Cognitive improvement**
-
-A controlled E011-A result may be real cognitive improvement while remaining only `Built`.
-
-# Broad-to-Narrow Review
-
-For every proposed behavior or repair, identify:
-
-1. **Cognitive objective** — what capability should Synrheon gain?
-2. **Current bottleneck** — what mechanism prevents it?
-3. **Affected signal path** — which state/owners/runtime/UI/learning paths are involved?
-4. **Information boundary** — what may the mechanism know, and what must stay hidden?
-5. **Correct owner** — where does the decision actually belong?
-6. **Runtime role** — what should runtime only sequence/route?
-7. **Failure modes** — what would create brittleness, hidden leakage, or duplicate authority?
-8. **Evidence** — what controlled/live result would prove or falsify it?
-
-Do not start with:
-
-- stimulus-specific patches;
-- phrase-specific rules;
-- arbitrary score changes;
-- scripted answers;
-- test-only behavior;
-- UI-side cognitive shortcuts;
-- hand-written target selectors.
-
-Prefer changes that improve the underlying process.
-
-# E011-A Frozen Evidence Boundary
-
-The recorded result is:
+Observed facts:
 
 ```text
-data/e011a_v1_evidence.json
+93 development queries
+92 transition-evaluable queries
+reset control integrity: PASS
+max reset activation difference: 2.220446049250313e-16
+R_reset: 1.0
+frozen verdict: MAJOR_PERSISTENCE_CONTRIBUTION_SUPPORTED
+reserved final split: untouched by D6
 ```
 
-The controlled hidden harness is:
+Interpret narrowly:
+
+> Settled activation is context-conditional. Naively carrying a state settled under partial context into materially changed context can create major path-dependent damage.
+
+Do not upgrade this to:
+
+- proof that multiple soft stages are necessary;
+- proof that D6 residual refinement is correct;
+- proof recurrence is necessary;
+- final held-out retrieval superiority;
+- natural-language understanding;
+- biological equivalence.
+
+Condition E was diagnostic and mixed; it had no preregistered pass threshold.
+
+## Active dual-track program
+
+### Track A — Ground 0 science
 
 ```text
-experiments/e011a.py
+D6 COMPLETE
+    ↓
+MT-1 PREREGISTRATION — immediate scientific task
+    ↓
+MT-1 matched-compute implementation
+    ↓
+integrity/smoke
+    ↓
+allowed development assay
+    ↓
+frozen interpretation
 ```
 
-Production policy/learning owners are:
+MT-1 asks whether more than one soft contextual settling stage materially improves over one good soft stage once the known transition pathology is controlled.
+
+Hard pruning losing is not enough. Multi-stage necessity is supported only if controlled multi-soft materially outperforms single-soft under the frozen matched-compute criterion.
+
+Keep recurrence outside the primary MT-1 mechanism unless separately preregistered.
+
+### Track B — Representation architecture
 
 ```text
-src/synrheon/cognition.py
-src/synrheon/learning.py
+TD-0 stable token cards               BUILT
+TD-1 reversible sense inventory       BUILT
+TD-2 alias/morphology storage         BUILT
+TD-3 exact surface segmentation       NEXT
+TD-4 known/unknown acquisition        PENDING
+TD-5 contextual sense learning        PENDING EXPERIMENT
 ```
 
-Do not retune E011-A v1 against the already-inspected final seeds.
+The tracks may progress in parallel, but Token Deck improvements must not alter MT-1 conditions unless a future preregistration explicitly combines them.
 
-A material model/state/action/reward/generator change requires a new experiment version and fresh untouched final split.
-
-The policy must never receive:
+## Architecture invariants currently earned
 
 ```text
-unrevealed graph
-hidden goal location
-shortest path
-shortest-path distance
-on-solution-path truth
-correct next action / target
-future frontier
-solver / scorer output
-world seed as a clue
+suppressed != deleted
+settled activation is context-conditional
+winner != sufficient evidence
+surface form != token identity != sense != concept/entity != episode
+hidden experimental truth never enters production cognition
+runtime sequences; cognition owners decide
+UI observes; it does not calculate cognitive truth
 ```
 
-# E011-B Architecture Gate
+Designed cognitive physics may enforce identities, complete-state preservation, provenance, checkpoint/restore/reopen, legal operation boundaries, resource ceilings, and trace contracts.
 
-E011-B must integrate the **learned policy**, not the benchmark environment.
+Learned or experimentally earned skill should increasingly determine what context matters, what representation is useful, which operation to choose, whether another stage is worth compute, when recurrence helps, and when evidence is sufficient.
 
-Before coding, identify a legitimate live state source that can produce the policy-visible state without hidden benchmark truth.
+## Broad-to-narrow review gate
 
-Do not:
+For every proposed change, answer:
 
-- import `experiments.e011a` into runtime;
-- generate a hidden benchmark world in production;
-- put model ranking logic in runtime;
-- let UI choose targets;
-- use a compatibility shim that hides a wrong owner;
-- pretend static controlled metrics mean the policy is live.
+1. What capability or scientific claim is being advanced?
+2. Is this scientific assay work, reusable architecture, live integration, or documentation?
+3. What current evidence justifies the mechanism?
+4. What would falsify or shrink the proposed mechanism?
+5. What exact state enters and leaves the owner?
+6. Which owner should decide the behavior?
+7. What information is forbidden from that owner?
+8. What baseline/control is needed?
+9. What compute must be matched or explicitly accounted for?
+10. What raw failures must be preserved?
+11. What status can be claimed if the test passes?
+12. What should be removed or simplified if it fails?
 
-E011-B must prove:
+Do not begin with stimulus-specific patches, phrase rules, arbitrary score tweaks, scripted answers, hidden target selectors, benchmark truth, or UI-side cognition.
 
-1. one exact recorded policy artifact loads;
-2. live state reaches `cognition.py`;
-3. `cognition.py` selects operation + target;
-4. one bounded state transition/checkpoint occurs;
-5. runtime only sequences;
-6. state/trace expose the action/checkpoint;
-7. UI can show the live mechanism separately from historical learning evidence;
-8. malformed state fails safely;
-9. unrelated state is not mutated;
-10. hidden experiment truth never enters production cognition.
+## Scientific workflow
 
-# Runtime Principle
-
-`src/synrheon/runtime.py` is a thin active integration layer.
-
-Runtime may:
-
-- sequence owners;
-- route typed handoffs;
-- invoke live mechanisms;
-- return outcomes/feedback;
-- expose state/trace.
-
-Runtime must not:
-
-- own cognition;
-- rank candidate actions/targets;
-- duplicate memory/retrieval/learning;
-- contain large experiment mechanisms;
-- contain hidden solver truth.
-
-# UI Principle
-
-The UI is a microscope and behavioral lab.
-
-It should show:
+For result-bearing experimental changes:
 
 ```text
-what is integrated
-+
-what the integrated mechanism is doing now
-+
-backend-owned evidence of learning/generalization over time
+question
+  ↓
+preregister hypothesis + controls + metrics + success/failure rules
+  ↓
+commit preregistration before result inspection
+  ↓
+implement mechanism without changing frozen criteria
+  ↓
+integrity tests
+  ↓
+synthetic smoke = code-path check only
+  ↓
+allowed development/held-out run
+  ↓
+apply frozen classifier
+  ↓
+record raw results + failures
+  ↓
+update evidence ledger
 ```
 
-Controlled E011-A metrics may appear as historical growth evidence.
+Never retune a frozen threshold after seeing the result. Never relabel a smoke run as evidence. If a development set has been repeatedly inspected, treat it as tuning/diagnostic data rather than final confirmation.
 
-They must remain clearly separate from E011-B live cognition status.
+## Stimulus-test architecture workflow
 
-The UI must not choose actions or calculate the scientific pass gate.
+For organism-facing capabilities:
 
-# Tests
+```text
+build one capability
+        ↓
+feed explicit stimuli
+        ↓
+inspect exact backend-owned state / trace
+        ↓
+locate the failed process/owner
+        ↓
+fix the process, not the sample phrase
+        ↓
+add regression test
+        ↓
+repeat with harder stimuli
+```
 
-Prefer a small number of high-value behavioral tests proving:
+A UI should make the integrated stage observable, but it must not fabricate the cognitive result.
 
-- the intended owner is reached;
-- valid input yields intended behavior;
-- malformed/mismatched input fails safely;
-- unrelated state is not mutated;
-- feedback reaches the correct owner;
-- no duplicate subsystem or hidden shortcut exists;
-- live integration reaches the real runtime when `Integrated` is claimed.
+## Token Deck rules
+
+Current owner:
+
+```text
+src/synrheon/token_deck.py
+```
+
+Core separation:
+
+```text
+raw text
+  ↓
+surface span
+  ↓
+stable token identity
+  ↓
+possible senses
+  ↓
+optional concept/entity links
+  ↓
+event / memory representation later
+```
+
+TD-3 segmentation must preserve exact text and offsets. It must not choose meaning, infer a correct sense, fabricate a concept, or use an LLM as an invisible authority.
+
+External dictionaries/parsers/LLMs may later propose evidence with provenance. Proposal is not truth.
+
+## Current production ownership
+
+```text
+state.py               explicit organism/substrate state; contains TokenDeck
+cognition.py           Ground 0 public contracts / cognitive boundary
+contextual_search.py   reversible candidate field + transition checkpoints
+token_deck.py          stable token/sense identity + reversible sense state
+policy.py              retained E011-A donor policy
+policy_learning.py     retained E011-A learning
+experience.py          ordered current-episode experience + provenance
+temporal.py            time/sequence coordinates
+runtime.py             thin sequencing only
+dev_server.py          local transport only
+experiments/           scientific harnesses, qrels, hidden evaluation/scoring
+ui/                    observation and control only
+```
+
+Do not fabricate a candidate field merely to claim contextual search is Integrated. The live organism needs a legitimate candidate source from representation/memory/retrieval first.
+
+## Status vocabulary
+
+Keep two dimensions separate.
+
+Scientific evidence:
+
+```text
+Historical synthetic evidence
+External development evidence
+Confirmatory held-out evidence
+Supported
+Partially supported
+Discounted / falsified
+Inconclusive
+Untested
+```
+
+Implementation maturity:
+
+```text
+Not Started
+Designed
+Built
+Integrated
+Verified
+```
+
+`Built` means implementation exists and passes the relevant isolated/controlled gates. `Integrated` means the real runtime reaches it. `Verified` requires intended live behavior observed through the running organism with relevant state/trace.
 
 Automated tests do not independently grant `Verified`.
 
-# Documentation Synchronization
+## Runtime principle
 
-After meaningful work, update only affected truth:
+`runtime.py` may sequence owners, route typed handoffs, invoke bounded operations, record observable trace, and return outcomes.
 
-- `docs/IMPLEMENTATION_STATUS.md`
-- `docs/CURRENT_STAGE.md`
-- `docs/ARCHITECTURE_PLAN.md`
-- `docs/DECISIONS.md`
-- `docs/EXPERIMENTS.md`
-- `docs/SCAFFOLD.md`
-- `docs/SIGNAL_FLOW.md`
-- `docs/PROJECT_GUIDE.md`
+It must not own candidate ranking, sense selection, context selection, memory truth, learned policy weights, or commitment decisions.
 
-Documentation must describe implemented/tested truth, not hoped-for cognition.
+## UI principle
 
-# Git Safety
+The UI is a microscope and behavioral laboratory. It should show:
 
-Never use:
+```text
+what is really integrated
+what the mechanism is doing now
+what internal state changed
+what evidence/uncertainty remains
+what historical learning/scientific evidence exists
+```
 
-```powershell
+Keep historical scientific evidence visibly separate from current live behavior.
+
+## Tests
+
+Prefer high-value tests that prove invariants and process boundaries:
+
+- stable identity reuse;
+- no silent deletion of alternatives;
+- context reversal/reopen behavior;
+- exact transition reset independence;
+- malformed input fails safely;
+- hidden truth cannot reach inference owners;
+- unrelated state is not mutated;
+- live call path reaches the true owner when integration is claimed;
+- regressions are built from observed failures, not cosmetic constructor coverage.
+
+## Documentation synchronization
+
+After meaningful work, update only affected current truth. Revision 6 authority order is:
+
+```text
+docs/REV6_CONTINUATION_STATE.md
+docs/CURRENT_STAGE.md
+docs/IMPLEMENTATION_STATUS.md
+docs/ARCHITECTURE_PLAN.md
+docs/TOKEN_DECK_ROADMAP.md
+relevant frozen preregistration/result docs
+docs/PROJECT_GUIDE.md
+docs/SIGNAL_FLOW.md
+docs/SCAFFOLD.md
+```
+
+Do not silently rewrite historical preregistrations after results are observed.
+
+## Git safety
+
+Preserve unrelated dirty work. Never use destructive cleanup to make the repository look clean.
+
+Avoid:
+
+```text
 git add .
 git clean
 git reset --hard
+force-push / history rewrite
 ```
 
-Prefer:
+Stage intended files explicitly. After relevant gates pass, make focused reversible commits and push the active branch unless explicitly told not to.
 
-```powershell
-git status --short -- Synrheon
-git diff --check -- Synrheon
-git diff -- Synrheon
-```
+## Completion review
 
-Stage every changed file explicitly.
+Before declaring a bounded change complete, confirm:
 
-After relevant gates pass, create a focused reversible commit and push the active branch unless explicitly told not to.
-
-# Completion Review
-
-Before declaring a stage complete, confirm:
-
-- behavior is in the correct owner;
+- active branch and current scientific authority were checked;
+- claim and falsifier were explicit;
+- preregistration preceded result-bearing experimentation when needed;
+- implementation is in the correct owner;
+- no hidden truth or benchmark shortcut entered cognition;
 - runtime remains thin;
-- hidden experiment truth is quarantined;
-- live path reaches the mechanism if integration is claimed;
-- tests prove behavior, not structure only;
 - UI remains observational;
-- no parallel subsystem exists;
-- no world-specific route was added;
-- cognitive maturity is described accurately;
-- docs match implemented truth.
+- raw failures were preserved;
+- evidence status and implementation maturity are not conflated;
+- negative results simplify rather than trigger post-hoc tuning;
+- docs match actual current truth;
+- intended files were committed without disturbing unrelated work.
