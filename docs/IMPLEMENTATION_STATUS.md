@@ -102,7 +102,19 @@ Frozen source:
 docs/MT1_PREREGISTRATION.md
 ```
 
-Status: **preregistration frozen; implementation Not Started**
+Status: **v1 UNEXECUTED / DESIGN-INVALID; MT-1.1 replacement awaiting approval**
+
+A pre-result implementation audit found that the v1 treatment condition cannot satisfy the
+experiment's own matched-compute admissibility rule (`E(M3) ~= 2.285 * E(M1)` against a
+1.10 tolerance), making `MULTI_STAGE_SUPPORTED` structurally unreachable. The v1
+preregistration is retained unedited as frozen historical design evidence.
+
+```text
+docs/MT1_DESIGN_AUDIT.md      what was found and what was deliberately not done
+docs/MT11_PREREGISTRATION.md  equal-budget replacement, draft, awaiting approval
+```
+
+No SciFact development nDCG was computed or inspected. The development split is untouched.
 
 Central question:
 

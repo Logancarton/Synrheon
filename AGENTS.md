@@ -50,6 +50,9 @@ MT-1 and TD-5 belong to `scientific`. If MT-1 concludes that multi-stage settlin
 no advantage, MT-1 **succeeded** as an experiment even though the hypothesis failed, and no
 test should turn red.
 
+A design that cannot reach one of its own classifications is a different failure: not a
+scientific result at all, but an invalid experiment. Audit reachability before running.
+
 ### When a test fails
 
 ```text
@@ -112,9 +115,9 @@ D6 does **not** establish multi-taper necessity, residual refinement, recurrence
 SCIENTIFIC TRACK
 D6 complete
     ↓
-MT-1 preregistration FROZEN — docs/MT1_PREREGISTRATION.md
+MT-1 v1 frozen, then UNEXECUTED / DESIGN-INVALID — docs/MT1_DESIGN_AUDIT.md
     ↓
-matched-compute multi-taper falsification   ← implement next
+MT-1.1 equal-budget preregistration          ← freeze next; do not run before approval
 
 REPRESENTATION TRACK
 TD-0/1/2 Token Deck built
@@ -212,7 +215,9 @@ Automated tests can support `Built` or `Integrated`; they do not independently g
 
 ## Immediate priorities
 
-1. Implement MT-1 exactly against the frozen preregistration; do not move a threshold.
+1. Freeze MT-1.1 (`docs/MT11_PREREGISTRATION.md`) before implementing or running it.
+   MT-1 v1 is UNEXECUTED / DESIGN-INVALID; do not run it and do not edit its
+   preregistration to rescue its treatment.
 2. Drive TD-3/TD-4 with new stimuli, inspect the exact spans and routes, and convert any
    failure into a process-level regression test.
 3. Preregister TD-5 before any result-bearing sense-learning implementation.

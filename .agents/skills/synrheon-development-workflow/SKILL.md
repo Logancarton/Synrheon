@@ -64,9 +64,9 @@ Immediate boundary:
 ```text
 D6 result preserved                                    DONE
     ↓
-MT-1 preregistration — docs/MT1_PREREGISTRATION.md     FROZEN
+MT-1 v1 preregistration                                FROZEN, then DESIGN-INVALID
     ↓
-matched-compute multi-taper implementation             NEXT
+MT-1.1 equal-budget preregistration                    AWAITING APPROVAL
     ↓
 integrity + synthetic smoke
     ↓
