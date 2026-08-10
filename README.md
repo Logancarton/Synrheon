@@ -2,135 +2,211 @@
 
 # Synrheon
 
-A brain-inspired recursive cognitive architecture for persistent artificial intelligence.
+A research-driven recursive cognitive architecture for persistent artificial intelligence.
 
 This repository is the canonical home for Synrheon.
 
-## Ground 0 — Current Research Foundation
-
-Synrheon now treats the experimentally reinforced HCT-1/HCT-2 result as **Ground 0**: the baseline cognitive process future architecture must implement, challenge, or improve.
-
-Ground 0 is:
+## Current scientific branch
 
 ```text
-VERY LARGE CANDIDATE / KNOWLEDGE FIELD
+experiment/external-retrieval-cascade
+```
+
+Historical synthetic branch:
+
+```text
+experiment/hippocampal-sparse-settling
+```
+
+Current continuation authority:
+
+```text
+docs/REV6_CONTINUATION_STATE.md
+```
+
+## Revision 6 thesis
+
+Synrheon is investigating whether cognition over a very large knowledge field can remain broad and reversible while allocating deeper computation only where the current unresolved question requires it.
+
+Current working flow:
+
+```text
+QUESTION / UNRESOLVED STATE
         ↓
-learned context-dependent routing
+legitimate broad candidate field
         ↓
-ordered reversible soft tapering
+select potentially discriminating context
         ↓
-SMALL SERIOUS-CANDIDATE FIELD
+explicit context transition
         ↓
-state-dependent recurrent deliberation
+reversible contextual settling
         ↓
-evidence / uncertainty state
+re-evaluate what remains unresolved
+        ↓
+optional deeper refinement / optional recurrence only if earned
+        ↓
+evidence sufficiency
         ↓
 COMMIT | ABSTAIN | SEEK EVIDENCE | REOPEN
 ```
 
-Historical pathway reliability/resistance remains an optional learned modifier. Earlier assays found it promising, but HCT-2 showed it was not necessary in that task family.
+The architecture is deliberately falsifiable. Mechanisms are removed or weakened when stronger evidence fails to support them.
 
-The central principle is therefore:
+## D6 — current strongest new development result
 
-> **Narrow softly, preserve reversibility, deliberate recurrently, and separate having a winner from having enough evidence to commit.**
+Revision 5 suspected that partial-context activation was being carried too strongly into later full context.
 
-## Why Ground 0 Changed the Architecture
+D6 isolated that transition on the frozen SciFact development partition.
 
-Earlier experiments ruled out several attractive but brittle approaches:
+Observed:
 
 ```text
-clock-driven progressive Top-K        failed
-single global confidence gate         limited
-stochastic winner consensus           false certainty
-irreversible hard pruning             failed under context reversal
+93 development queries
+92 transition-evaluable
+reset control integrity: PASS
+max reset activation difference: 2.220446049250313e-16
+R_reset = 1.0
+frozen verdict = MAJOR_PERSISTENCE_CONTRIBUTION_SUPPORTED
 ```
 
-HCT-1 then showed that reversible soft narrowing could preserve correct candidates, uncertainty, and context-driven recovery while sharply reducing the field entering recurrence.
+The supported lesson is narrow:
 
-HCT-2 strengthened the theory:
+> **Settled activation is context-conditional state. Blindly carrying a state settled under partial context into materially changed context can create major path-dependent damage.**
+
+This does not establish multi-taper necessity, residual refinement, recurrence necessity, final held-out superiority, or natural-language understanding.
+
+## Current dual-track program
+
+### Track A — Ground 0 science
 
 ```text
-300 final held-out worlds
-all frozen HCT-2 criteria passed
-learned-order sparse good behavior      100%
-correct-candidate survival              100%
-unresolved commitment                     0%
-context-reversal reactivation           100%
-renaming retention                      100%
-recurrent load vs no taper              3.125%
-context evaluations vs generic soft     7.14%
-learned-order efficiency gain           5.49%
+D6 complete
+    ↓
+MT-1 preregistration
+    ↓
+matched-compute multi-taper falsification
 ```
 
-The recurrence ablation was especially important: removing recurrence reduced good behavior to 45% even though the correct candidate survived tapering 100% of the time. Tapering and recurrence therefore performed distinct jobs in that family.
+MT-1 asks whether more than one soft contextual settling stage materially outperforms one good soft stage after transition-state persistence is controlled.
 
-## Ground 0 Is Not Yet Live Production Cognition
+Hard pruning losing is not sufficient evidence for multiple soft stages.
 
-The HCT work is controlled synthetic research. It is **not yet Integrated** into the running Synrheon organism.
-
-The live repository still contains useful earlier foundations:
+### Track B — representation architecture
 
 ```text
-observable runtime + UI
-explicit cognitive substrate
-computational time
-ordered experience + provenance
-first trainable operation/target policy from E011-A
+TD-0 stable token identity          Built
+TD-1 multiple reversible senses     Built
+TD-2 alias/morphology storage       Built
+TD-3 exact surface segmentation     Next
+TD-4 known/unknown acquisition      Later
+TD-5 contextual sense learning      Later experiment
 ```
 
-E011-A remains evidence that a cognitive policy can learn transferable action preferences without memorizing opaque candidate identities. It should now be treated as a donor mechanism for learned routing, not as the complete cognitive architecture.
+The Token Deck begins the path from raw language to stable internal representations.
 
-The old assumption that E011-B should simply wire the narrow E011-A policy directly into the organism is therefore under review. The next integration design should express Ground 0 cleanly through the real organism.
-
-## Designed Cognitive Physics vs Learned Cognitive Skill
-
-Synrheon should explicitly design only the reusable computational rules and boundaries:
+Core separation:
 
 ```text
-state / candidate representation
-reversible suppression mechanics
-recurrent update interface
-compute ceilings
-checkpoint / provenance structure
-commit / abstain / reopen interfaces
-validation / safety boundaries
+surface form != token identity != sense != concept/entity != episode
 ```
 
-Experience and training should increasingly determine:
+## Production-facing architecture already built
+
+### Reversible candidate field
+
+Owner:
 
 ```text
-which context matters
-which context to evaluate next
-how strongly to taper
-which region deserves compute
-which cognitive operation / target to choose
-when recurrence is useful
-when evidence is enough
-when to reopen broader context
+src/synrheon/contextual_search.py
 ```
 
-A useful shorthand remains:
+Provides complete broad-field state, active/dormant regions, reversible checkpoints, restore/reopen, and explicit carry/reset/residual transition provenance.
 
-> **We code the cognitive physics. Synrheon learns the cognitive skill.**
+### Token Deck
 
-## Scientific Sources of Truth
-
-The consolidated scientific theory is:
+Owner:
 
 ```text
-docs/CONTEXT_SETTLED_TAPERING_THEORY.md
+src/synrheon/token_deck.py
 ```
 
-The frozen HCT-2 preregistration is:
+Provides stable token identity, observed forms/aliases, provenance, multiple candidate senses, optional concept links, non-inferential morphology storage, and reversible context-conditioned sense activation.
+
+The Token Deck is stored in the live `CognitiveSubstrate`, but normal chat is not yet automatically segmented into token observations.
+
+## What exists live
 
 ```text
-docs/HCT2_PREREGISTRATION.md
+observable runtime + development UI      Verified
+computational time                       Integrated
+ordered experience + provenance          Integrated
+cognitive substrate                      Built
+Token Deck TD-0/1/2                      Built
+reversible candidate field               Built, not live-integrated
+E011-A learned policy                    Historical controlled donor
+Ground 0 contextual cognition            Not Integrated
+durable memory                           Not Started
+learned retrieval                        Not Started
+recursive autonomous cognition           Not Started
 ```
 
-Current implementation truth and architecture are summarized in:
+## Development rule
+
+Science:
 
 ```text
-docs/PROJECT_GUIDE.md
+claim + falsifier
+    ↓
+preregister
+    ↓
+implement
+    ↓
+integrity/smoke
+    ↓
+allowed evidence run
+    ↓
+frozen interpretation
+    ↓
+simplify or earn next layer
+```
+
+Organism capabilities:
+
+```text
+build one capability
+    ↓
+give explicit stimuli
+    ↓
+inspect backend-owned state / trace
+    ↓
+fix the process, not the phrase
+    ↓
+add the failure as a regression test
+    ↓
+repeat with harder stimuli
+```
+
+The objective is not to make the original theory win. The objective is to discover which cognitive operations continue to deserve being built.
+
+## Read first
+
+```text
+docs/REV6_CONTINUATION_STATE.md
+docs/CURRENT_STAGE.md
 docs/IMPLEMENTATION_STATUS.md
 docs/ARCHITECTURE_PLAN.md
+docs/TOKEN_DECK_ROADMAP.md
+docs/PROJECT_GUIDE.md
+docs/SIGNAL_FLOW.md
+docs/SCAFFOLD.md
 ```
+
+Agent workflow:
+
+```text
+AGENTS.md
+agent/ARCHITECTURE_STEWARD.md
+.agents/skills/synrheon-development-workflow/SKILL.md
+```
+
+Older theory and preregistration documents remain part of the scientific record and should not be silently rewritten after results are observed.
