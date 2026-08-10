@@ -1,254 +1,226 @@
-# Synrheon Implementation Status
+# Synrheon Implementation Status — Revision 6
 
 This file records what actually exists and what level of evidence supports it.
 
 ## Status meanings
 
-- **Historical synthetic evidence** — observed in a controlled self-authored world; useful but not external validation.
-- **External development evidence** — observed on public data/development split; stronger than synthetic evidence but not a final held-out claim.
-- **Built** — implementation exists in isolation.
-- **Integrated** — live runtime reaches it.
-- **Verified** — intended behavior was observed through the running organism.
+Scientific evidence:
 
-## Authoritative research branch
+- **Historical synthetic evidence** — controlled self-authored worlds; useful but not external validation.
+- **External development evidence** — public benchmark/development data; stronger than synthetic evidence but not final confirmation.
+- **Confirmatory held-out evidence** — untouched evaluation used according to a preregistered boundary.
+
+Implementation maturity:
+
+- **Not Started** — no meaningful implementation.
+- **Designed** — contract exists; mechanism does not yet operate.
+- **Built** — mechanism exists and passes relevant isolated/controlled tests.
+- **Integrated** — the live runtime reaches and uses it.
+- **Verified** — intended live behavior was observed through the running organism with relevant state/trace inspected.
+
+## Authoritative continuation
 
 ```text
+Current scientific branch:
+experiment/external-retrieval-cascade
+
 Historical synthetic branch:
 experiment/hippocampal-sparse-settling
-
-Current external-validation branch:
-experiment/external-retrieval-cascade
 ```
 
-Scientific continuation must proceed from `experiment/external-retrieval-cascade`. The historical hippocampal branch should remain preserved as the synthetic research record.
-
-At Revision 5, the external branch is a strict descendant of the historical branch and contains the current retrieval-cascade and EXT-2 diagnostic implementation.
-
-See:
+Current authority begins with:
 
 ```text
-docs/REV5_CONTINUATION_STATE.md
+docs/REV6_CONTINUATION_STATE.md
+docs/CURRENT_STAGE.md
+```
+
+Older Revision 4/5 theory and HCT/E011 records remain historical evidence and frozen experiment history.
+
+## Revision 6 evidence ledger
+
+### Supported / strengthened
+
+- Reversible suppression has strong synthetic support.
+- One full-context soft taper approximately preserves the SciFact BM25 development anchor.
+- BM25 top-100 retains meaningful oracle reranking headroom.
+- D6 supports inappropriate carried activation as a major contributor to the partial-to-full failure on SciFact development.
+- Explicit context-transition provenance, reset/re-anchor, restore, and reopen are justified as reusable architecture.
+- E011-A remains controlled evidence that operation/target preferences can transfer across unseen and renamed synthetic worlds.
+
+### Discounted / falsified in the current implementation
+
+- EXT-1 C1/C2/C3 were not validated as originally hoped.
+- Current four hand-designed lexical channels are not established as useful residual discriminators.
+- Current static recurrence harmed SciFact development ranking.
+- Current commitment calibration is not established.
+- HCT-2 does not establish external recurrence necessity because identified synthetic confounds weaken that interpretation.
+- Hard pruning losing is not sufficient evidence for multiple-soft-stage necessity.
+
+### Open / untested
+
+- Whether controlled multi-soft stages outperform a single soft stage under matched compute.
+- Question-guided contextual divergence with richer context.
+- Trajectory-relative recurrence.
+- External recovery value of reopening on a suitable changing-context task.
+- Calibrated commitment beyond strong baselines.
+- Token/sense/event state as a useful retrieval/context signal.
+
+## D6 — completed external-development diagnostic
+
+Frozen source:
+
+```text
 docs/D6_PREREGISTRATION.md
-```
-
-for the current continuation protocol and frozen D6 rules. Where the older Revision 4 theory document still says EXT-1 is the immediate next gate, the Revision 5 continuation note supersedes that boundary.
-
-## Ground 0
-
-```text
-large candidate / knowledge field
-    ↓
-learned routing / context selection
-    ↓
-reversible contextual settling
-    ↓
-serious-candidate field
-    ↓
-optional recurrence if it earns value
-    ↓
-evidence / uncertainty
-    ↓
-commit | abstain | seek evidence | reopen
-```
-
-The architecture is being simplified whenever stronger external evidence fails to support a mechanism.
-
-| Component | Current evidence status |
-|---|---|
-| Reversible soft narrowing | Strong synthetic support; external value remains open |
-| Context-driven reopening | Strong synthetic support; external value remains open |
-| Multiple ordered context stages | Not established; MT-1 blocked until D6 |
-| State-dependent recurrence | Synthetic support in selected families; current static recurrence discounted on SciFact development |
-| Commitment separate from winner | Conceptually retained; current external calibration discounted |
-| Opaque-identity transfer | Supported in earlier synthetic controls |
-| Learned pathway resistance | Promising earlier; optional / task-dependent |
-
-Historical HCT measurements remain part of the research record, but the old ordering, recurrence, and efficiency figures must not be described as externally settled mechanisms.
-
-## External-validation status
-
-Current source includes:
-
-```text
-experiments/external_retrieval_cascade.py
-experiments/ext2_diagnostics.py
 experiments/d6_transition_persistence.py
-tests/test_external_retrieval_cascade.py
-tests/test_ext2_diagnostics.py
 tests/test_d6_transition_persistence.py
 ```
 
-D6 status:
+Observed SciFact development result:
 
 ```text
-preregistration: FROZEN
-implementation: BUILT
-synthetic smoke: available but NOT EVIDENCE
-SciFact development D6: NOT YET RUN
-reserved final split: UNTOUCHED BY D6
-MT-1: BLOCKED UNTIL D6 INTERPRETATION
+development queries:                 93
+transition-evaluable queries:        92
+reset control integrity:             PASS
+max reset activation difference:     2.220446049250313e-16
+R_reset:                             1.0
+frozen verdict:                      MAJOR_PERSISTENCE_CONTRIBUTION_SUPPORTED
+reserved final split:                untouched by D6
 ```
 
-The current external evidence ledger is:
+Interpretation:
 
-### Supported
+> The carried settled state is a major contributor to the observed partial-to-full degradation under the frozen D6 implementation.
 
-- Reversible suppression has strong synthetic evidence.
-- A single full-context soft taper approximately preserves the BM25 SciFact development anchor.
-- Meaningful oracle headroom remains on development data.
+The result does not establish that multiple stages are useful. D6-E residual refinement remains diagnostic/mixed and had no preregistered success threshold.
 
-### Falsified / discounted in the current implementation
+## Immediate scientific boundary — MT-1 preregistration
 
-- EXT-1 C1/C2/C3 are not validated as originally hoped in the current implementation.
-- Current static recurrence is not beneficial on SciFact development; removing recurrence improved development nDCG from approximately `0.5081` to `0.5415`.
-- The current four hand-designed channels are not established as useful residual discriminators.
-- Current commitment calibration is not established.
+MT-1 is now unblocked for specification, not for ad-hoc tuning.
 
-### Partially supported / open
+Central question:
 
-- External value of reopening.
-- Contextual state persistence as a possible cause of the partial-context -> full-context collapse.
+> After controlling transition-state persistence, does more than one soft contextual settling stage materially outperform one good soft stage under matched computation?
 
-### Untested
-
-- Question-guided contextual divergence.
-- Trajectory-based recurrence.
-- Residual-guided tapering on SciFact D6.
-- Matched-compute multiple-soft-taper necessity.
-
-## Immediate scientific boundary — D6 only
-
-The immediate research gate is **D6: Transition Persistence Diagnostic**.
-
-Do not proceed directly to a large multi-taper experiment because the current sequential partial -> full process may already contain a transition-state persistence pathology.
-
-Frozen conditions:
+Conceptual controls to freeze precisely before result-bearing implementation:
 
 ```text
-A — BM25 / full-query anchor
-B — one full-context soft taper
-C — partial -> full with carried activation, no recurrence
-D — partial -> full, reset before full-context stage
-E — partial -> full, stage two uses full-minus-partial feature residuals
+retrieval/no-taper anchor
+single full-context soft
+multi-soft with naive carry
+multi-soft with controlled reset
+scrambled/reversed context order
+matched-compute hard staged pruning
 ```
 
-Frozen scope:
+Keep recurrence and Token Deck improvements outside the primary comparison unless explicitly preregistered before results.
 
-```text
-same 93 SciFact development queries
-same BM25 top-100 candidate field
-same current channels
-same learned parameters
-minimum 30 transition-evaluable queries
-no final split
-no recurrence
-no new semantic channels
-no threshold tuning
-```
+## Production-facing contextual search
 
-Diagnostic quantities:
-
-```text
-Delta_damage = B - C
-R_reset = (D - C) / (B - C)
-```
-
-Frozen interpretation:
-
-- `D > C` with paired 95% CI excluding zero and `R_reset >= 0.50` -> inappropriate persistence supported as a major contributor.
-- `R_reset < 0.25` -> persistence is not a sufficient explanation.
-- `0.25 <= R_reset < 0.50` -> partial support.
-- `B - C <= 0` -> damage not reproduced; do not force the expected failure to appear.
-
-## Architecture now being built alongside the research
-
-A production-facing reversible candidate-field owner now exists in:
+Owner:
 
 ```text
 src/synrheon/contextual_search.py
 ```
 
-It implements only the currently defensible cognitive physics:
+Status: **Built, not Integrated**
+
+Current invariant/mechanics:
 
 ```text
 complete broad-field prior
 complete activation state
 active vs dormant compute region
 soft suppression without deletion
-context transition provenance
-carry / reset / residual transition contract
-reversible checkpoints
-restore / reactivate / reopen
+carry / reset / residual transition provenance
+checkpoints
+restore
+reactivate
+reopen-all
 ```
 
-It deliberately does **not** contain qrels, hidden truth, a hand-written semantic hierarchy, a taper equation, a recurrence rule, or a commitment policy. D6 uses this same transition-state contract so the research begins exercising architecture that can later belong to the organism rather than maintaining a separate synthetic-only mechanism.
+D6 used this same transition-state contract. The live runtime still lacks a legitimate broad candidate source, so contextual search must not be wired with fabricated candidates merely to claim integration.
 
-This module is **Built, not Integrated**. The live runtime does not yet generate a legitimate broad candidate field, so `runtime.py` must not fabricate one merely to make Ground 0 appear live.
+## Token Deck
 
-## Next major experiment — MT-1, blocked on D6
-
-After D6, specify **MT-1: Matched-Compute Multi-Taper Falsification**.
-
-Primary comparison:
+Owner:
 
 ```text
-single full-context soft taper
-vs
-multiple context-settled soft tapers
-vs
-matched-compute hard staged pruning
+src/synrheon/token_deck.py
 ```
 
-Also include multi-stage reset, scrambled-order, and clock-driven Top-K as a negative control.
-
-Critical interpretation rule:
-
-> Hard pruning losing is not sufficient evidence for multiple contextual settling stages.
-
-Multi-taper necessity is supported only if multi-soft materially outperforms single-soft under matched computation.
-
-If multi-soft ~= single-soft while hard pruning loses reactivation, conclude:
+Integrated storage owner:
 
 ```text
-reversibility supported
-multiple contextual settling stages not supported
+CognitiveSubstrate.token_deck in src/synrheon/state.py
 ```
 
-## Live organism
+Current status:
 
-| Capability | Status | Current truth |
+```text
+TD-0 stable token identity                 Built
+TD-1 multiple reversible senses            Built
+TD-2 alias/morphology storage              Built, non-inferential
+TD-3 exact surface segmentation            Not Started — next build
+TD-4 known/unknown acquisition              Not Started
+TD-5 contextual sense disambiguation       Not Started
+TD-6 concept/entity bridge                  Contract begun; behavior pending
+TD-7 event/role composition                 Not Started
+TD-8 durable Token Deck                     Not Started
+TD-9 candidate-source bridge                Not Started
+TD-10 learned vocabulary growth             Not Started
+```
+
+Current Token Deck cognitive-physics invariants:
+
+```text
+surface form != token identity != sense != concept/entity != episode
+multiple senses remain recoverable
+context-conditioned sense activation is reversible
+newly discovered senses reopen the inventory rather than inheriting permanent zero support
+provenance remains inspectable
+```
+
+The live chat path does not yet automatically segment input into Token Deck observations.
+
+## Live organism status
+
+| Capability | Maturity | Current truth |
 |---|---|---|
 | Observable runtime + development UI | Verified | Browser/API/runtime/state path works live |
-| Cognitive substrate | Built | Concepts, relations, activation representation |
-| Computational time | Integrated | Episode, sequence, timestamp, elapsed time |
-| Ordered experience + provenance | Integrated | Observed/injected experience thread exists in-process |
-| E011-A trainable operation/target policy | Built experimentally | Historical controlled transfer result |
-| Ground 0 checkpoint contract | Built | `Ground0Checkpoint` defines phase/disposition boundaries |
-| Reversible contextual candidate field | Built | Complete-state/checkpoint/restore/reopen mechanics exist; not live-integrated |
-| Ground 0 learned context selection | Research/design only | No live owner yet |
-| Ground 0 contextual tapering | Research only | Not live-integrated |
-| Ground 0 recurrence | Research only | Not live-integrated |
-| Ground 0 commit/abstain/reopen behavior | Research only | Contract exists; behavior not live-integrated |
-| Durable memory | Not started | Current experience is process-local |
-| Learned retrieval | Not started | Future architecture only |
-| Recursive autonomous cognition | Not started | Future architecture only |
+| Computational time | Integrated | Episode/sequence/time coordinates are live |
+| Ordered experience + provenance | Integrated | Observed/injected current-episode thread is live |
+| Cognitive substrate | Built | Concepts, relations, activation, TokenDeck representation |
+| E011-A operation/target policy | Built experimentally | Historical controlled transfer donor mechanism |
+| Ground 0 checkpoint contract | Built | Public phase/disposition contract exists |
+| Reversible candidate field | Built | Not live-integrated; no legitimate broad source yet |
+| Token Deck TD-0/1/2 | Built | Stored in substrate; not yet auto-fed by language |
+| TD-3 segmentation | Not Started | Immediate representation build target |
+| Learned context selection | Not Started | Must be earned/tested |
+| Production multi-taper controller | Not Started | Blocked on MT-1 evidence |
+| Production recurrence | Not Started | Must earn task-specific role |
+| Commitment calibration | Not Started | Current external signal discounted |
+| Durable memory | Not Started | Current experience remains process-local |
+| Learned retrieval | Not Started | Candidate-source dependency remains open |
+| Recursive autonomous cognition | Not Started | Future only |
 
 ## Current production source ownership
 
 ```text
-state.py               explicit organism/substrate state
-cognition.py           Ground 0 cognitive-cycle + contextual-search exports
-contextual_search.py   reversible candidate field / transition checkpoints
-policy.py              retained E011-A operation/target policy
-policy_learning.py     retained E011-A policy learning
+state.py               explicit organism/substrate state; contains TokenDeck
+cognition.py           Ground 0 public cognitive contracts
+contextual_search.py   reversible candidate field / context-transition checkpoints
+token_deck.py          stable token/sense identity + reversible sense state
+policy.py              retained E011-A operation/target donor policy
+policy_learning.py     retained E011-A learning
 learning.py            temporary E011 compatibility export
-experience.py          ordered current-episode experience
-temporal.py            time / sequence / episode coordinates
+experience.py          ordered current-episode experience + provenance
+temporal.py            computational time / sequence
 runtime.py             thin sequencing
 dev_server.py          local HTTP/UI transport
+experiments/           scientific harnesses, qrels, hidden evaluation/scoring
+ui/                    observation and control only
 ```
-
-Placeholder-only future modules remain excluded until implementation exists.
 
 ## Current live flow
 
@@ -266,14 +238,22 @@ state.py / trace
 UI
 ```
 
-Ground 0 contextual search is not yet in this live path because there is not yet a legitimate learned/retrieved candidate field to feed it.
+Token Deck storage exists inside state, but raw chat is not yet automatically segmented into token observations. Ground 0 contextual search is not yet in the live path.
 
-## Scientific rule
+## Development rule
 
-Do not optimize the architecture toward the current preferred theory. Optimize experiments toward discovering where the theory is wrong.
+Synrheon now advances through two independent loops:
 
-A negative result should simplify Ground 0 rather than trigger threshold tuning.
+```text
+SCIENTIFIC
+preregister -> implement -> integrity/smoke -> allowed evidence run -> frozen classification -> update theory
+
+ARCHITECTURE
+build one invariant -> stimulus test -> inspect state -> fix process -> regression test -> integrate only with legitimate inputs
+```
+
+Negative evidence should simplify Ground 0 rather than trigger threshold tuning. Token Deck improvements must not alter MT-1 after its boundary is frozen unless a new versioned experiment explicitly combines them.
 
 ## Scientific boundary
 
-Neither the HCT series nor current external-development work establishes natural-language understanding, learned semantics, biological equivalence, general intelligence, modern-retrieval superiority, end-to-end wall-clock superiority, autonomous cognition, or production integration.
+Current work does not establish biological hippocampal equivalence, a new law of cognition, natural-language understanding, general intelligence, superiority to modern dense/late-interaction retrieval, end-to-end wall-clock superiority, autonomous cognition, or production-ready intelligence.
