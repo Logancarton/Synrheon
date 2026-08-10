@@ -102,7 +102,7 @@ Frozen source:
 docs/MT1_PREREGISTRATION.md
 ```
 
-Status: **v1 UNEXECUTED / DESIGN-INVALID; MT-1.1 replacement awaiting approval**
+Status: **v1 UNEXECUTED / DESIGN-INVALID; CPN-1 replacement FROZEN, not yet implemented**
 
 A pre-result implementation audit found that the v1 treatment condition cannot satisfy the
 experiment's own matched-compute admissibility rule (`E(M3) ~= 2.285 * E(M1)` against a
@@ -111,7 +111,7 @@ preregistration is retained unedited as frozen historical design evidence.
 
 ```text
 docs/MT1_DESIGN_AUDIT.md      what was found and what was deliberately not done
-docs/MT11_PREREGISTRATION.md  equal-budget replacement, draft, awaiting approval
+docs/CPN1_PREREGISTRATION.md  equal-budget contextual pre-narrowing, FROZEN
 ```
 
 No SciFact development nDCG was computed or inspected. The development split is untouched.

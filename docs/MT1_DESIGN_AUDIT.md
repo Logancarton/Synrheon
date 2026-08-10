@@ -125,14 +125,17 @@ moving a threshold after seeing a result.
 ## Replacement
 
 ```text
-docs/MT11_PREREGISTRATION.md
+docs/CPN1_PREREGISTRATION.md
 ```
 
-MT-1.1 replaces admissibility-by-tolerance with an **explicit hard per-query evaluation
-budget shared by the result-bearing conditions**, so equal compute is enforced by
-construction and every classification stays reachable.
+CPN-1 replaces admissibility-by-tolerance with an **explicit hard per-query evaluation
+budget**, so equal compute is enforced by construction and every classification stays
+reachable. A first MT-1.1 draft was withdrawn before freezing: its 0.5 stage split was
+mechanically impossible on 92/92 queries, because the separate cue-prior pass costs 100
+evaluations against a maximum allowance of 79. The frozen replacement removes that pass
+entirely and narrows the claim to contextual pre-narrowing.
 
-The v1 decision thresholds are carried into MT-1.1 unchanged — material delta 0.010, 95%
+The v1 decision thresholds are carried into CPN-1 unchanged — material delta 0.010, 95%
 paired bootstrap with 1000 resamples at seed 90210, minimum 30 transition-evaluable
 queries — because they were not the defect. Changing them here would be indistinguishable
 from threshold movement.

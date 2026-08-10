@@ -312,8 +312,8 @@ SCIENTIFIC TRACK
 1. record D6 as completed external-development evidence        DONE
 2. write/freeze MT-1 preregistration                           DONE — docs/MT1_PREREGISTRATION.md
 3. MT-1 v1 implemented; pre-result audit found it DESIGN-INVALID  docs/MT1_DESIGN_AUDIT.md
-4. freeze MT-1.1 equal-budget replacement                      AWAITING APPROVAL
-5. implement and run MT-1.1 only after the freeze              BLOCKED
+4. CPN-1 equal-budget contextual pre-narrowing                 FROZEN — docs/CPN1_PREREGISTRATION.md
+5. implement CPN-1, then run only on explicit approval         NEXT
 4. run integrity/smoke tests
 5. run the allowed development assay
 6. classify under frozen criteria

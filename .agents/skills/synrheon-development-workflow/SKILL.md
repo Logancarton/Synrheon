@@ -66,7 +66,7 @@ D6 result preserved                                    DONE
     ↓
 MT-1 v1 preregistration                                FROZEN, then DESIGN-INVALID
     ↓
-MT-1.1 equal-budget preregistration                    AWAITING APPROVAL
+CPN-1 equal-budget contextual pre-narrowing            FROZEN
     ↓
 integrity + synthetic smoke
     ↓

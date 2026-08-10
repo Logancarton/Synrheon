@@ -10,7 +10,7 @@ D6 COMPLETE
     ↓
 MT-1 v1 FROZEN then audited — UNEXECUTED / DESIGN-INVALID
     ↓
-MT-1.1 EQUAL-BUDGET PREREGISTRATION — immediate scientific boundary; awaiting approval
+CPN-1 EQUAL-BUDGET CONTEXTUAL PRE-NARROWING — FROZEN; implement next
 
 TRACK B — Representation architecture
 TD-0/1/2 BUILT

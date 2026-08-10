@@ -13,7 +13,7 @@
 
    `MULTI_STAGE_SUPPORTED` was therefore structurally unreachable. See
    ``docs/MT1_DESIGN_AUDIT.md``. The replacement design is
-   ``docs/MT11_PREREGISTRATION.md``.
+   ``docs/CPN1_PREREGISTRATION.md``.
 
    No SciFact development nDCG result was ever computed or inspected under this design,
    so the development split remains available to the replacement experiment. To keep it
@@ -442,7 +442,7 @@ def run_mt1(dataset: Dataset) -> dict[str, object]:
             "result. Its treatment condition cannot satisfy its own matched-compute rule "
             "(E(M3) ~= 2.285 * E(M1) against a 1.10 tolerance), so MULTI_STAGE_SUPPORTED "
             "is structurally unreachable. See docs/MT1_DESIGN_AUDIT.md; the replacement "
-            "design is docs/MT11_PREREGISTRATION.md."
+            "design is docs/CPN1_PREREGISTRATION.md."
         )
 
     index, bank = build_environment(dataset)

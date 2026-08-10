@@ -117,7 +117,7 @@ D6 complete
     ↓
 MT-1 v1 frozen, then UNEXECUTED / DESIGN-INVALID — docs/MT1_DESIGN_AUDIT.md
     ↓
-MT-1.1 equal-budget preregistration          ← freeze next; do not run before approval
+CPN-1 equal-budget contextual pre-narrowing  ← FROZEN; implement, then run on approval
 
 REPRESENTATION TRACK
 TD-0/1/2 Token Deck built
@@ -215,9 +215,10 @@ Automated tests can support `Built` or `Integrated`; they do not independently g
 
 ## Immediate priorities
 
-1. Freeze MT-1.1 (`docs/MT11_PREREGISTRATION.md`) before implementing or running it.
-   MT-1 v1 is UNEXECUTED / DESIGN-INVALID; do not run it and do not edit its
-   preregistration to rescue its treatment.
+1. Implement CPN-1 (`docs/CPN1_PREREGISTRATION.md`) exactly as frozen; do not enlarge the
+   budget to reduce truncation. MT-1 v1 is UNEXECUTED / DESIGN-INVALID; do not run it and
+   do not edit its preregistration. A CPN-1 negative does NOT close the general
+   multi-stage / iterative-settling question.
 2. Drive TD-3/TD-4 with new stimuli, inspect the exact spans and routes, and convert any
    failure into a process-level regression test.
 3. Preregister TD-5 before any result-bearing sense-learning implementation.
