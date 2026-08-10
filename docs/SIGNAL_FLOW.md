@@ -1,13 +1,8 @@
-# Synrheon Signal Flow
+# Synrheon Signal Flow — Revision 6
 
-This file shows only two things:
+This file distinguishes what is live now from what is being built and what remains a scientific target.
 
-```text
-CURRENT LIVE FLOW
-TARGET GROUND 0 COGNITIVE FLOW
-```
-
-## Current Live Flow
+## Current live flow
 
 ```text
 Chat / injected developer thought
@@ -26,88 +21,137 @@ UI
 Current truth:
 
 - external Chat becomes ordered `observed` experience;
-- developer Internal Thought becomes ordered `injected` experience;
+- injected Internal Thought becomes ordered `injected` experience;
 - time, sequence, episode identity, and provenance are preserved;
+- `CognitiveSubstrate` now contains a `TokenDeck`;
 - runtime sequences and routes;
 - UI observes and controls;
-- Ground 0 cognition is not yet called.
+- raw chat is not yet automatically segmented into Token Deck observations;
+- Ground 0 contextual search is not yet live-integrated.
 
-## Existing Trainable Policy Flow — Experimental Only
+## Representation path being built
 
-E011-A remains a useful controlled donor mechanism:
+Current built representation:
 
 ```text
-revealed CognitiveState
+explicit TokenDeck API
         ↓
-policy.py enumerates/scores valid operation + target candidates
+stable token identity
         ↓
-selected operation + target
+surface forms / aliases / provenance
         ↓
-bounded experiment transition
+multiple candidate senses
         ↓
-outcome / cost
-        ↓
-policy_learning.py update
+reversible context-conditioned sense activation
 ```
 
-Its narrow action set was:
+Immediate next path — TD-3:
 
 ```text
-EXPAND(target)
-STOP
+raw text
+        ↓
+exact surface segmenter
+        ↓
+spans + character offsets + normalized lookup forms
+        ↓
+TokenDeck observe/reuse
 ```
 
-This demonstrated transferable learned operation selection, not full Ground 0 cognition.
+TD-3 is intentionally surface-only. It must not choose meaning, sense, concept, or answer.
 
-## Ground 0 Production Contract
-
-`cognition.py` now owns the production-facing Ground 0 checkpoint vocabulary:
+Future representation path:
 
 ```text
-broad_field
-routing
-tapering
-recurrent_deliberation
-evidence_assessment
-complete
+surface segments
+        ↓
+known / unknown acquisition boundary
+        ↓
+possible senses
+        ↓
+contextual sense evidence
+        ↓
+concept / entity links
+        ↓
+event / semantic-role candidates
+        ↓
+durable memory
 ```
 
-and dispositions:
+## Candidate-source path
+
+The reversible candidate field is already built but cannot be declared live until a legitimate broad source exists.
+
+Target path:
 
 ```text
-continue
-commit
-abstain
-seek_evidence
-reopen
+question / current cognitive need
+        ↓
+Token/sense/event representation
+        ↓
+memory + concept retrieval
+        ↓
+opaque candidate IDs + provenance + initial support
+        ↓
+ReversibleCandidateField
 ```
 
-This is a designed contract only. The real taper/recurrent mechanism is not live-integrated yet.
+Do not insert planted correct identities or experiment qrels into this production handoff.
 
-## Ground 0 Target Flow
+## Reversible candidate-state flow
+
+Owner:
 
 ```text
-legitimate live state
+contextual_search.py
+```
+
+Mechanics:
+
+```text
+broad retrieval prior
         ↓
-BROAD CANDIDATE / KNOWLEDGE FIELD
+complete candidate activation field
         ↓
-learned context / operation routing
+active expensive-compute region
++ dormant recoverable region
         ↓
-REVERSIBLE SOFT TAPER
+context transition checkpoint
         ↓
-Ground0Checkpoint
+carry | reset/re-anchor | residual/transform | reopen
         ↓
-SMALL SERIOUS-CANDIDATE FIELD
+new complete reversible state
+```
+
+D6 adds a critical rule:
+
+> The previous settled state is not automatically the correct prior for changed context.
+
+The transition mode must be explicit and later learned/tested rather than silently defaulting to carry.
+
+## Ground 0 target cognitive flow
+
+```text
+QUESTION / UNRESOLVED STATE
         ↓
-STATE-DEPENDENT RECURRENCE
+LEGITIMATE BROAD CANDIDATE FIELD
         ↓
-Ground0Checkpoint
+which context operation could discriminate what remains unresolved?
         ↓
-EVIDENCE / UNCERTAINTY STATE
+EXPLICIT CONTEXT TRANSITION
+        ↓
+REVERSIBLE CONTEXTUAL SETTLING
+        ↓
+what remains unresolved now?
+        ↓
+more refinement worth compute?
+  ├─ no  -> evidence sufficiency
+  └─ yes -> another earned context operation
+        ↓
+optional recurrence only if separately earned
+        ↓
+EVIDENCE SUFFICIENCY
         ↓
 COMMIT | ABSTAIN | SEEK EVIDENCE | REOPEN
-        ↓
-Ground0Checkpoint
         ↓
 runtime sequences result
         ↓
@@ -116,77 +160,128 @@ state / trace
 UI
 ```
 
-## Critical Separation
+Multiple contextual stages are not assumed. MT-1 must determine whether more than one soft stage adds value over one good soft stage once transition-state persistence is controlled.
+
+## D6 scientific flow — completed
 
 ```text
-Taper:
-Which candidates still deserve serious compute?
-
-Recurrence:
-How do the surviving serious alternatives alter one another's support?
-
-Commitment:
-Is the evidence sufficient to act?
+A  BM25/full-query anchor
+B  one full-context soft taper
+C  partial -> full with carried activation
+D  partial -> full with reset
+E  partial -> full residual refinement
 ```
 
-HCT-2 showed why this matters: removing recurrence reduced good behavior to 45% even though the correct candidate survived tapering 100% of the time.
-
-## Reopening Flow
+Observed frozen outcome:
 
 ```text
-initial context
-        ↓
-softly suppress candidate
-        ↓
-new / changed context arrives
-        ↓
-reopen broader preserved field
-        ↓
-rerun appropriate taper / deliberation
+92/93 transition-evaluable
+reset integrity PASS
+R_reset = 1.0
+MAJOR_PERSISTENCE_CONTRIBUTION_SUPPORTED
 ```
 
-Hard Top-K is not the Ground 0 default because HCT-1 and HCT-2 both showed irreversible deletion failing context-reversal cases.
+D6 establishes a transition diagnosis, not multi-stage necessity.
 
-## Optional Reliability Flow
+## MT-1 scientific target flow
 
-Historical evidence/pathway reliability may modify support when useful:
+Before result-bearing implementation:
 
 ```text
-source / pathway history
+write/freeze MT-1 preregistration
         ↓
-learned reliability or resistance
+implement exact frozen conditions
         ↓
-modulated evidence influence
+integrity tests
+        ↓
+synthetic smoke = not evidence
+        ↓
+allowed development assay
+        ↓
+paired/matched-compute interpretation
 ```
 
-This remains optional. HCT-2 did not require learned resistance for full good behavior.
-
-## Ownership Rule
+Conceptual comparisons:
 
 ```text
+retrieval/no-taper anchor
+single soft
+multi-soft naive carry          # pathology control
+multi-soft controlled reset
+scrambled/reversed order
+matched-compute hard stages
+```
+
+Recurrence and Token Deck features stay outside the primary MT-1 comparison unless explicitly frozen into the experiment before results.
+
+## Historical E011 donor flow
+
+E011-A remains a useful controlled donor mechanism:
+
+```text
+revealed CognitiveState
+        ↓
+policy.py scores valid operation + target candidates
+        ↓
+selected operation + target
+        ↓
+bounded controlled transition
+        ↓
+outcome / cost
+        ↓
+policy_learning.py update
+```
+
+This is historical evidence that action preference can be learned. It is not the active live integration target and does not define current Ground 0.
+
+## Ownership rule
+
+```text
+token_deck.py
+    lexical/sense identity + reversible sense state
+
+contextual_search.py
+    reversible broad candidate field + context transitions
+
 cognition.py
-    Ground 0 process/checkpoint owner
-
-policy.py + policy_learning.py
-    retained learned-routing donor mechanism
+    Ground 0 public cognitive contracts
 
 state.py
-    explicit organism/cognitive substrate state
+    explicit organism/substrate state
 
 temporal.py + experience.py
-    event position, sequence, provenance, ordered experience
+    time, sequence, provenance, ordered experience
+
+policy.py + policy_learning.py
+    historical E011 donor mechanism
 
 runtime.py
     sequences handoffs only
 
 dev_server.py
-    local browser/API transport only
+    transport only
 
 UI
-    observation / control only
+    observation/control only
 
-experiments
-    hidden truth / scientific scoring only
+experiments/
+    qrels / hidden truth / scientific scoring only
 ```
 
-The HCT generator, hidden correct identity, and frozen scientific scorer must never become production cognition inputs.
+## Development feedback loop
+
+```text
+stimulus or experiment
+        ↓
+observable state / raw metrics
+        ↓
+where did the process fail?
+        ↓
+fix correct owner / transition / representation
+        ↓
+add regression or falsification record
+        ↓
+repeat with harder case
+```
+
+The UI should expose state and failures; it must not choose the cognitive solution.
