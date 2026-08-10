@@ -117,7 +117,9 @@ D6 complete
     ↓
 MT-1 v1 frozen, then UNEXECUTED / DESIGN-INVALID — docs/MT1_DESIGN_AUDIT.md
     ↓
-CPN-1 equal-budget contextual pre-narrowing  ← FROZEN; implement, then run on approval
+CPN-1 equal-budget contextual pre-narrowing  FROZEN
+    ↓
+CPN-1.1 clarification amendment              ← FROZEN; implement, then run on approval
 
 REPRESENTATION TRACK
 TD-0/1/2 Token Deck built

@@ -10,7 +10,9 @@ D6 COMPLETE
     ↓
 MT-1 v1 FROZEN then audited — UNEXECUTED / DESIGN-INVALID
     ↓
-CPN-1 EQUAL-BUDGET CONTEXTUAL PRE-NARROWING — FROZEN; implement next
+CPN-1 EQUAL-BUDGET CONTEXTUAL PRE-NARROWING — FROZEN
+    ↓
+CPN-1.1 CLARIFICATION AMENDMENT — FROZEN; implementation next, outcome uninspected
 
 TRACK B — Representation architecture
 TD-0/1/2 BUILT

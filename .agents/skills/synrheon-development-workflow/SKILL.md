@@ -68,6 +68,8 @@ MT-1 v1 preregistration                                FROZEN, then DESIGN-INVAL
     ↓
 CPN-1 equal-budget contextual pre-narrowing            FROZEN
     ↓
+CPN-1.1 pre-result clarification amendment             FROZEN
+    ↓
 integrity + synthetic smoke
     ↓
 allowed development assay
