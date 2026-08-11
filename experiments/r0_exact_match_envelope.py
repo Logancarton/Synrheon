@@ -15,9 +15,9 @@ import json
 from experiments.r0_single_route_access import (
     FIELD_SIZE,
     MEMORY_COUNT,
-    ROUTE_GROUP_SIZES,
     LabeledProbe,
     MemoryRecord,
+    ProbeOutcome,
     RetrievalCue,
     SingleRouteRetriever,
     SingleRouteWorld,
@@ -286,10 +286,10 @@ def _custom_outcomes(
     *,
     field_size: int,
     label: str,
-):
+) -> list[ProbeOutcome]:
     if len(cues) != len(world.memories):
         raise ValueError("Custom cues must align one-to-one with world memories.")
-    outcomes = []
+    outcomes: list[ProbeOutcome] = []
     for memory, cue in zip(world.memories, cues, strict=True):
         probe = LabeledProbe(
             probe_id=f"{label}:{route_index}:{memory.memory_id}",
@@ -321,7 +321,7 @@ def _custom_hit_rate(
     return _bool_rate(outcomes, "hit_at_field")
 
 
-def _bool_rate(outcomes: Sequence[object], attribute: str) -> float:
+def _bool_rate(outcomes: Sequence[ProbeOutcome], attribute: str) -> float:
     if not outcomes:
         return 0.0
     return sum(1.0 if bool(getattr(outcome, attribute)) else 0.0 for outcome in outcomes) / len(
