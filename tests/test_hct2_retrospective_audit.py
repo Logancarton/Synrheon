@@ -15,7 +15,8 @@ from experiments.hippocampal_ordered_context import generate_world
 pytestmark = pytest.mark.audit
 
 
-def _small_report() -> dict[str, object]:
+@pytest.fixture(scope="module")
+def small_report() -> dict[str, object]:
     return run_hct2_retrospective_audit(
         training_seeds=range(70000, 70020),
         evaluation_seeds=range(71000, 71008),
@@ -23,8 +24,10 @@ def _small_report() -> dict[str, object]:
     )
 
 
-def test_audit_is_retrospective_and_cannot_upgrade_hct2() -> None:
-    report = _small_report()
+def test_audit_is_retrospective_and_cannot_upgrade_hct2(
+    small_report: dict[str, object],
+) -> None:
+    report = small_report
 
     assert report["artifact_class"] == "RETROSPECTIVE_AUDIT"
     assert report["can_upgrade_hct2"] is False
@@ -32,9 +35,10 @@ def test_audit_is_retrospective_and_cannot_upgrade_hct2() -> None:
     assert report["split"] == "test_slice"
 
 
-def test_order_landscape_exhausts_all_24_channel_permutations() -> None:
-    report = _small_report()
-    landscape = report["order_landscape"]
+def test_order_landscape_exhausts_all_24_channel_permutations(
+    small_report: dict[str, object],
+) -> None:
+    landscape = small_report["order_landscape"]
 
     observed = {tuple(row["order"]) for row in landscape}
     assert len(landscape) == 24
@@ -94,9 +98,10 @@ def test_relation_variants_change_only_relation_structure() -> None:
     assert none.inhibition == tuple()
 
 
-def test_relation_audit_holds_taper_survival_and_context_cost_constant() -> None:
-    report = _small_report()
-    metrics = report["relation_alignment"]
+def test_relation_audit_holds_taper_survival_and_context_cost_constant(
+    small_report: dict[str, object],
+) -> None:
+    metrics = small_report["relation_alignment"]
 
     assert {row["variant"] for row in metrics} == set(RELATION_VARIANTS)
     survival = {row["final_survival_rate"] for row in metrics}
@@ -106,9 +111,10 @@ def test_relation_audit_holds_taper_survival_and_context_cost_constant() -> None
     assert len(context_cost) == 1
 
 
-def test_audit_reports_learned_and_answer_independent_orders_without_outcome_gate() -> None:
-    report = _small_report()
-    summary = report["order_summary"]
+def test_audit_reports_learned_and_answer_independent_orders_without_outcome_gate(
+    small_report: dict[str, object],
+) -> None:
+    summary = small_report["order_summary"]
 
     assert sorted(summary["learned_order"]) == [0, 1, 2, 3]
     assert sorted(summary["answer_independent_selectivity_order"]) == [0, 1, 2, 3]
