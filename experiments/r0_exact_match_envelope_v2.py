@@ -2,7 +2,7 @@
 
 This module does not alter the v1 world, scorer, or baseline outputs. It corrects the
 classification and explicitly exposes the deterministic zero-support tie behavior that
-was previously described too loosely as chance.
+was previously described too loosely as random retrieval.
 """
 
 from __future__ import annotations
@@ -122,7 +122,8 @@ def run_corrected_exact_match_report(*, seed: int = 1701) -> dict[str, object]:
             "unbound_noise": "algebraic invariance; unbound concepts match no candidate",
             "same_group_conflict": "arithmetic consequence: competitor has more exact overlap",
             "near_id_and_alias": (
-                "zero exact support; aggregate 0.25 is deterministic prefix coverage, not chance"
+                "zero exact support; aggregate 0.25 is deterministic prefix coverage, "
+                "not random sampling"
             ),
         },
         "verdict": (
