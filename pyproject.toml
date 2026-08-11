@@ -28,6 +28,7 @@ testpaths = ["tests"]
 #   python3 -m pytest                    everything; must be green
 #   python3 -m pytest -m current         production architecture and invariants
 #   python3 -m pytest -m specification   deterministic mechanism/specification checks
+#   python3 -m pytest -m audit           retrospective diagnostic audits; cannot upgrade evidence
 #   python3 -m pytest -m scientific      current experiment implementation/integrity
 #   python3 -m pytest -m historical      reproduction of preserved historical results
 addopts = "-ra"
@@ -35,6 +36,7 @@ pythonpath = ["src"]
 markers = [
     "current: production architecture, invariants, and live integration. A failure is a defect and blocks the stage.",
     "specification: deterministic mechanism/specification checks whose expected outputs follow from the frozen construction or scoring rule. Passing verifies implementation fidelity, not a scientific hypothesis.",
+    "audit: retrospective diagnostic analysis of already-observed results. Passing verifies the audit is implemented cleanly; audit outputs may downgrade or contextualize old evidence but cannot upgrade it to new confirmatory evidence.",
     "scientific: implementation and integrity of a current preregistered experiment. These must pass. They verify the experiment runs correctly and its frozen classifier behaves; they do NOT assert that its hypothesis is true. A hypothesis may pass, fail, or be inconclusive without any test turning red.",
     "historical: reproduction of a superseded experiment's preserved result. The test passes when the recorded historical outcome is still reproduced, including a recorded negative outcome. Never modify production code or an assay mechanism to reverse one of these conclusions.",
 ]
