@@ -14,7 +14,7 @@ from experiments.r0_single_route_access import (
     run_single_route_assay,
 )
 
-pytestmark = pytest.mark.scientific
+pytestmark = pytest.mark.specification
 
 
 def test_frozen_single_route_integrity_verdict_passes() -> None:
@@ -57,13 +57,13 @@ def test_partial_hit_at_32_is_exactly_limited_by_route_ambiguity() -> None:
         assert row["partial_hit_at_32"] == pytest.approx(row["expected_partial_hit_at_32"])
 
 
-def test_missing_cue_has_only_fixed_field_capacity_chance() -> None:
+def test_missing_cue_has_only_deterministic_zero_support_prefix_coverage() -> None:
     result = run_single_route_assay(seed=1701)
-    expected = FIELD_SIZE / MEMORY_COUNT
+    expected_prefix_coverage = FIELD_SIZE / MEMORY_COUNT
 
     for row in result["route_metrics"]:
-        assert row["missing_hit_at_32"] == pytest.approx(expected)
-        assert row["expected_missing_hit_at_32"] == pytest.approx(expected)
+        assert row["missing_hit_at_32"] == pytest.approx(expected_prefix_coverage)
+        assert row["expected_missing_hit_at_32"] == pytest.approx(expected_prefix_coverage)
 
 
 def test_wrong_route_cue_cannot_borrow_evidence_from_another_route() -> None:
@@ -78,9 +78,9 @@ def test_wrong_route_cue_cannot_borrow_evidence_from_another_route() -> None:
     assert all(candidate.score == 0.0 for candidate in field)
 
     result = run_single_route_assay(seed=1701)
-    expected = FIELD_SIZE / MEMORY_COUNT
+    expected_prefix_coverage = FIELD_SIZE / MEMORY_COUNT
     for row in result["route_metrics"]:
-        assert row["wrong_route_hit_at_32"] == pytest.approx(expected)
+        assert row["wrong_route_hit_at_32"] == pytest.approx(expected_prefix_coverage)
 
 
 def test_foreign_route_concepts_do_not_change_single_route_ranking_order() -> None:
